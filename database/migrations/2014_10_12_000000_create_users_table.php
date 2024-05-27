@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
 
             $table->string('change_password_api_token')->nullable();
             $table->string('email_verification_api_token')->nullable();
+            $table->string('email_verified_api_status')->nullable();
 
 
             $table->rememberToken();

@@ -20,7 +20,7 @@ class AuthController extends Controller
 
         if ($user) {
             return response()->json([
-                'status' => 'success',
+                'status' => Response::HTTP_OK,
                 'data' => $user,
             ]);
         } else {
@@ -81,7 +81,7 @@ class AuthController extends Controller
                 'password' => Hash::make($inputs['password'])
             ]);
 
-            if (Auth::attempt(['phone' => $request->input('phone'), 'password' => $request->input('password')])) {
+            if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
                 $user = Auth::user();
                 $token = $user->createToken('token')->plainTextToken;
                 $cookie = cookie('jwt', $token, 60 * 24 * 30); // 30 days
@@ -89,11 +89,13 @@ class AuthController extends Controller
                 return response([
                     'token' => $token,
                     'user' => $user,
+                    'status' => Response::HTTP_OK,
                 ])->withCookie($cookie);
             }
 
             return response([
-                'message' => 'Invalid Credentials'
+                'message' => 'Invalid Credentials',
+                'status' => Response::HTTP_UNAUTHORIZED
             ], Response::HTTP_UNAUTHORIZED);
 
 //        -------------------------------- Rest of the codes --------------------------------
@@ -144,6 +146,7 @@ class AuthController extends Controller
             return response([
                 'token' => $token,
                 'user' => $user,
+                'status' => Response::HTTP_OK,
             ])->withCookie($cookie);
 
             //        ------------------------------------------------- validation block -------------------------------------------------
@@ -165,7 +168,7 @@ class AuthController extends Controller
         $cookie = Cookie::forget('jwt');
 
         return response([
-            'message' => 'success'
+            'message' => 'successfully logged out'
         ])->withCookie($cookie);
     }
 
