@@ -12,7 +12,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 //    ------------------------------------- categories resource -------------------------------------
 
-    Route::apiResource('category', \App\Http\Controllers\Api\Admin\CategoryController::class);
+    Route::post('test_category_post', [\App\Http\Controllers\Api\Admin\CategoryController::class,'store']);
+
+//    Route::apiResource('category', \App\Http\Controllers\Api\Admin\CategoryController::class);
 
 //    ------------------------------------- categories resource -------------------------------------
 });
