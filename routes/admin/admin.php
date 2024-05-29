@@ -8,4 +8,11 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
             'response' => 'this is an admin account'
         ]);
     });
+
+
+//    ------------------------------------- categories resource -------------------------------------
+
+    Route::apiResource('category', \App\Http\Controllers\Api\Admin\CategoryController::class);
+
+//    ------------------------------------- categories resource -------------------------------------
 });
