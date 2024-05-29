@@ -12,9 +12,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 //    ------------------------------------- categories resource -------------------------------------
 
-    Route::post('test_category_post', [\App\Http\Controllers\Api\Admin\CategoryController::class,'store']);
-
-//    Route::apiResource('category', \App\Http\Controllers\Api\Admin\CategoryController::class);
+    Route::get('category', [\App\Http\Controllers\Api\Admin\CategoryController::class,'index']);
+    Route::post('category_store', [\App\Http\Controllers\Api\Admin\CategoryController::class,'store']);
+    Route::put('category/update/{id}', [\App\Http\Controllers\Api\Admin\CategoryController::class,'update']);
+    Route::delete('category/delete/{id}', [\App\Http\Controllers\Api\Admin\CategoryController::class,'destroy']);
 
 //    ------------------------------------- categories resource -------------------------------------
 });
