@@ -26,9 +26,7 @@ const Orders = () => {
         </div>
       }
       content={
-        <div className="p-24">
-          <h4>Content</h4>
-          <br />
+        <div className="">
           <OrderTable />
         </div>
       }

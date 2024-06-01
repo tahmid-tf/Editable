@@ -14,6 +14,8 @@ import { Link } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { FiEdit } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
+import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import { MdOutlineCheckBox } from "react-icons/md";
 
 /**
  * The RecentTransactionsWidget widget.
@@ -164,13 +166,31 @@ function OrderTable() {
 
   return (
     <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
-      <div>
-        <Typography className="mr-16 text-lg font-medium tracking-tight leading-6 truncate">
-          Recent transactions
-        </Typography>
-        <Typography className="font-medium" color="text.secondary">
-          1 pending, 4 completed
-        </Typography>
+      <div className="flex justify-between">
+        <div className="flex">
+          <Typography className="font-medium" color="text.secondary">
+            Total Orders: 100
+          </Typography>
+          <Typography className="font-medium mx-20" color="text.secondary">
+            |
+          </Typography>
+          <Typography className="font-medium" color="text.secondary">
+            Completed Orders: 80
+          </Typography>
+          <Typography className="font-medium mx-20" color="text.secondary">
+            |
+          </Typography>
+          <Typography className="font-medium" color="text.secondary">
+            Pending Orders: 10
+          </Typography>
+        </div>
+        <div className="flex items-center gap-5">
+          <MdOutlineCheckBoxOutlineBlank size={18} />
+          {/* <MdOutlineCheckBox size={18} /> */}
+          <Typography className="font-medium" color="text.secondary">
+            Show all columns
+          </Typography>
+        </div>
       </div>
 
       <div className="table-responsive mt-24">
