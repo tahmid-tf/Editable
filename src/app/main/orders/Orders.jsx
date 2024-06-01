@@ -1,4 +1,4 @@
-import DemoContent from "@fuse/core/DemoContent";
+import React from "react";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
@@ -15,24 +15,24 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-sidebarContent": {},
 }));
 
-function Example() {
-  const { t } = useTranslation("examplePage");
+const Orders = () => {
+  const { t } = useTranslation("orderPage");
   return (
     <Root
       header={
         <div className="p-24">
-          <h4>{t("TITLE")}</h4>
+          <h4>Orders</h4>
         </div>
       }
       content={
         <div className="p-24">
           <h4>Content</h4>
           <br />
-          <DemoContent />
+          {/* <DemoContent /> */}
         </div>
       }
     />
   );
-}
+};
 
-export default Example;
+export default Orders;

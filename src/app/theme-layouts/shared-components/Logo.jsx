@@ -1,27 +1,28 @@
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 
-const Root = styled('div')(({ theme }) => ({
-	'& > .logo-icon': {
-		transition: theme.transitions.create(['width', 'height'], {
-			duration: theme.transitions.duration.shortest,
-			easing: theme.transitions.easing.easeInOut
-		})
-	},
-	'& > .badge': {
-		transition: theme.transitions.create('opacity', {
-			duration: theme.transitions.duration.shortest,
-			easing: theme.transitions.easing.easeInOut
-		})
-	}
+const Root = styled("div")(({ theme }) => ({
+  "& > .logo-icon": {
+    transition: theme.transitions.create(["width", "height"], {
+      duration: theme.transitions.duration.shortest,
+      easing: theme.transitions.easing.easeInOut,
+    }),
+  },
+  "& > .badge": {
+    transition: theme.transitions.create("opacity", {
+      duration: theme.transitions.duration.shortest,
+      easing: theme.transitions.easing.easeInOut,
+    }),
+  },
 }));
 
 /**
  * The logo component.
  */
 function Logo() {
-	return (
-		<Root className="flex items-center">
-			<img
+  return (
+    <Root className="flex items-center">
+      <h1>Editable</h1>
+      {/* <img
 				className="logo-icon h-32 w-32"
 				src="assets/images/logo/logo.svg"
 				alt="logo"
@@ -60,9 +61,9 @@ function Logo() {
 					/>
 					<span className="react-text text-12 font-semibold">React</span>
 				</div>
-			</div>
-		</Root>
-	);
+			</div> */}
+    </Root>
+  );
 }
 
 export default Logo;

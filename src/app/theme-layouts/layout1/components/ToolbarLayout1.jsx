@@ -22,6 +22,7 @@ import QuickPanelToggleButton from "../../shared-components/quickPanel/QuickPane
 /**
  * The toolbar layout 1.
  */
+
 function ToolbarLayout1(props) {
   const { className } = props;
   const config = useAppSelector(selectFuseCurrentLayoutConfig);
@@ -78,7 +79,7 @@ function ToolbarLayout1(props) {
 
             <Hidden lgDown>
               {/* <NavigationShortcuts /> */}
-              <div>{myDate}</div>
+              <div className="flex items-center">{myDate}</div>
             </Hidden>
           </div>
 
