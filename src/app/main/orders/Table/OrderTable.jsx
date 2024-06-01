@@ -11,6 +11,9 @@ import clsx from "clsx";
 import Button from "@mui/material/Button";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { Link } from "react-router-dom";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { FiEdit } from "react-icons/fi";
+import { LuEye } from "react-icons/lu";
 
 /**
  * The RecentTransactionsWidget widget.
@@ -43,6 +46,7 @@ function OrderTable() {
     "Payment Status",
     "Files",
     "Order Status",
+    "",
   ];
 
   const rows = [
@@ -55,6 +59,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Completed",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -65,6 +70,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -75,6 +81,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -85,6 +92,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Cancelled",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -95,6 +103,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Preview Edit",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -105,6 +114,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -115,6 +125,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -125,6 +136,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -135,6 +147,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download",
       status: "Pending",
+      icon: "icon",
     },
     {
       date: "2023-07-19",
@@ -145,6 +158,7 @@ function OrderTable() {
       paymentStatus: "Successful",
       files: "Download link",
       status: "Pending",
+      icon: "icon",
     },
   ];
 
@@ -284,6 +298,16 @@ function OrderTable() {
                             >
                               Download
                             </Link>
+                          </div>
+                        </TableCell>
+                      );
+                    }
+                    case "icon": {
+                      return (
+                        <TableCell key={key} component="th" scope="row">
+                          <div className="flex gap-5">
+                            <LuEye size={20} />
+                            <FiEdit size={18} />
                           </div>
                         </TableCell>
                       );
