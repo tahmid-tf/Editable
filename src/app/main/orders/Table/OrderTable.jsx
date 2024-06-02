@@ -16,11 +16,13 @@ import { FiEdit } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
-import { Checkbox } from "@mui/material";
+import { Checkbox, Pagination, TextField } from "@mui/material";
 
 /**
  * The RecentTransactionsWidget widget.
  */
+// table styles
+
 function OrderTable() {
   //   const { data: widgets, isLoading } = useGetFinanceDashboardWidgetsQuery();
 
@@ -165,204 +167,206 @@ function OrderTable() {
     },
   ];
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages] = useState(20); // Assuming total pages are known
 
-  const handleClick = () => {
-    setIsChecked(!isChecked); // Toggle checkbox state on click
+  const handleChangePage = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleInputChange = (event) => {
+    const pageNumber = parseInt(event.target.value, 10);
+    if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   return (
-    <Paper className="flex flex-col flex-auto p-24 shadow rounded overflow-hidden">
-      <div className="flex justify-between">
-        <div className="flex">
-          <Typography className="font-medium" color="text.secondary">
-            Total Orders: 100
-          </Typography>
-          <Typography className="font-medium mx-20" color="text.secondary">
-            |
-          </Typography>
-          <Typography className="font-medium" color="text.secondary">
-            Completed Orders: 80
-          </Typography>
-          <Typography className="font-medium mx-20" color="text.secondary">
-            |
-          </Typography>
-          <Typography className="font-medium" color="text.secondary">
-            Pending Orders: 10
-          </Typography>
-        </div>
-        {/* <div className="flex items-center gap-5">
-          <MdOutlineCheckBoxOutlineBlank size={18} />
-          <MdOutlineCheckBox size={18} />
-          <Typography className="font-medium" color="text.secondary">
-            Show all columns
-          </Typography>
-        </div> */}
-        <div className="flex items-center cursor-pointer" onClick={handleClick}>
-          <Checkbox checked={isChecked} size="small" />{" "}
-          {/* Use checked state for checkbox */}
-          <Typography className="font-medium" color="text.secondary">
-            Show all columns
-          </Typography>
-        </div>
-      </div>
-
-      <div className="table-responsive mt-24">
-        <Table className="simple w-full min-w-full">
-          <TableHead>
-            <TableRow>
-              {columns.map((column, index) => (
-                <TableCell key={index}>
-                  <Typography
-                    color="text.secondary"
-                    className="font-semibold text-12 whitespace-nowrap"
-                  >
-                    {column}
-                  </Typography>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                {Object.entries(row).map(([key, value]) => {
-                  switch (key) {
-                    case "date": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography>
-                            {format(new Date(value), "MMM dd, y")}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "id": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography color="text.secondary">
-                            {value}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "previewstatus": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography
-                            className={clsx(
-                              "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
-                              value === "Approved" && "bg-[#039855] text-white",
-                              value === "N/A" && "bg-[#CBCBCB] text-black ",
-                              value === "Rejected" && "bg-[#CB1717] text-white",
-                              value === "User Review Pending" &&
-                                "bg-[#CBCBCB] text-Black",
-                              value === "Pending" && "bg-[#FFCC00] text-black"
-                            )}
-                          >
-                            {value}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "editorName": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography
-                            className={clsx(
-                              "inline-flex items-center  text-12 px-10 py-2 rounded-full tracking-wide  bg-[#CBCBCB]",
-                              value === "Assign Editor" &&
-                                "bg-[#F29339] text-black"
-                            )}
-                          >
-                            {value}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "paymentStatus": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography
-                            className={clsx(
-                              "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
-                              value === "Pending" && "bg-[#FFCC00] text-black",
-                              value === "Successful" &&
-                                "bg-[#039855] text-white ",
-                              value === "Cancelled" && "bg-[#CB1717] text-white"
-                            )}
-                          >
-                            {value}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "status": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography
-                            className={clsx(
-                              "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
-                              value === "Pending" && "bg-[#FFCC00] text-black",
-                              value === "Completed" &&
-                                "bg-[#039855] text-white ",
-                              value === "Cancelled" &&
-                                "bg-[#CB1717] text-white",
-                              value === "Preview Edit" &&
-                                "bg-[#CBCBCB] text-Black"
-                            )}
-                          >
-                            {value}
-                          </Typography>
-                        </TableCell>
-                      );
-                    }
-                    case "files": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <div className="">
-                            <Link
-                              className="flex justify-center "
-                              style={{
-                                textDecoration: "none",
-                                color: "white",
-                              }}
-                              to={{ value }}
-                            >
-                              <span className="bg-black px-12 py-5">
-                                Download
-                              </span>
-                            </Link>
-                          </div>
-                        </TableCell>
-                      );
-                    }
-                    case "icon": {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <div className="flex gap-5">
-                            <LuEye size={20} />
-                            <FiEdit size={18} />
-                          </div>
-                        </TableCell>
-                      );
-                    }
-                    default: {
-                      return (
-                        <TableCell key={key} component="th" scope="row">
-                          <Typography>{value}</Typography>
-                        </TableCell>
-                      );
-                    }
-                  }
-                })}
+    <div>
+      <Paper className="flex flex-col flex-auto rounded-0 overflow-hidden">
+        <div className="table-responsive">
+          <Table className="simple w-full min-w-full">
+            <TableHead>
+              <TableRow>
+                {columns.map((column, index) => (
+                  <TableCell key={index}>
+                    <Typography
+                      color="text.secondary"
+                      className="font-semibold text-12 whitespace-nowrap"
+                    >
+                      {column}
+                    </Typography>
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  {Object.entries(row).map(([key, value]) => {
+                    switch (key) {
+                      case "date": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography>
+                              {format(new Date(value), "MMM dd, y")}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "id": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography color="text.secondary">
+                              {value}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "previewstatus": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography
+                              className={clsx(
+                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
+                                value === "Approved" &&
+                                  "bg-[#039855] text-white",
+                                value === "N/A" && "bg-[#CBCBCB] text-black ",
+                                value === "Rejected" &&
+                                  "bg-[#CB1717] text-white",
+                                value === "User Review Pending" &&
+                                  "bg-[#CBCBCB] text-Black",
+                                value === "Pending" && "bg-[#FFCC00] text-black"
+                              )}
+                            >
+                              {value}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "editorName": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography
+                              className={clsx(
+                                "inline-flex items-center  text-12 px-10 py-2 rounded-full tracking-wide  bg-[#CBCBCB]",
+                                value === "Assign Editor" &&
+                                  "bg-[#F29339] text-black"
+                              )}
+                            >
+                              {value}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "paymentStatus": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography
+                              className={clsx(
+                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
+                                value === "Pending" &&
+                                  "bg-[#FFCC00] text-black",
+                                value === "Successful" &&
+                                  "bg-[#039855] text-white ",
+                                value === "Cancelled" &&
+                                  "bg-[#CB1717] text-white"
+                              )}
+                            >
+                              {value}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "status": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography
+                              className={clsx(
+                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
+                                value === "Pending" &&
+                                  "bg-[#FFCC00] text-black",
+                                value === "Completed" &&
+                                  "bg-[#039855] text-white ",
+                                value === "Cancelled" &&
+                                  "bg-[#CB1717] text-white",
+                                value === "Preview Edit" &&
+                                  "bg-[#CBCBCB] text-Black"
+                              )}
+                            >
+                              {value}
+                            </Typography>
+                          </TableCell>
+                        );
+                      }
+                      case "files": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <div className="">
+                              <Link
+                                className="flex justify-center "
+                                style={{
+                                  textDecoration: "none",
+                                  color: "white",
+                                }}
+                                to={{ value }}
+                              >
+                                <span className="bg-black px-12 py-5">
+                                  Download
+                                </span>
+                              </Link>
+                            </div>
+                          </TableCell>
+                        );
+                      }
+                      case "icon": {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <div className="flex gap-5">
+                              <LuEye size={20} />
+                              <FiEdit size={18} />
+                            </div>
+                          </TableCell>
+                        );
+                      }
+                      default: {
+                        return (
+                          <TableCell key={key} component="th" scope="row">
+                            <Typography>{value}</Typography>
+                          </TableCell>
+                        );
+                      }
+                    }
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {/* <div className="mt-48 flex justify-center">
+        <Pagination count={20} color="secondary" />
+      </div> */}
+      </Paper>
+      <div className="mt-48 flex justify-center">
+        <Pagination
+          count={totalPages}
+          color="secondary"
+          page={currentPage}
+          onChange={handleChangePage}
+        />
+
+        <TextField
+          label="Go to page"
+          type="number"
+          InputLabelProps={{ shrink: true }} // Reduce label size on focus
+          variant="outlined"
+          value={currentPage}
+          onChange={handleInputChange}
+          sx={{ width: 80, marginRight: 2 }} // Set input width and margin
+        />
       </div>
-    </Paper>
+    </div>
   );
 }
 

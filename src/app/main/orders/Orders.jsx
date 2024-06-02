@@ -20,20 +20,13 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 const Orders = () => {
   const { t } = useTranslation("orderPage");
   return (
-    <Root
-      className="flex"
-      header={
-        <div className="p-24 bg-white">
-          <h4>Orders</h4>
-        </div>
-      }
-      content={
-        <div className="flex-1 bg-white">
-          <OrderForm />
-          <OrderTable />
-        </div>
-      }
-    />
+    <div className="bg-white px-36">
+      <div>
+        <p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
+      </div>
+      <OrderForm />
+      <OrderTable />
+    </div>
   );
 };
 
