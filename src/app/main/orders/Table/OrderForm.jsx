@@ -54,7 +54,7 @@ export default function OrderForm() {
       <Grid container spacing={2} className="py-10">
         <Grid item xs={3}>
           <TextField
-            fullWidth
+            // fullWidth
             label="Search"
             name="search"
             value={searchValue}
