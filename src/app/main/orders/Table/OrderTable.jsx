@@ -165,7 +165,7 @@ function OrderTable() {
   ];
 
   return (
-    <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
+    <Paper className="flex flex-col flex-auto p-24 shadow rounded overflow-hidden">
       <div className="flex justify-between">
         <div className="flex">
           <Typography className="font-medium" color="text.secondary">
@@ -307,16 +307,18 @@ function OrderTable() {
                     case "files": {
                       return (
                         <TableCell key={key} component="th" scope="row">
-                          <div className="bg-black px-10 py-5">
+                          <div className="">
                             <Link
-                              className=""
+                              className="flex justify-center "
                               style={{
                                 textDecoration: "none",
                                 color: "white",
                               }}
                               to={{ value }}
                             >
-                              Download
+                              <span className="bg-black px-12 py-5">
+                                Download
+                              </span>
                             </Link>
                           </div>
                         </TableCell>
