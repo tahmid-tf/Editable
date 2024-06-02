@@ -89,8 +89,8 @@ function ToolbarLayout1(props) {
             <FullScreenToggle />
             <NavigationSearch />
             <QuickPanelToggleButton /> */}
-            {/* <UserMenu /> */}
-            <p>Admin</p>
+            <UserMenu />
+            {/* <p>Admin</p> */}
           </div>
 
           {config.navbar.display && config.navbar.position === "right" && (

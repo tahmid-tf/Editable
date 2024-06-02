@@ -182,14 +182,21 @@ function OrderTable() {
   };
 
   return (
-    <div>
+    <div className="pb-36">
       <Paper className="flex flex-col flex-auto rounded-0 overflow-hidden">
         <div className="table-responsive">
           <Table className="simple w-full min-w-full">
             <TableHead>
               <TableRow>
                 {columns.map((column, index) => (
-                  <TableCell key={index}>
+                  <TableCell
+                    key={index}
+                    sx={
+                      {
+                        // display: "none",
+                      }
+                    }
+                  >
                     <Typography
                       color="text.secondary"
                       className="font-semibold text-12 whitespace-nowrap"
@@ -356,7 +363,7 @@ function OrderTable() {
           onChange={handleChangePage}
         />
 
-        <TextField
+        {/* <TextField
           label="Go to page"
           type="number"
           InputLabelProps={{ shrink: true }} // Reduce label size on focus
@@ -364,7 +371,7 @@ function OrderTable() {
           value={currentPage}
           onChange={handleInputChange}
           sx={{ width: 80, marginRight: 2 }} // Set input width and margin
-        />
+        /> */}
       </div>
     </div>
   );
