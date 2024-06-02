@@ -5,7 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { memo } from "react";
+import { memo, useState } from "react";
 import format from "date-fns/format";
 import clsx from "clsx";
 import Button from "@mui/material/Button";
@@ -16,6 +16,7 @@ import { FiEdit } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
+import { Checkbox } from "@mui/material";
 
 /**
  * The RecentTransactionsWidget widget.
@@ -164,6 +165,12 @@ function OrderTable() {
     },
   ];
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleClick = () => {
+    setIsChecked(!isChecked); // Toggle checkbox state on click
+  };
+
   return (
     <Paper className="flex flex-col flex-auto p-24 shadow rounded overflow-hidden">
       <div className="flex justify-between">
@@ -184,9 +191,16 @@ function OrderTable() {
             Pending Orders: 10
           </Typography>
         </div>
-        <div className="flex items-center gap-5">
+        {/* <div className="flex items-center gap-5">
           <MdOutlineCheckBoxOutlineBlank size={18} />
-          {/* <MdOutlineCheckBox size={18} /> */}
+          <MdOutlineCheckBox size={18} />
+          <Typography className="font-medium" color="text.secondary">
+            Show all columns
+          </Typography>
+        </div> */}
+        <div className="flex items-center cursor-pointer" onClick={handleClick}>
+          <Checkbox checked={isChecked} size="small" />{" "}
+          {/* Use checked state for checkbox */}
           <Typography className="font-medium" color="text.secondary">
             Show all columns
           </Typography>
