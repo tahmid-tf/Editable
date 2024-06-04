@@ -64,8 +64,8 @@ class CategoryController extends Controller
                 'skin_retouch_price' => 'required|numeric|between:0,999.9999',
                 'skin_retouch_threshold' => 'required|integer|min:0',
 
-                'preview_retouch_price' => 'required|numeric|between:0,999.9999',
-                'preview_retouch_threshold' => 'required|integer|min:0',
+                'preview_edit_price' => 'required|numeric|between:0,999.9999',
+                'preview_edit_threshold' => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {
@@ -160,8 +160,8 @@ class CategoryController extends Controller
                 'skin_retouch_price' => 'required|numeric|between:0,999.9999',
                 'skin_retouch_threshold' => 'required|integer|min:0',
 
-                'preview_retouch_price' => 'required|numeric|between:0,999.9999',
-                'preview_retouch_threshold' => 'required|integer|min:0',
+                'preview_edit_price' => 'required|numeric|between:0,999.9999',
+                'preview_edit_threshold' => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {

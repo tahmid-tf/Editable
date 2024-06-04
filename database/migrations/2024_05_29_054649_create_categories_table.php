@@ -27,8 +27,8 @@ class CreateCategoriesTable extends Migration
             $table->decimal('skin_retouch_price',5,4);
             $table->integer('skin_retouch_threshold');
 
-            $table->decimal('preview_retouch_price',5,4);
-            $table->integer('preview_retouch_threshold');
+            $table->decimal('preview_edit_price',5,4);
+            $table->integer('preview_edit_threshold');
 //
             $table->softDeletes();
 
