@@ -26,7 +26,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('editor/{id}', [\App\Http\Controllers\Api\Admin\EditorController::class,'show']);
     Route::post('editor_store', [\App\Http\Controllers\Api\Admin\EditorController::class,'store']);
     Route::put('editor/update/{id}', [\App\Http\Controllers\Api\Admin\EditorController::class,'update']);
-    Route::get('editor/{id}/delete', [\App\Http\Controllers\Api\Admin\EditorController::class,'destroy']);
+    Route::delete('editor/{id}/delete', [\App\Http\Controllers\Api\Admin\EditorController::class,'destroy']);
 
 
 
