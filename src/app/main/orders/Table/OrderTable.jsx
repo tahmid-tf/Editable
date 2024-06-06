@@ -161,7 +161,7 @@ function OrderTable() {
       previewstatus: "Pending",
       editorName: "Assign Editor",
       paymentStatus: "Successful",
-      files: "Download link",
+      files: "Download",
       status: "Pending",
       icon: "icon",
     },
@@ -189,17 +189,10 @@ function OrderTable() {
             <TableHead>
               <TableRow>
                 {columns.map((column, index) => (
-                  <TableCell
-                    key={index}
-                    sx={
-                      {
-                        // display: "none",
-                      }
-                    }
-                  >
+                  <TableCell key={index}>
                     <Typography
                       color="text.secondary"
-                      className="font-semibold text-12 whitespace-nowrap"
+                      className="font-semibold text-16 text-black whitespace-nowrap"
                     >
                       {column}
                     </Typography>
@@ -225,7 +218,7 @@ function OrderTable() {
                       case "id": {
                         return (
                           <TableCell key={key} component="th" scope="row">
-                            <Typography color="text.secondary">
+                            <Typography color="" className="">
                               {value}
                             </Typography>
                           </TableCell>
@@ -234,21 +227,23 @@ function OrderTable() {
                       case "previewstatus": {
                         return (
                           <TableCell key={key} component="th" scope="row">
-                            <Typography
+                            <div
                               className={clsx(
-                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
+                                "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
                                 value === "Approved" &&
                                   "bg-[#039855] text-white",
-                                value === "N/A" && "bg-[#CBCBCB] text-black ",
+                                value === "N/A" && "bg-[#CBCBCB] text-black",
                                 value === "Rejected" &&
                                   "bg-[#CB1717] text-white",
                                 value === "User Review Pending" &&
-                                  "bg-[#CBCBCB] text-Black",
+                                  "bg-[#CBCBCB] text-black",
                                 value === "Pending" && "bg-[#FFCC00] text-black"
                               )}
                             >
-                              {value}
-                            </Typography>
+                              <div className="tracking-[0.2px] leading-[20px] font-medium">
+                                {value}
+                              </div>
+                            </div>
                           </TableCell>
                         );
                       }
@@ -257,7 +252,7 @@ function OrderTable() {
                           <TableCell key={key} component="th" scope="row">
                             <Typography
                               className={clsx(
-                                "inline-flex items-center  text-12 px-10 py-2 rounded-full tracking-wide  bg-[#CBCBCB]",
+                                "inline-flex items-center  px-10 py-2 rounded-full tracking-wide  bg-[#CBCBCB]",
                                 value === "Assign Editor" &&
                                   "bg-[#F29339] text-black"
                               )}
@@ -270,19 +265,18 @@ function OrderTable() {
                       case "paymentStatus": {
                         return (
                           <TableCell key={key} component="th" scope="row">
-                            <Typography
+                            <div
                               className={clsx(
-                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
-                                value === "Pending" &&
-                                  "bg-[#FFCC00] text-black",
+                                "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
                                 value === "Successful" &&
-                                  "bg-[#039855] text-white ",
-                                value === "Cancelled" &&
-                                  "bg-[#CB1717] text-white"
+                                  "bg-[#039855] text-white",
+                                value === "Failed" && "bg-[#CB1717] text-white"
                               )}
                             >
-                              {value}
-                            </Typography>
+                              <div className="tracking-[0.2px] leading-[20px] font-medium">
+                                {value}
+                              </div>
+                            </div>
                           </TableCell>
                         );
                       }
@@ -291,7 +285,7 @@ function OrderTable() {
                           <TableCell key={key} component="th" scope="row">
                             <Typography
                               className={clsx(
-                                "inline-flex items-center text-12 px-10 py-2 rounded-full tracking-wide ",
+                                "inline-flex items-center px-10 py-2 rounded-full tracking-wide ",
                                 value === "Pending" &&
                                   "bg-[#FFCC00] text-black",
                                 value === "Completed" &&
@@ -310,19 +304,16 @@ function OrderTable() {
                       case "files": {
                         return (
                           <TableCell key={key} component="th" scope="row">
-                            <div className="">
-                              <Link
-                                className="flex justify-center "
-                                style={{
-                                  textDecoration: "none",
-                                  color: "white",
-                                }}
-                                to={{ value }}
-                              >
-                                <span className="bg-black px-12 py-5">
-                                  Download
-                                </span>
-                              </Link>
+                            <div
+                              className={clsx(
+                                "inline-flex items-center px-[10px] py-[2px] tracking-wide",
+                                value === "Download" && "bg-black text-white",
+                                value === "Failed" && "bg-[#CB1717] text-white"
+                              )}
+                            >
+                              <div className="tracking-[0.2px] leading-[20px] font-medium">
+                                {value}
+                              </div>
                             </div>
                           </TableCell>
                         );
