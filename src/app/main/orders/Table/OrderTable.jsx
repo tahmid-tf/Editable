@@ -18,155 +18,175 @@ import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
 
-/**
- * The RecentTransactionsWidget widget.
- */
-// table styles
+const columns = [
+  "Order Date",
+  "Order Id",
+  "Remaining Days",
+  "Preview Edit Status",
+  "Editor",
+  "Payment Status",
+  "Files",
+  "Order Status",
+  "",
+];
+
+const rows = [
+  {
+    date: "2023-07-19",
+    id: "TX3857",
+    remaining: "04/07 days",
+    previewstatus: "Approved",
+    editorName: "Ayman",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file1",
+    orderStatus: "Completed",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX1948",
+    remaining: "04/07 days",
+    previewstatus: "N/A",
+    editorName: "editor name x",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file2",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX4703",
+    remaining: "04/07 days",
+    previewstatus: "Rejected",
+    editorName: "editor name y",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file3",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX5612",
+    remaining: "04/07 days",
+    previewstatus: "N/A",
+    editorName: "editor name z",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file4",
+    orderStatus: "Cancelled",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX8243",
+    remaining: "04/07 days",
+    previewstatus: "User Review Pending",
+    editorName: "editor name xx1",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file5",
+    orderStatus: "Preview Edit",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX6371",
+    remaining: "04/07 days",
+    previewstatus: "Pending",
+    editorName: "editor name xx2",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file6",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX2936",
+    remaining: "04/07 days",
+    previewstatus: "Pending",
+    editorName: "editor name xx3",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file7",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX4029",
+    remaining: "04/07 days",
+    previewstatus: "Pending",
+    editorName: "editor name x yy1",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file8",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX7154",
+    remaining: "04/07 days",
+    previewstatus: "Pending",
+    editorName: "editor name yy2",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file9",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+  {
+    date: "2023-07-19",
+    id: "TX1248",
+    remaining: "04/07 days",
+    previewstatus: "Pending",
+    editorName: "editor name yy3",
+    paymentStatus: "Successful",
+    files: "https://drive.google.com/file/d/1/file10",
+    orderStatus: "Pending",
+    icon: "icon",
+  },
+];
+
+// Extract unique editor names
+const uniqueEditors = [...new Set(rows.map((row) => row.editorName))];
 
 function OrderTable() {
-  //   const { data: widgets, isLoading } = useGetFinanceDashboardWidgetsQuery();
+  // Editors
+  const [editorSelectedValues, setEditorSelectedValues] =
+    useState("Assign Editor");
 
+  const handleEditorChange = (rowId, event) => {
+    setEditorSelectedValues((prevValues) => ({
+      ...prevValues,
+      [rowId]: event.target.value,
+    }));
+  };
+
+  // order status
+  const [orderStatusValues, setOrderStatusValues] = useState({});
+
+  const handleOrderStatusChange = (rowId, event) => {
+    setOrderStatusValues((prevValues) => ({
+      ...prevValues,
+      [rowId]: event.target.value,
+    }));
+  };
+
+  // Function to handle LuEye icon click
+  const handleLuEyeClick = () => {
+    console.log("LuEye clicked");
+  };
+
+  // Function to handle FiEdit icon click
+  const handleFiEditClick = () => {
+    console.log("FiEdit clicked");
+  };
+
+  //
   let isLoading = false;
 
   if (isLoading) {
     return <FuseLoading />;
   }
+  //
 
-  //   const widget = widgets?.recentTransactions;
-
-  //   console.log("widget", widget);
-
-  //   if (!widget) {
-  //     return null;
-  //   }
-
-  //   const { columns, rows } = widget;
-
-  const columns = [
-    "Order Date",
-    "Order Id",
-    "Remaining Days",
-    "Preview Edit Status",
-    "Editor",
-    "Payment Status",
-    "Files",
-    "Order Status",
-    "",
-  ];
-
-  const rows = [
-    {
-      date: "2023-07-19",
-      id: "TX3857",
-      remaining: "04/07 days",
-      previewstatus: "Approved",
-      editorName: "Ayman",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Completed",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX1948",
-      remaining: "04/07 days",
-      previewstatus: "N/A",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX4703",
-      remaining: "04/07 days",
-      previewstatus: "Rejected",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX5612",
-      remaining: "04/07 days",
-      previewstatus: "N/A",
-      editorName: "Ayman",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Cancelled",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX8243",
-      remaining: "04/07 days",
-      previewstatus: "User Review Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Preview Edit",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX6371",
-      remaining: "04/07 days",
-      previewstatus: "Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX2936",
-      remaining: "04/07 days",
-      previewstatus: "Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX4029",
-      remaining: "04/07 days",
-      previewstatus: "Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX7154",
-      remaining: "04/07 days",
-      previewstatus: "Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-    {
-      date: "2023-07-19",
-      id: "TX1248",
-      remaining: "04/07 days",
-      previewstatus: "Pending",
-      editorName: "Assign Editor",
-      paymentStatus: "Successful",
-      files: "Download",
-      status: "Pending",
-      icon: "icon",
-    },
-  ];
-
+  // page navigation
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages] = useState(20); // Assuming total pages are known
 
@@ -180,6 +200,7 @@ function OrderTable() {
       setCurrentPage(pageNumber);
     }
   };
+  // page navigation .end
 
   return (
     <div className="pb-36">
@@ -247,21 +268,51 @@ function OrderTable() {
                           </TableCell>
                         );
                       }
-                      case "editorName": {
+                      case "editorName":
                         return (
                           <TableCell key={key} component="th" scope="row">
-                            <Typography
+                            <div
                               className={clsx(
-                                "inline-flex items-center  px-10 py-2 rounded-full tracking-wide  bg-[#CBCBCB]",
-                                value === "Assign Editor" &&
-                                  "bg-[#F29339] text-black"
+                                "inline-flex items-center px-10 py-2 rounded-full tracking-wide",
+                                (editorSelectedValues[row.id] || value) ===
+                                  "Assign Editor"
+                                  ? "bg-[#F29339] text-black"
+                                  : "bg-[#CBCBCB]"
                               )}
                             >
-                              {value}
-                            </Typography>
+                              <select
+                                value={editorSelectedValues[row.id] || value}
+                                onChange={(event) =>
+                                  handleEditorChange(row.id, event)
+                                }
+                                className={clsx(
+                                  "",
+                                  (editorSelectedValues[row.id] || value) ===
+                                    "Assign Editor"
+                                    ? "bg-[#F29339] text-black"
+                                    : "bg-[#CBCBCB]"
+                                )}
+                              >
+                                <option
+                                  className="bg-white"
+                                  value="Assign Editor"
+                                >
+                                  Assign Editor
+                                </option>
+                                {uniqueEditors.map((editor, idx) => (
+                                  <option
+                                    key={idx}
+                                    value={editor}
+                                    className="bg-white"
+                                  >
+                                    {editor}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
                           </TableCell>
                         );
-                      }
+
                       case "paymentStatus": {
                         return (
                           <TableCell key={key} component="th" scope="row">
@@ -280,23 +331,65 @@ function OrderTable() {
                           </TableCell>
                         );
                       }
-                      case "status": {
+
+                      case "orderStatus": {
                         return (
                           <TableCell key={key} component="th" scope="row">
                             <Typography
                               className={clsx(
                                 "inline-flex items-center px-10 py-2 rounded-full tracking-wide ",
-                                value === "Pending" &&
-                                  "bg-[#FFCC00] text-black",
-                                value === "Completed" &&
-                                  "bg-[#039855] text-white ",
-                                value === "Cancelled" &&
-                                  "bg-[#CB1717] text-white",
-                                value === "Preview Edit" &&
-                                  "bg-[#CBCBCB] text-Black"
+                                (orderStatusValues[row.id] || value) ===
+                                  "Pending" && "bg-[#FFCC00] text-black",
+                                (orderStatusValues[row.id] || value) ===
+                                  "Completed" && "bg-[#039855] text-white ",
+                                (orderStatusValues[row.id] || value) ===
+                                  "Cancelled" && "bg-[#CB1717] text-white",
+                                (orderStatusValues[row.id] || value) ===
+                                  "Preview Edit" && "bg-[#CBCBCB] text-Black"
                               )}
                             >
-                              {value}
+                              <select
+                                value={orderStatusValues[row.id] || value}
+                                onChange={(event) =>
+                                  handleOrderStatusChange(row.id, event)
+                                }
+                                className={clsx(
+                                  "inline-flex items-center tracking-wide ",
+                                  (orderStatusValues[row.id] || value) ===
+                                    "Pending" && "bg-[#FFCC00] text-black",
+                                  (orderStatusValues[row.id] || value) ===
+                                    "Completed" && "bg-[#039855] text-white ",
+                                  (orderStatusValues[row.id] || value) ===
+                                    "Cancelled" && "bg-[#CB1717] text-white",
+                                  (orderStatusValues[row.id] || value) ===
+                                    "Preview Edit" && "bg-[#CBCBCB] text-Black"
+                                )}
+                              >
+                                <option
+                                  className="bg-white text-black"
+                                  value="Pending"
+                                >
+                                  Pending
+                                </option>
+                                <option
+                                  className="bg-white text-black"
+                                  value="Completed"
+                                >
+                                  Completed
+                                </option>
+                                <option
+                                  className="bg-white text-black"
+                                  value="Cancelled"
+                                >
+                                  Cancelled
+                                </option>
+                                <option
+                                  className="bg-white text-black"
+                                  value="Preview Edit"
+                                >
+                                  Preview Edit
+                                </option>
+                              </select>
                             </Typography>
                           </TableCell>
                         );
@@ -307,23 +400,36 @@ function OrderTable() {
                             <div
                               className={clsx(
                                 "inline-flex items-center px-[10px] py-[2px] tracking-wide",
-                                value === "Download" && "bg-black text-white",
-                                value === "Failed" && "bg-[#CB1717] text-white"
+                                "bg-black text-white"
                               )}
                             >
-                              <div className="tracking-[0.2px] leading-[20px] font-medium">
-                                {value}
-                              </div>
+                              <a
+                                href={value}
+                                // target="_blank"
+                                download
+                                className="tracking-[0.2px] leading-[20px] font-medium"
+                                style={{
+                                  textDecoration: "none",
+                                  color: "white",
+                                }}
+                              >
+                                Download
+                              </a>
                             </div>
                           </TableCell>
                         );
                       }
+
                       case "icon": {
                         return (
                           <TableCell key={key} component="th" scope="row">
                             <div className="flex gap-5">
-                              <LuEye size={20} />
-                              <FiEdit size={18} />
+                              <button onClick={handleLuEyeClick}>
+                                <LuEye size={20} />
+                              </button>
+                              <button onClick={handleFiEditClick}>
+                                <FiEdit size={18} />
+                              </button>
                             </div>
                           </TableCell>
                         );
