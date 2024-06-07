@@ -20,17 +20,54 @@ import { Checkbox, Pagination, TextField } from "@mui/material";
 
 const columns = [
   "Order Date",
-  "Order Id",
+  "Order ID",
   "Remaining Days",
   "Preview Edit Status",
   "Editor",
   "Payment Status",
   "Files",
   "Order Status",
-  "",
+  "", // this field for icons
 ];
+// const columnsAll = [
+//   "Order Date",
+//   "Order ID",
+//   "Order Name",
+//   "Order Type",
+//   "Users Name",
+//   "User Email",
+//   "User Phone",
+//   "Delivery Date",
+//   "Price",
+//   "Payment Status",
+//   "Editor",
+//   "Files",
+//   "Order Status",
+//   "Download Link",
+//   "", // this field for icons
+// ];
 
 const rows = [
+  // {
+  //   date: "Order Date",
+  //   id: "Order ID",
+  //   orderName: "Order Name",
+  //   orderType: "Order Type",
+  //   usersName: "Users Name",
+  //   userEmail: "User Email",
+  //   userPhone: "User Phone",
+  //   deliveryDate: "Delivery Date",
+  //   price: "Price",
+  //   paymentStatus: "Successful",
+  //   editorName: "Ayman",
+  //   files: "https://drive.google.com/file/d/1/file1",
+  //   orderStatus: "Completed",
+  //   files2: "https://drive.google.com/file/d/file2",
+  //   icon: "icon",
+
+  //   previewstatus: "Approved",
+  //   remaining: "04/07 days",
+  // },
   {
     date: "2023-07-19",
     id: "TX3857",
@@ -434,6 +471,7 @@ function OrderTable() {
                           </TableCell>
                         );
                       }
+
                       default: {
                         return (
                           <TableCell key={key} component="th" scope="row">

@@ -168,21 +168,28 @@ export default function OrderForm() {
       </Grid>
       <div className="flex justify-between py-20">
         <div className="flex">
-          <Typography className="font-medium" color="text.secondary">
+          <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0 text-lg font-400">
+            <span>Total Orders:</span>
+            <b> 100</b>
+          </div>
+          {/* <Typography className="font-medium" color="text.secondary">
             Total Orders: 100
-          </Typography>
+          </Typography> */}
           <Typography className="font-medium mx-20" color="text.secondary">
             |
           </Typography>
-          <Typography className="font-medium" color="text.secondary">
-            Completed Orders: 80
-          </Typography>
+          <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+            <span>Completed Orders:</span>
+            <b> 80</b>
+          </div>
+
           <Typography className="font-medium mx-20" color="text.secondary">
             |
           </Typography>
-          <Typography className="font-medium" color="text.secondary">
-            Pending Orders: 10
-          </Typography>
+          <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+            <span>Pending Orders:</span>
+            <b> 10</b>
+          </div>
         </div>
         {/* <div className="flex items-center gap-5">
           <MdOutlineCheckBoxOutlineBlank size={18} />

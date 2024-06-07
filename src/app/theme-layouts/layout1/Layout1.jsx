@@ -44,25 +44,30 @@ function Layout1(props) {
       {config.leftSidePanel.display && <LeftSideLayout1 />}
 
       <div className="flex min-w-0 flex-auto">
+        {/* ========== sidebar ========== */}
         {config.navbar.display && config.navbar.position === "left" && (
           <NavbarWrapperLayout1 />
         )}
+        {/* ========== sidebar-end ========== */}
 
         <main
           id="fuse-main"
           className="relative z-10 flex min-h-full min-w-0 flex-auto flex-col"
         >
+          {/* ========== header ========== */}
           {config.toolbar.display && (
             <ToolbarLayout1
               className={config.toolbar.style === "fixed" ? "sticky top-0" : ""}
             />
           )}
+          {/* ========== header-end ========== */}
 
           {/* <div className="sticky top-0 z-99">
             <Configurator />
           </div> */}
 
-          <div className="relative z-10 flex min-h-0 flex-auto flex-col">
+          {/* ========== outlate ========== */}
+          <div className="relative z-10 flex min-h-0 flex-auto flex-col bg-white">
             <FuseSuspense>{useRoutes(routes)}</FuseSuspense>
 
             <Suspense>
@@ -70,6 +75,7 @@ function Layout1(props) {
             </Suspense>
             {children}
           </div>
+          {/* ========== outlate-end ========== */}
 
           {/* {config.footer.display && (
             <FooterLayout1

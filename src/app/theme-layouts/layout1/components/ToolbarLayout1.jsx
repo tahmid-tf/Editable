@@ -83,15 +83,11 @@ function ToolbarLayout1(props) {
             </Hidden>
           </div>
 
+          {/* ========== logout ========== */}
           <div className="flex h-full items-center overflow-x-auto px-8">
-            {/* <LanguageSwitcher />
-            <AdjustFontSize />
-            <FullScreenToggle />
-            <NavigationSearch />
-            <QuickPanelToggleButton /> */}
             <UserMenu />
-            {/* <p>Admin</p> */}
           </div>
+          {/* ========== logout-end ========== */}
 
           {config.navbar.display && config.navbar.position === "right" && (
             <>

@@ -52,11 +52,12 @@ function NavbarStyle1Content(props) {
         className="flex min-h-0 flex-col"
         option={{ suppressScrollX: true, wheelPropagation: false }}
       >
-        <UserNavbarHeader />
+        {/* profile photo and information */}
+        {/* <UserNavbarHeader /> */}
 
         <Navigation layout="vertical" />
-        {/* <Navigation layout="vertical" /> */}
 
+        {/* bottom logo */}
         {/* <div className="flex-0 flex items-center justify-center py-48 opacity-10">
           <img
             className="w-full max-w-64"
