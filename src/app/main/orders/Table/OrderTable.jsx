@@ -1,3 +1,11 @@
+import * as React from "react";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import { Grid } from "@mui/material";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+// table
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,356 +25,61 @@ import { LuEye } from "react-icons/lu";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
-
-const columns = [
-  "Order Date",
-  "Order ID",
-  "Remaining Days",
-  "Preview Edit Status",
-  "Editor",
-  "Payment Status",
-  "Files",
-  "Order Status",
-  "", // this field for icons
-];
-
-export const allColumns = [
-  "Order Date",
-  "Order ID",
-  "Order Name",
-  "Preview Edit Status",
-  "Remaining Days",
-  "Order Type",
-  "User's Name",
-  "User Email",
-  "User Phone",
-  "Delivery Date",
-  "Price",
-  "Payment Status",
-  "Editor",
-  "Files",
-  "Order Status",
-  "Files2",
-  "", // this field for icons
-];
-
-const rowsData = [
-  {
-    date: "2023-07-19",
-    id: "TX3857",
-    remaining: "04/07 days",
-    previewstatus: "Approved",
-    editorName: "Ayman",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file1",
-    orderStatus: "Completed",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX1948",
-    remaining: "04/07 days",
-    previewstatus: "N/A",
-    editorName: "editor name x",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file2",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX4703",
-    remaining: "04/07 days",
-    previewstatus: "Rejected",
-    editorName: "editor name y",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file3",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX5612",
-    remaining: "04/07 days",
-    previewstatus: "N/A",
-    editorName: "editor name z",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file4",
-    orderStatus: "Cancelled",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX8243",
-    remaining: "04/07 days",
-    previewstatus: "User Review Pending",
-    editorName: "editor name xx1",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file5",
-    orderStatus: "Preview Edit",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX6371",
-    remaining: "04/07 days",
-    previewstatus: "Pending",
-    editorName: "editor name xx2",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file6",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX2936",
-    remaining: "04/07 days",
-    previewstatus: "Pending",
-    editorName: "editor name xx3",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file7",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX4029",
-    remaining: "04/07 days",
-    previewstatus: "Pending",
-    editorName: "editor name x yy1",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file8",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX7154",
-    remaining: "04/07 days",
-    previewstatus: "Pending",
-    editorName: "editor name yy2",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file9",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-  {
-    date: "2023-07-19",
-    id: "TX1248",
-    remaining: "04/07 days",
-    previewstatus: "Pending",
-    editorName: "editor name yy3",
-    paymentStatus: "Successful",
-    files: "https://drive.google.com/file/d/1/file10",
-    orderStatus: "Pending",
-    icon: "icon",
-  },
-];
-
-const allRowsData = [
-  {
-    date: "2023-07-19",
-    id: "TX1948",
-    orderName: "Mr XP",
-    orderType: "Express",
-    usersName: "John Doe",
-    userEmail: "john.doe@example.com",
-    userPhone: "123-456-7890",
-    deliveryDate: "2023-07-20",
-    price: "$100",
-    paymentStatus: "Successful",
-    editorName: "Ayman",
-    files: "https://drive.google.com/file/d/1/file1",
-    orderStatus: "Completed",
-    files2: "https://drive.google.com/file/d/1/file2",
-    previewstatus: "Approved",
-    remaining: "0/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-20",
-    id: "TX1949",
-    orderName: "Ms YZ",
-    orderType: "Standard",
-    usersName: "Jane Smith",
-    userEmail: "jane.smith@example.com",
-    userPhone: "234-567-8901",
-    deliveryDate: "2023-07-22",
-    price: "$150",
-    paymentStatus: "Pending",
-    editorName: "Bilal",
-    files: "https://drive.google.com/file/d/2/file1",
-    orderStatus: "In Progress",
-    files2: "https://drive.google.com/file/d/2/file2",
-    previewstatus: "Pending",
-    remaining: "2/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-21",
-    id: "TX1950",
-    orderName: "Dr AB",
-    orderType: "Express",
-    usersName: "Alice Brown",
-    userEmail: "alice.brown@example.com",
-    userPhone: "345-678-9012",
-    deliveryDate: "2023-07-21",
-    price: "$200",
-    paymentStatus: "Successful",
-    editorName: "Carlos",
-    files: "https://drive.google.com/file/d/3/file1",
-    orderStatus: "Completed",
-    files2: "https://drive.google.com/file/d/3/file2",
-    previewstatus: "Approved",
-    remaining: "0/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-22",
-    id: "TX1951",
-    orderName: "Mr CD",
-    orderType: "Standard",
-    usersName: "Chris Davis",
-    userEmail: "chris.davis@example.com",
-    userPhone: "456-789-0123",
-    deliveryDate: "2023-07-25",
-    price: "$250",
-    paymentStatus: "Failed",
-    editorName: "Dana",
-    files: "https://drive.google.com/file/d/4/file1",
-    orderStatus: "Failed",
-    files2: "https://drive.google.com/file/d/4/file2",
-    previewstatus: "Rejected",
-    remaining: "3/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-23",
-    id: "TX1952",
-    orderName: "Ms EF",
-    orderType: "Express",
-    usersName: "Eva Green",
-    userEmail: "eva.green@example.com",
-    userPhone: "567-890-1234",
-    deliveryDate: "2023-07-23",
-    price: "$300",
-    paymentStatus: "Successful",
-    editorName: "Eli",
-    files: "https://drive.google.com/file/d/5/file1",
-    orderStatus: "Completed",
-    files2: "https://drive.google.com/file/d/5/file2",
-    previewstatus: "Approved",
-    remaining: "0/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-24",
-    id: "TX1953",
-    orderName: "Dr GH",
-    orderType: "Standard",
-    usersName: "George Hill",
-    userEmail: "george.hill@example.com",
-    userPhone: "678-901-2345",
-    deliveryDate: "2023-07-27",
-    price: "$350",
-    paymentStatus: "Pending",
-    editorName: "Fiona",
-    files: "https://drive.google.com/file/d/6/file1",
-    orderStatus: "In Progress",
-    files2: "https://drive.google.com/file/d/6/file2",
-    previewstatus: "Pending",
-    remaining: "3/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-25",
-    id: "TX1954",
-    orderName: "Mr IJ",
-    orderType: "Express",
-    usersName: "Isaac Jones",
-    userEmail: "isaac.jones@example.com",
-    userPhone: "789-012-3456",
-    deliveryDate: "2023-07-25",
-    price: "$400",
-    paymentStatus: "Successful",
-    editorName: "Grace",
-    files: "https://drive.google.com/file/d/7/file1",
-    orderStatus: "Completed",
-    files2: "https://drive.google.com/file/d/7/file2",
-    previewstatus: "Approved",
-    remaining: "0/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-26",
-    id: "TX1955",
-    orderName: "Ms KL",
-    orderType: "Standard",
-    usersName: "Kara Lee",
-    userEmail: "kara.lee@example.com",
-    userPhone: "890-123-4567",
-    deliveryDate: "2023-07-29",
-    price: "$450",
-    paymentStatus: "Failed",
-    editorName: "Hannah",
-    files: "https://drive.google.com/file/d/8/file1",
-    orderStatus: "Failed",
-    files2: "https://drive.google.com/file/d/8/file2",
-    previewstatus: "Rejected",
-    remaining: "3/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-27",
-    id: "TX1956",
-    orderName: "Dr MN",
-    orderType: "Express",
-    usersName: "Mona Nelson",
-    userEmail: "mona.nelson@example.com",
-    userPhone: "901-234-5678",
-    deliveryDate: "2023-07-27",
-    price: "$500",
-    paymentStatus: "Successful",
-    editorName: "Ivy",
-    files: "https://drive.google.com/file/d/9/file1",
-    orderStatus: "Completed",
-    files2: "https://drive.google.com/file/d/9/file2",
-    previewstatus: "Approved",
-    remaining: "0/7 days",
-    icon: "",
-  },
-  {
-    date: "2023-07-28",
-    id: "TX1957",
-    orderName: "Mr OP",
-    orderType: "Standard",
-    usersName: "Oscar Perez",
-    userEmail: "oscar.perez@example.com",
-    userPhone: "012-345-6789",
-    deliveryDate: "2023-07-31",
-    price: "$550",
-    paymentStatus: "Pending",
-    editorName: "Jack",
-    files: "https://drive.google.com/file/d/10/file1",
-    orderStatus: "In Progress",
-    files2: "https://drive.google.com/file/d/10/file2",
-    previewstatus: "Pending",
-    remaining: "3/7 days",
-    icon: "",
-  },
-];
-
-// Extract unique editor names
-const uniqueEditors = [...new Set(rowsData.map((row) => row.editorName))];
+import { columns, allColumns, rowsData, allRowsData } from "./OrdersData";
 
 function OrderTable() {
+  // ================================ form ================================
+
+  const [searchValue, setSearchValue] = React.useState("");
+  const [orderStatusValue, setOrderStatusValue] = React.useState("");
+  const [paymentStatusValue, setPaymentStatusValue] = React.useState("");
+  const [editorValue, setEditorValue] = React.useState("");
+  const [selectedDate, setSelectedDate] = React.useState(null);
+
+  const orderStatusOptions = [
+    "Pending",
+    "Completed",
+    "Cancelled",
+    "Preview Edit",
+  ];
+  const paymentStatusOptions = ["Unpaid", "Paid", "Successfull"];
+  const editorOptions = ["Ayman", "Jane Smith", "Michael Brown"];
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "search") {
+      setSearchValue(value);
+    } else if (name === "orderStatus") {
+      setOrderStatusValue(value);
+    } else if (name === "paymentStatus") {
+      setPaymentStatusValue(value);
+    } else if (name === "editor") {
+      setEditorValue(value);
+    }
+  };
+
+  const handleDateChange = (newValue) => {
+    setSelectedDate(newValue);
+  };
+
+  // ================================ form end ================================
+
   // columns and rows
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
+  // const [showAll, setShowAll] = useState(false);
+
+  // Toggle checkbox state on click
+  const handleClick = () => {
+    setShowAll(!showAll);
+  };
+  // Toggle checkbox end
 
   const visibleColumns = showAll ? allColumns : columns;
   const visibleRows = showAll ? allRowsData : rowsData;
 
   // Editors
+  // Extract unique editor names
+  const uniqueEditors = [...new Set(rowsData.map((row) => row.editorName))];
   const [editorSelectedValues, setEditorSelectedValues] =
     useState("Assign Editor");
 
@@ -422,158 +135,305 @@ function OrderTable() {
   // page navigation .end
 
   return (
-    <div className="pb-36">
-      <Paper className="flex flex-col flex-auto rounded-0 overflow-hidden">
-        <div className="table-responsive">
-          <Table className="simple w-full min-w-full">
-            <TableHead>
-              <TableRow>
-                {visibleColumns.map((column, index) => (
-                  <TableCell key={index}>
-                    <Typography
-                      color="text.secondary"
-                      className="font-semibold text-16 text-black whitespace-nowrap"
-                    >
-                      {column}
-                    </Typography>
-                  </TableCell>
+    <div className="">
+      <div className="">
+        <Grid container spacing={2} className="py-10">
+          <Grid item xs={3}>
+            <TextField
+              // fullWidth
+              label="Search"
+              name="search"
+              value={searchValue}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel id="order-status-label">Order Status</InputLabel>
+              <Select
+                labelId="order-status-label"
+                id="orderStatus"
+                name="orderStatus"
+                value={orderStatusValue}
+                label="Order Status"
+                onChange={handleChange}
+                sx={{
+                  "& .MuiSelect-select": {
+                    backgroundColor: "white",
+                    borderRadius: "4px",
+                  },
+                }}
+              >
+                {orderStatusOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
                 ))}
-              </TableRow>
-            </TableHead>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel id="payment-status-label">Payment Status</InputLabel>
+              <Select
+                labelId="payment-status-label"
+                id="paymentStatus"
+                name="paymentStatus"
+                value={paymentStatusValue}
+                label="Payment Status"
+                onChange={handleChange}
+                sx={{
+                  "& .MuiSelect-select": {
+                    backgroundColor: "white",
+                    borderRadius: "4px",
+                  },
+                }}
+              >
+                {paymentStatusOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel id="editor-label">Editor</InputLabel>
+              <Select
+                labelId="editor-label"
+                id="editor"
+                name="editor"
+                value={editorValue}
+                label="Editor"
+                onChange={handleChange}
+                sx={{
+                  "& .MuiSelect-select": {
+                    backgroundColor: "white",
+                    borderRadius: "4px",
+                  },
+                }}
+              >
+                {editorOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <DesktopDatePicker
+              label="Date Picker"
+              inputFormat="MM/dd/yyyy"
+              value={selectedDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                backgroundColor: "black",
+                color: "white", // Add color for text visibility
+                borderRadius: "4px",
+                width: "100%",
+                height: "48px", // Adjust height as needed
 
-            <TableBody>
-              {visibleRows.map((row, index) => (
-                <TableRow key={index}>
-                  {Object.entries(row).map(([key, value]) => {
-                    switch (key) {
-                      case "date": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <Typography>
-                              {format(new Date(value), "MMM dd, y")}
-                            </Typography>
-                          </TableCell>
-                        );
-                      }
-                      case "id": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <Typography color="" className="">
-                              {value}
-                            </Typography>
-                          </TableCell>
-                        );
-                      }
-                      case "previewstatus": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <div
-                              className={clsx(
-                                "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
-                                value === "Approved" &&
-                                  "bg-[#039855] text-white",
-                                value === "N/A" && "bg-[#CBCBCB] text-black",
-                                value === "Rejected" &&
-                                  "bg-[#CB1717] text-white",
-                                value === "User Review Pending" &&
-                                  "bg-[#CBCBCB] text-black",
-                                value === "Pending" && "bg-[#FFCC00] text-black"
-                              )}
-                            >
-                              <div className="tracking-[0.2px] leading-[20px] font-medium">
+                ":hover": {
+                  backgroundColor: "gray", // Darker shade on hover
+                  color: "white", // Lighter text color on hover
+                },
+              }}
+            >
+              New Orders
+            </Button>
+          </Grid>
+        </Grid>
+        <div className="flex justify-between py-20">
+          <div className="flex">
+            <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0 text-lg font-400">
+              <span>Total Orders:</span>
+              <b> 100</b>
+            </div>
+            {/* <Typography className="font-medium" color="text.secondary">
+            Total Orders: 100
+          </Typography> */}
+            <Typography className="font-medium mx-20" color="text.secondary">
+              |
+            </Typography>
+            <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+              <span>Completed Orders:</span>
+              <b> 80</b>
+            </div>
+
+            <Typography className="font-medium mx-20" color="text.secondary">
+              |
+            </Typography>
+            <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+              <span>Pending Orders:</span>
+              <b> 10</b>
+            </div>
+          </div>
+          {/* <div className="flex items-center gap-5">
+          <MdOutlineCheckBoxOutlineBlank size={18} />
+          <MdOutlineCheckBox size={18} />
+          <Typography className="font-medium" color="text.secondary">
+            Show all columns
+          </Typography>
+        </div> */}
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={handleClick}
+          >
+            <Checkbox checked={showAll} size="small" />{" "}
+            {/* Use checked state for checkbox */}
+            <Typography className="font-medium" color="text.secondary">
+              Show all columns
+            </Typography>
+          </div>
+        </div>
+      </div>
+      {/* ========================== table =========================== */}
+      <div className="pb-36">
+        <Paper className="flex flex-col flex-auto rounded-0 overflow-hidden">
+          <div className="table-responsive">
+            <Table className="simple w-full min-w-full">
+              <TableHead>
+                <TableRow>
+                  {visibleColumns.map((column, index) => (
+                    <TableCell key={index}>
+                      <Typography
+                        color="text.secondary"
+                        className="font-semibold text-16 text-black whitespace-nowrap"
+                      >
+                        {column}
+                      </Typography>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {visibleRows.map((row, index) => (
+                  <TableRow key={index}>
+                    {Object.entries(row).map(([key, value]) => {
+                      switch (key) {
+                        case "date": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <Typography>
+                                {format(new Date(value), "MMM dd, y")}
+                              </Typography>
+                            </TableCell>
+                          );
+                        }
+                        case "id": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <Typography color="" className="">
                                 {value}
-                              </div>
-                            </div>
-                          </TableCell>
-                        );
-                      }
-                      case "editorName":
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <div
-                              className={clsx(
-                                "inline-flex items-center px-10 py-2 rounded-full tracking-wide",
-                                (editorSelectedValues[row.id] || value) ===
-                                  "Assign Editor"
-                                  ? "bg-[#F29339] text-black"
-                                  : "bg-[#CBCBCB]"
-                              )}
-                            >
-                              <select
-                                value={editorSelectedValues[row.id] || value}
-                                onChange={(event) =>
-                                  handleEditorChange(row.id, event)
-                                }
+                              </Typography>
+                            </TableCell>
+                          );
+                        }
+                        case "previewstatus": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
                                 className={clsx(
-                                  "",
+                                  "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
+                                  value === "Approved" &&
+                                    "bg-[#039855] text-white",
+                                  value === "N/A" && "bg-[#CBCBCB] text-black",
+                                  value === "Rejected" &&
+                                    "bg-[#CB1717] text-white",
+                                  value === "User Review Pending" &&
+                                    "bg-[#CBCBCB] text-black",
+                                  value === "Pending" &&
+                                    "bg-[#FFCC00] text-black"
+                                )}
+                              >
+                                <div className="tracking-[0.2px] leading-[20px] font-medium">
+                                  {value}
+                                </div>
+                              </div>
+                            </TableCell>
+                          );
+                        }
+                        case "editorName":
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
+                                className={clsx(
+                                  "inline-flex items-center px-10 py-2 rounded-full tracking-wide",
                                   (editorSelectedValues[row.id] || value) ===
                                     "Assign Editor"
                                     ? "bg-[#F29339] text-black"
                                     : "bg-[#CBCBCB]"
                                 )}
                               >
-                                <option
-                                  className="bg-white"
-                                  value="Assign Editor"
+                                <select
+                                  value={editorSelectedValues[row.id] || value}
+                                  onChange={(event) =>
+                                    handleEditorChange(row.id, event)
+                                  }
+                                  className={clsx(
+                                    "",
+                                    (editorSelectedValues[row.id] || value) ===
+                                      "Assign Editor"
+                                      ? "bg-[#F29339] text-black"
+                                      : "bg-[#CBCBCB]"
+                                  )}
                                 >
-                                  Assign Editor
-                                </option>
-                                {uniqueEditors.map((editor, idx) => (
                                   <option
-                                    key={idx}
-                                    value={editor}
                                     className="bg-white"
+                                    value="Assign Editor"
                                   >
-                                    {editor}
+                                    Assign Editor
                                   </option>
-                                ))}
-                              </select>
-                            </div>
-                          </TableCell>
-                        );
-
-                      case "paymentStatus": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <div
-                              className={clsx(
-                                "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
-                                value === "Successful" &&
-                                  "bg-[#039855] text-white",
-                                value === "Failed" && "bg-[#CB1717] text-white"
-                              )}
-                            >
-                              <div className="tracking-[0.2px] leading-[20px] font-medium">
-                                {value}
+                                  {uniqueEditors.map((editor, idx) => (
+                                    <option
+                                      key={idx}
+                                      value={editor}
+                                      className="bg-white"
+                                    >
+                                      {editor}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
-                            </div>
-                          </TableCell>
-                        );
-                      }
+                            </TableCell>
+                          );
 
-                      case "orderStatus": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <Typography
-                              className={clsx(
-                                "inline-flex items-center px-10 py-2 rounded-full tracking-wide ",
-                                (orderStatusValues[row.id] || value) ===
-                                  "Pending" && "bg-[#FFCC00] text-black",
-                                (orderStatusValues[row.id] || value) ===
-                                  "Completed" && "bg-[#039855] text-white ",
-                                (orderStatusValues[row.id] || value) ===
-                                  "Cancelled" && "bg-[#CB1717] text-white",
-                                (orderStatusValues[row.id] || value) ===
-                                  "Preview Edit" && "bg-[#CBCBCB] text-Black"
-                              )}
-                            >
-                              <select
-                                value={orderStatusValues[row.id] || value}
-                                onChange={(event) =>
-                                  handleOrderStatusChange(row.id, event)
-                                }
+                        case "paymentStatus": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
                                 className={clsx(
-                                  "inline-flex items-center tracking-wide ",
+                                  "inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide",
+                                  value === "Successful" &&
+                                    "bg-[#039855] text-white",
+                                  value === "Failed" &&
+                                    "bg-[#CB1717] text-white"
+                                )}
+                              >
+                                <div className="tracking-[0.2px] leading-[20px] font-medium">
+                                  {value}
+                                </div>
+                              </div>
+                            </TableCell>
+                          );
+                        }
+
+                        case "orderStatus": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <Typography
+                                className={clsx(
+                                  "inline-flex items-center px-10 py-2 rounded-full tracking-wide ",
                                   (orderStatusValues[row.id] || value) ===
                                     "Pending" && "bg-[#FFCC00] text-black",
                                   (orderStatusValues[row.id] || value) ===
@@ -584,103 +444,121 @@ function OrderTable() {
                                     "Preview Edit" && "bg-[#CBCBCB] text-Black"
                                 )}
                               >
-                                <option
-                                  className="bg-white text-black"
-                                  value="Pending"
+                                <select
+                                  value={orderStatusValues[row.id] || value}
+                                  onChange={(event) =>
+                                    handleOrderStatusChange(row.id, event)
+                                  }
+                                  className={clsx(
+                                    "inline-flex items-center tracking-wide ",
+                                    (orderStatusValues[row.id] || value) ===
+                                      "Pending" && "bg-[#FFCC00] text-black",
+                                    (orderStatusValues[row.id] || value) ===
+                                      "Completed" && "bg-[#039855] text-white ",
+                                    (orderStatusValues[row.id] || value) ===
+                                      "Cancelled" && "bg-[#CB1717] text-white",
+                                    (orderStatusValues[row.id] || value) ===
+                                      "Preview Edit" &&
+                                      "bg-[#CBCBCB] text-Black"
+                                  )}
                                 >
-                                  Pending
-                                </option>
-                                <option
-                                  className="bg-white text-black"
-                                  value="Completed"
-                                >
-                                  Completed
-                                </option>
-                                <option
-                                  className="bg-white text-black"
-                                  value="Cancelled"
-                                >
-                                  Cancelled
-                                </option>
-                                <option
-                                  className="bg-white text-black"
-                                  value="Preview Edit"
-                                >
-                                  Preview Edit
-                                </option>
-                              </select>
-                            </Typography>
-                          </TableCell>
-                        );
-                      }
-                      case "files": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <div
-                              className={clsx(
-                                "inline-flex items-center px-[10px] py-[2px] tracking-wide",
-                                "bg-black text-white"
-                              )}
-                            >
-                              <a
-                                href={value}
-                                // target="_blank"
-                                download
-                                className="tracking-[0.2px] leading-[20px] font-medium"
-                                style={{
-                                  textDecoration: "none",
-                                  color: "white",
-                                }}
+                                  <option
+                                    className="bg-white text-black"
+                                    value="Pending"
+                                  >
+                                    Pending
+                                  </option>
+                                  <option
+                                    className="bg-white text-black"
+                                    value="Completed"
+                                  >
+                                    Completed
+                                  </option>
+                                  <option
+                                    className="bg-white text-black"
+                                    value="Cancelled"
+                                  >
+                                    Cancelled
+                                  </option>
+                                  <option
+                                    className="bg-white text-black"
+                                    value="Preview Edit"
+                                  >
+                                    Preview Edit
+                                  </option>
+                                </select>
+                              </Typography>
+                            </TableCell>
+                          );
+                        }
+                        case "files": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
+                                className={clsx(
+                                  "inline-flex items-center px-[10px] py-[2px] tracking-wide",
+                                  "bg-black text-white"
+                                )}
                               >
-                                Download
-                              </a>
-                            </div>
-                          </TableCell>
-                        );
-                      }
+                                <a
+                                  href={value}
+                                  // target="_blank"
+                                  download
+                                  className="tracking-[0.2px] leading-[20px] font-medium"
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "white",
+                                  }}
+                                >
+                                  Download
+                                </a>
+                              </div>
+                            </TableCell>
+                          );
+                        }
 
-                      case "icon": {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <div className="flex gap-5">
-                              <button onClick={handleLuEyeClick}>
-                                <LuEye size={20} />
-                              </button>
-                              <button onClick={handleFiEditClick}>
-                                <FiEdit size={18} />
-                              </button>
-                            </div>
-                          </TableCell>
-                        );
-                      }
+                        case "icon": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div className="flex gap-5">
+                                <button onClick={handleLuEyeClick}>
+                                  <LuEye size={20} />
+                                </button>
+                                <button onClick={handleFiEditClick}>
+                                  <FiEdit size={18} />
+                                </button>
+                              </div>
+                            </TableCell>
+                          );
+                        }
 
-                      default: {
-                        return (
-                          <TableCell key={key} component="th" scope="row">
-                            <Typography>{value}</Typography>
-                          </TableCell>
-                        );
+                        default: {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <Typography>{value}</Typography>
+                            </TableCell>
+                          );
+                        }
                       }
-                    }
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        {/* <div className="mt-48 flex justify-center">
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {/* <div className="mt-48 flex justify-center">
         <Pagination count={20} color="secondary" />
       </div> */}
-      </Paper>
-      <div className="mt-48 flex justify-center">
-        <Pagination
-          count={totalPages}
-          color="secondary"
-          page={currentPage}
-          onChange={handleChangePage}
-        />
+        </Paper>
+        <div className="mt-48 flex justify-center">
+          <Pagination
+            count={totalPages}
+            color="secondary"
+            page={currentPage}
+            onChange={handleChangePage}
+          />
 
-        {/* <TextField
+          {/* <TextField
           label="Go to page"
           type="number"
           InputLabelProps={{ shrink: true }} // Reduce label size on focus
@@ -689,6 +567,7 @@ function OrderTable() {
           onChange={handleInputChange}
           sx={{ width: 80, marginRight: 2 }} // Set input width and margin
         /> */}
+        </div>
       </div>
     </div>
   );

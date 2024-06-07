@@ -24,7 +24,7 @@ const Orders = () => {
       <div>
         <p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
       </div>
-      <OrderForm />
+      {/* <OrderForm /> */}
       <OrderTable />
     </div>
   );
