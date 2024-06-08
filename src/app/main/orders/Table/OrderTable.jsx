@@ -26,6 +26,7 @@ import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
 import { columns, allColumns, rowsData, allRowsData } from "./OrdersData";
+import { AiFillInfoCircle } from "react-icons/ai";
 
 function OrderTable() {
   // ================================ form ================================
@@ -65,8 +66,8 @@ function OrderTable() {
   // ================================ form end ================================
 
   // columns and rows
-  const [showAll, setShowAll] = useState(true);
-  // const [showAll, setShowAll] = useState(false);
+  // const [showAll, setShowAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   // Toggle checkbox state on click
   const handleClick = () => {
@@ -95,6 +96,17 @@ function OrderTable() {
 
   const handleOrderStatusChange = (rowId, event) => {
     setOrderStatusValues((prevValues) => ({
+      ...prevValues,
+      [rowId]: event.target.value,
+    }));
+  };
+
+  // order type
+  const uniqueOrders = [...new Set(allRowsData.map((row) => row.orderType))];
+  const [orderTypeValues, setOrderTypeValues] = useState({});
+
+  const handleOrderTypeChange = (rowId, event) => {
+    setOrderTypeValues((prevValues) => ({
       ...prevValues,
       [rowId]: event.target.value,
     }));
@@ -531,6 +543,113 @@ function OrderTable() {
                             </TableCell>
                           );
                         }
+                        // ========== show all columns ==========
+                        case "orderType":
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
+                                className={clsx(
+                                  "inline-flex items-center px-10 py-2 rounded-full tracking-wide",
+                                  (orderTypeValues[row.id] || value) ===
+                                    "Standard"
+                                    ? "bg-[#007BFF] text-white"
+                                    : "bg-[#CBCBCB]",
+                                  (orderTypeValues[row.id] || value) ===
+                                    "Express"
+                                    ? "bg-[#28A745] text-white"
+                                    : "bg-[#CBCBCB]",
+                                  (orderTypeValues[row.id] || value) ===
+                                    "Custom"
+                                    ? "bg-[#FFC107] text-black"
+                                    : "bg-[#CBCBCB]"
+                                )}
+                              >
+                                <select
+                                  value={orderTypeValues[row.id] || value}
+                                  onChange={(event) =>
+                                    handleOrderTypeChange(row.id, event)
+                                  }
+                                  className={clsx(
+                                    "",
+                                    (orderTypeValues[row.id] || value) ===
+                                      "Standard"
+                                      ? "bg-[#007BFF] text-white"
+                                      : "bg-[#CBCBCB]",
+                                    (orderTypeValues[row.id] || value) ===
+                                      "Express"
+                                      ? "bg-[#28A745] text-white"
+                                      : "bg-[#CBCBCB]",
+                                    (orderTypeValues[row.id] || value) ===
+                                      "Custom"
+                                      ? "bg-[#FFC107] text-black"
+                                      : "bg-[#CBCBCB]"
+                                  )}
+                                >
+                                  <option
+                                    className="bg-white text-black"
+                                    value="Order Types"
+                                  >
+                                    Order Types
+                                  </option>
+                                  {uniqueOrders.map((orderType, id) => (
+                                    <option
+                                      key={id}
+                                      value={orderType}
+                                      className="bg-white text-black"
+                                    >
+                                      {orderType}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </TableCell>
+                          );
+
+                        case "price": {
+                          return (
+                            <TableCell
+                              key={key}
+                              component="th"
+                              scope="row"
+                              className=""
+                            >
+                              <Typography className="flex items-center gap-3">
+                                <Typography color="" className="">
+                                  {value}
+                                </Typography>
+                                <AiFillInfoCircle size={10} />
+                              </Typography>
+                            </TableCell>
+                          );
+                        }
+
+                        case "files2": {
+                          return (
+                            <TableCell key={key} component="th" scope="row">
+                              <div
+                                className={clsx(
+                                  "inline-flex items-center px-[10px] py-[2px] tracking-wide",
+                                  "bg-black text-white"
+                                )}
+                              >
+                                <a
+                                  href={value}
+                                  // target="_blank"
+                                  download
+                                  className="tracking-[0.2px] leading-[20px] font-medium"
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "white",
+                                  }}
+                                >
+                                  Download
+                                </a>
+                              </div>
+                            </TableCell>
+                          );
+                        }
+
+                        // show all cases .end
 
                         default: {
                           return (
