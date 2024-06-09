@@ -236,13 +236,15 @@ function OrderTable() {
             </FormControl>
           </Grid>
           <Grid item xs={2}>
-            {/* <DesktopDatePicker
+            {/* 
+            <DesktopDatePicker
               label="Date Picker"
               inputFormat="MM/dd/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
-            /> */}
+            /> 
+            */}
             <InputWithCalendarModal />
           </Grid>
           <Grid item xs={1}>
@@ -554,11 +556,11 @@ function OrderTable() {
                                   "inline-flex items-center px-10 py-2 rounded-full tracking-wide",
                                   (orderTypeValues[row.id] || value) ===
                                     "Standard"
-                                    ? "bg-[#007BFF] text-white"
+                                    ? "bg-green text-white"
                                     : "bg-[#CBCBCB]",
                                   (orderTypeValues[row.id] || value) ===
                                     "Express"
-                                    ? "bg-[#28A745] text-white"
+                                    ? "bg-blue text-white"
                                     : "bg-[#CBCBCB]",
                                   (orderTypeValues[row.id] || value) ===
                                     "Custom"
@@ -575,11 +577,11 @@ function OrderTable() {
                                     "",
                                     (orderTypeValues[row.id] || value) ===
                                       "Standard"
-                                      ? "bg-[#007BFF] text-white"
+                                      ? "bg-green text-white"
                                       : "bg-[#CBCBCB]",
                                     (orderTypeValues[row.id] || value) ===
                                       "Express"
-                                      ? "bg-[#28A745] text-white"
+                                      ? "bg-blue text-white"
                                       : "bg-[#CBCBCB]",
                                     (orderTypeValues[row.id] || value) ===
                                       "Custom"

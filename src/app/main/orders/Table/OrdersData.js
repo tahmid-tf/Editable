@@ -10,6 +10,26 @@ export const columns = [
   "", // this field for icons
 ];
 
+// export const allColumns = [
+//   "Order Date",
+//   "Order ID",
+//   "Remaining Days",
+//   "Preview Edit Status",
+//   "Editor",
+//   "Payment Status",
+//   "Files",
+//   "Order Status",
+//   "Order Name",
+//   "Order Type",
+//   "User's Name",
+//   "User Email",
+//   "User Phone",
+//   "Delivery Date",
+//   "Price",
+//   "Files2",
+//   "", // this field for icons
+// ];
+
 export const allColumns = [
   "Order Date",
   "Order ID",
