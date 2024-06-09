@@ -27,6 +27,7 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
 import { columns, allColumns, rowsData, allRowsData } from "./OrdersData";
 import { AiFillInfoCircle } from "react-icons/ai";
+import InputWithCalendarModal from "./InputWithCalendarModal";
 
 function OrderTable() {
   // ================================ form ================================
@@ -235,13 +236,14 @@ function OrderTable() {
             </FormControl>
           </Grid>
           <Grid item xs={2}>
-            <DesktopDatePicker
+            {/* <DesktopDatePicker
               label="Date Picker"
               inputFormat="MM/dd/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
-            />
+            /> */}
+            <InputWithCalendarModal />
           </Grid>
           <Grid item xs={1}>
             <Button

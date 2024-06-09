@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
 import OrderTable from "./Table/OrderTable";
 import OrderForm from "./Table/OrderForm";
+import CalenderDate from "./Table/CalenderDate";
+import InputWithCalendarModal from "./Table/InputWithCalendarModal";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -26,6 +28,8 @@ const Orders = () => {
       </div>
       {/* <OrderForm /> */}
       <OrderTable />
+      {/* <CalenderDate /> */}
+      {/* <InputWithCalendarModal /> */}
     </div>
   );
 };
