@@ -25,11 +25,39 @@ import { LuEye } from "react-icons/lu";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
-import { columns, allColumns, rowsData, allRowsData } from "./OrdersData";
+import { allColumns, allRowsData } from "./OrdersData";
 import { AiFillInfoCircle } from "react-icons/ai";
 import InputWithCalendarModal from "./InputWithCalendarModal";
 
 function OrderTable() {
+  // ================================== Table data ================================
+  const requiredColumns = new Set([
+    "Order Date",
+    "Order ID",
+    "Remaining Days",
+    "Preview Edit Status",
+    "Editor",
+    "Payment Status",
+    "Files",
+    "Order Status",
+  ]);
+
+  const selectedColumns = allColumns.filter((column) =>
+    requiredColumns.has(column)
+  );
+
+  const selectedRowsData = allRowsData.map((row) => ({
+    date: row.date,
+    id: row.id,
+    remaining: row.remaining,
+    previewstatus: row.previewstatus,
+    editorName: row.editorName,
+    paymentStatus: row.paymentStatus,
+    files: row.files,
+    orderStatus: row.orderStatus,
+    icon: row.icon,
+  }));
+
   // ================================ form ================================
 
   const [searchValue, setSearchValue] = React.useState("");
@@ -76,12 +104,14 @@ function OrderTable() {
   };
   // Toggle checkbox end
 
-  const visibleColumns = showAll ? allColumns : columns;
-  const visibleRows = showAll ? allRowsData : rowsData;
+  const visibleColumns = showAll ? allColumns : selectedColumns;
+  const visibleRows = showAll ? allRowsData : selectedRowsData;
 
   // Editors
   // Extract unique editor names
-  const uniqueEditors = [...new Set(rowsData.map((row) => row.editorName))];
+  const uniqueEditors = [
+    ...new Set(selectedRowsData.map((row) => row.editorName)),
+  ];
   const [editorSelectedValues, setEditorSelectedValues] =
     useState("Assign Editor");
 
