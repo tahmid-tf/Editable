@@ -28,8 +28,22 @@ import { Checkbox, Pagination, TextField } from "@mui/material";
 import { allColumns, allRowsData } from "./OrdersData";
 import { AiFillInfoCircle } from "react-icons/ai";
 import InputWithCalendarModal from "./InputWithCalendarModal";
+import { Box, InputAdornment, IconButton } from "@mui/material";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 function OrderTable() {
+  // ================================== Modal ================================
+  const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  console.log("i-value", inputValue);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleDateChange = (startDate, endDate) => {
+    setInputValue(`${startDate} - ${endDate}`);
+  };
+
   // ================================== Table data ================================
   const requiredColumns = new Set([
     "Order Date",
@@ -88,9 +102,9 @@ function OrderTable() {
     }
   };
 
-  const handleDateChange = (newValue) => {
-    setSelectedDate(newValue);
-  };
+  // const handleDateChange = (newValue) => {
+  //   setSelectedDate(newValue);
+  // };
 
   // ================================ form end ================================
 
@@ -266,16 +280,28 @@ function OrderTable() {
             </FormControl>
           </Grid>
           <Grid item xs={2}>
-            {/* 
-            <DesktopDatePicker
-              label="Date Picker"
-              inputFormat="MM/dd/yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
-              renderInput={(params) => <TextField {...params} />}
-            /> 
-            */}
-            <InputWithCalendarModal />
+            <div>
+              <TextField
+                label="Select Date Range"
+                variant="outlined"
+                fullWidth
+                value={inputValue}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleOpen}>
+                        <CalendarTodayIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <InputWithCalendarModal
+                open={open}
+                onClose={handleClose}
+                onDateChange={handleDateChange}
+              />
+            </div>
           </Grid>
           <Grid item xs={1}>
             <Button
