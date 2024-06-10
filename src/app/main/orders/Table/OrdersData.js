@@ -1,4 +1,4 @@
-export const allColumns = [
+export const allColumnsData = [
   "Order Date",
   "Order ID",
   "Order Name",

@@ -25,7 +25,7 @@ import { LuEye } from "react-icons/lu";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
-import { allColumns, allRowsData } from "./OrdersData";
+import { allColumnsData, allRowsData } from "./OrdersData";
 import { AiFillInfoCircle } from "react-icons/ai";
 import InputWithCalendarModal from "./InputWithCalendarModal";
 import { Box, InputAdornment, IconButton } from "@mui/material";
@@ -56,7 +56,7 @@ function OrderTable() {
     "Order Status",
   ]);
 
-  const selectedColumns = allColumns.filter((column) =>
+  const selectedColumns = allColumnsData.filter((column) =>
     requiredColumns.has(column)
   );
 
@@ -74,7 +74,7 @@ function OrderTable() {
 
   // ================================ form ================================
 
-  const [searchValue, setSearchValue] = React.useState("");
+  // const [searchValue, setSearchValue] = React.useState("");
   const [orderStatusValue, setOrderStatusValue] = React.useState("");
   const [paymentStatusValue, setPaymentStatusValue] = React.useState("");
   const [editorValue, setEditorValue] = React.useState("");
@@ -91,9 +91,7 @@ function OrderTable() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "search") {
-      setSearchValue(value);
-    } else if (name === "orderStatus") {
+    if (name === "orderStatus") {
       setOrderStatusValue(value);
     } else if (name === "paymentStatus") {
       setPaymentStatusValue(value);
@@ -107,6 +105,19 @@ function OrderTable() {
   // };
 
   // ================================ form end ================================
+  // ================================ filter ================================
+  const [searchValue, setSearchValue] = useState("");
+
+  const filterRows = (rows) => {
+    if (searchValue.trim() === "") {
+      return rows;
+    }
+    return rows.filter((row) =>
+      row.id.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  };
+
+  // ================================ filter end ================================
 
   // columns and rows
   // const [showAll, setShowAll] = useState(true);
@@ -118,8 +129,9 @@ function OrderTable() {
   };
   // Toggle checkbox end
 
-  const visibleColumns = showAll ? allColumns : selectedColumns;
-  const visibleRows = showAll ? allRowsData : selectedRowsData;
+  const visibleColumns = showAll ? allColumnsData : selectedColumns;
+  // const visibleRows = showAll ? allRowsData : selectedRowsData;
+  const visibleRows = filterRows(showAll ? allRowsData : selectedRowsData);
 
   // Editors
   // Extract unique editor names
@@ -201,7 +213,9 @@ function OrderTable() {
               label="Search"
               name="search"
               value={searchValue}
-              onChange={handleChange}
+              // onChange={handleChange}
+
+              onChange={(e) => setSearchValue(e.target.value)}
             />
           </Grid>
           <Grid item xs={2}>
