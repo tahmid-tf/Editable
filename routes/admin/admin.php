@@ -28,7 +28,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::put('editor/update/{id}', [\App\Http\Controllers\Api\Admin\EditorController::class,'update']);
     Route::delete('editor/{id}/delete', [\App\Http\Controllers\Api\Admin\EditorController::class,'destroy']);
 
-
-
 //    ------------------------------------- editors resource api -------------------------------------
+
+//    ------------------------------------- editors style creation api -------------------------------------
+
+    Route::get('styles', [\App\Http\Controllers\Api\Admin\StyleController::class,'index']);
+    Route::post('style_store', [\App\Http\Controllers\Api\Admin\StyleController::class,'store']);
+
+//    ------------------------------------- editors style creation api -------------------------------------
 });
