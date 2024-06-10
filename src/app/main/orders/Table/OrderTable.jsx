@@ -82,13 +82,25 @@ function OrderTable() {
   const [selectedDate, setSelectedDate] = useState(null);
 
   const orderStatusOptions = [
+    "Order Status",
     "Pending",
     "Completed",
     "Cancelled",
     "Preview Edit",
   ];
-  const paymentStatusOptions = ["Unpaid", "Paid", "Successfull"];
-  const editorOptions = ["Ayman", "Jane Smith", "Michael Brown"];
+  const paymentStatusOptions = [
+    "Payment Status",
+    "Due",
+    "Pending",
+    "Successful",
+  ];
+  const editorOptions = [
+    "Editor",
+    "Assign Editor",
+    "Ayman",
+    "Jane Smith",
+    "Michael Brown",
+  ];
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -116,8 +128,23 @@ function OrderTable() {
         .toLowerCase()
         .includes(searchValue.toLowerCase());
       const matchesOrderStatus =
-        orderStatusValue === "" || row.orderStatus === orderStatusValue;
-      return matchesSearchValue && matchesOrderStatus;
+        orderStatusValue === "" ||
+        orderStatusValue === "Order Status" ||
+        row.orderStatus === orderStatusValue;
+      const matchesPaymentStatus =
+        paymentStatusValue === "" ||
+        paymentStatusValue === "Payment Status" ||
+        row.paymentStatus === paymentStatusValue;
+      const matchesEditor =
+        editorValue === "" ||
+        editorValue === "Editor" ||
+        row.editorName === editorValue;
+      return (
+        matchesSearchValue &&
+        matchesOrderStatus &&
+        matchesPaymentStatus &&
+        matchesEditor
+      );
     });
   };
 
