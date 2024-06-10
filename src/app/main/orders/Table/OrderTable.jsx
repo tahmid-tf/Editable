@@ -75,10 +75,11 @@ function OrderTable() {
   // ================================ form ================================
 
   // const [searchValue, setSearchValue] = React.useState("");
-  const [orderStatusValue, setOrderStatusValue] = React.useState("");
-  const [paymentStatusValue, setPaymentStatusValue] = React.useState("");
-  const [editorValue, setEditorValue] = React.useState("");
-  const [selectedDate, setSelectedDate] = React.useState(null);
+  const [orderStatusValue, setOrderStatusValue] = useState("");
+  // console.log("orderStatusValue", orderStatusValue);
+  const [paymentStatusValue, setPaymentStatusValue] = useState("");
+  const [editorValue, setEditorValue] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const orderStatusOptions = [
     "Pending",
@@ -91,6 +92,7 @@ function OrderTable() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    console.log("nv", name, value);
     if (name === "orderStatus") {
       setOrderStatusValue(value);
     } else if (name === "paymentStatus") {
@@ -109,12 +111,14 @@ function OrderTable() {
   const [searchValue, setSearchValue] = useState("");
 
   const filterRows = (rows) => {
-    if (searchValue.trim() === "") {
-      return rows;
-    }
-    return rows.filter((row) =>
-      row.id.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    return rows.filter((row) => {
+      const matchesSearchValue = row.id
+        .toLowerCase()
+        .includes(searchValue.toLowerCase());
+      const matchesOrderStatus =
+        orderStatusValue === "" || row.orderStatus === orderStatusValue;
+      return matchesSearchValue && matchesOrderStatus;
+    });
   };
 
   // ================================ filter end ================================
@@ -148,10 +152,11 @@ function OrderTable() {
     }));
   };
 
-  // order status
+  // order status values
   const [orderStatusValues, setOrderStatusValues] = useState({});
+  // console.log("osv", orderStatusValues);
 
-  const handleOrderStatusChange = (rowId, event) => {
+  const handleOrderStatusChanges = (rowId, event) => {
     setOrderStatusValues((prevValues) => ({
       ...prevValues,
       [rowId]: event.target.value,
@@ -228,6 +233,7 @@ function OrderTable() {
                 value={orderStatusValue}
                 label="Order Status"
                 onChange={handleChange}
+                // onChange={(e) => setOrderStatusValue(e.target.value)}
                 sx={{
                   "& .MuiSelect-select": {
                     backgroundColor: "white",
@@ -533,7 +539,7 @@ function OrderTable() {
                                 <select
                                   value={orderStatusValues[row.id] || value}
                                   onChange={(event) =>
-                                    handleOrderStatusChange(row.id, event)
+                                    handleOrderStatusChanges(row.id, event)
                                   }
                                   className={clsx(
                                     "inline-flex items-center tracking-wide ",
