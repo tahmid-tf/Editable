@@ -20,7 +20,7 @@ export const allColumnsData = [
 
 export const allRowsData = [
   {
-    date: "2023-07-19",
+    date: "2024-06-02",
     id: "TX3857",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -40,7 +40,7 @@ export const allRowsData = [
   },
 
   {
-    date: "2023-07-19",
+    date: "2024-06-01",
     id: "TX1948",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -59,7 +59,7 @@ export const allRowsData = [
     icon: "",
   },
   {
-    date: "2023-07-19",
+    date: "2024-06-10",
     id: "TX4703",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -78,9 +78,9 @@ export const allRowsData = [
     icon: "",
   },
   {
-    date: "2023-07-19",
+    date: "2024-06-11",
     id: "TX5612",
-    orderName: "Wedding Photos",
+    orderName: "Wedding Photos today",
     remaining: "04/07 days",
     previewstatus: "N/A",
     editorName: "Jane Smith",
@@ -98,7 +98,7 @@ export const allRowsData = [
   },
 
   {
-    date: "2023-07-19",
+    date: "2024-05-01",
     id: "TX8243",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -117,7 +117,7 @@ export const allRowsData = [
     icon: "",
   },
   {
-    date: "2023-07-19",
+    date: "2024-05-10",
     id: "TX6371",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -136,7 +136,7 @@ export const allRowsData = [
     icon: "",
   },
   {
-    date: "2023-07-19",
+    date: "2024-05-15",
     id: "TX2936",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -156,7 +156,7 @@ export const allRowsData = [
   },
 
   {
-    date: "2023-07-19",
+    date: "2024-04-01",
     id: "TX4029",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -176,7 +176,7 @@ export const allRowsData = [
   },
 
   {
-    date: "2023-07-19",
+    date: "2024-04-12",
     id: "TX7154",
     orderName: "Wedding Photos",
     remaining: "04/07 days",
@@ -195,7 +195,7 @@ export const allRowsData = [
     icon: "",
   },
   {
-    date: "2023-07-19",
+    date: "2024-04-13",
     id: "TX1248",
     orderName: "Wedding Photos",
     remaining: "04/07 days",

@@ -139,11 +139,32 @@ function OrderTable() {
         editorValue === "" ||
         editorValue === "Editor" ||
         row.editorName === editorValue;
+      // Date range filter logic
+      const isEmptyDateRange = !inputValue || inputValue.trim() === "";
+      const isDateInRange =
+        isEmptyDateRange ||
+        (function () {
+          const [startDateString, endDateString] = inputValue.split(" - ");
+          const startDate = new Date(startDateString);
+          const endDate = new Date(endDateString);
+          endDate.setDate(endDate.getDate() + 1); // to make this logic workable increase one day
+          // console.log("endDate", endDate);
+          const rowDate = new Date(row.date);
+
+          // Check for single day or date range (inclusive)
+          return startDate.getTime() === endDate.getTime()
+            ? startDate.getTime() <= rowDate.getTime() // Include both start and end dates for single day selection
+            : startDate.getTime() <= rowDate.getTime() &&
+                rowDate.getTime() <= endDate.getTime(); // Existing range check (inclusive)
+        })();
+      // Date range filter logic - end
+
       return (
         matchesSearchValue &&
         matchesOrderStatus &&
         matchesPaymentStatus &&
-        matchesEditor
+        matchesEditor &&
+        isDateInRange
       );
     });
   };
