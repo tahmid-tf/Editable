@@ -6,6 +6,7 @@ import Navigation from "app/theme-layouts/shared-components/navigation/Navigatio
 import NavbarToggleButton from "app/theme-layouts/shared-components/navbar/NavbarToggleButton";
 import Logo from "../../../../shared-components/Logo";
 import UserNavbarHeader from "../../../../shared-components/UserNavbarHeader";
+import { selectUserRole } from "src/app/auth/user/store/userSlice";
 
 const Root = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -32,6 +33,7 @@ const StyledContent = styled(FuseScrollbars)(() => ({
  */
 function NavbarStyle1Content(props) {
   const { className = "" } = props;
+  // const userRole = useAppSelector(selectUserRole);
   return (
     <Root
       className={clsx(

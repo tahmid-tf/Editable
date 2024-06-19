@@ -84,7 +84,7 @@ export const allRowsData = [
     remaining: "04/07 days",
     previewstatus: "N/A",
     editorName: "Jane Smith",
-    paymentStatus: "Due",
+    paymentStatus: "Pending",
     files: "https://drive.google.com/file/d/1/file4",
     orderStatus: "Cancelled",
     orderType: "Express",
