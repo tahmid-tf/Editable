@@ -88,12 +88,7 @@ function OrderTable() {
     "Cancelled",
     "Preview Edit",
   ];
-  const paymentStatusOptions = [
-    "Payment Status",
-    "Due",
-    "Pending",
-    "Successful",
-  ];
+  const paymentStatusOptions = ["Payment Status", "Pending", "Successful"];
   const editorOptions = [
     "Editor",
     "Assign Editor",
@@ -351,13 +346,18 @@ function OrderTable() {
             <div>
               <TextField
                 label="Select Date Range"
+                placeholder="MM-DD-YYYY"
                 variant="outlined"
                 fullWidth
+                // disabled
+                onClick={handleOpen}
                 value={inputValue}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleOpen}>
+                      <IconButton
+                      // onClick={handleOpen}
+                      >
                         <CalendarTodayIcon />
                       </IconButton>
                     </InputAdornment>
@@ -557,7 +557,9 @@ function OrderTable() {
                                   value === "Successful" &&
                                     "bg-[#039855] text-white",
                                   value === "Failed" &&
-                                    "bg-[#CB1717] text-white"
+                                    "bg-[#CB1717] text-white",
+                                  value === "Pending" &&
+                                    "bg-[#FFCC00] text-black"
                                 )}
                               >
                                 <div className="tracking-[0.2px] leading-[20px] font-medium">
