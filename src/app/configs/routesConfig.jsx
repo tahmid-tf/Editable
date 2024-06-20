@@ -8,6 +8,7 @@ import SignOutConfig from "../main/sign-out/SignOutConfig";
 import Error404Page from "../main/404/Error404Page";
 import ExampleConfig from "../main/example/ExampleConfig";
 import Orders from "../main/orders/Orders";
+import Categories from "../main/categories/Categories";
 
 const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig];
 /**
@@ -20,7 +21,8 @@ const routes = [
   ),
   {
     path: "/",
-    element: <Navigate to="/example" />,
+    element: <Navigate to="/orders" />,
+    // element: <Navigate to="/example" />,
     auth: settingsConfig.defaultAuth,
   },
   {
@@ -30,7 +32,7 @@ const routes = [
   },
   {
     path: "categories",
-    element: <Navigate to="/categories" />,
+    element: <Categories />,
     auth: settingsConfig.defaultAuth,
   },
   {
