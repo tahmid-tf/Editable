@@ -100,7 +100,7 @@ function OrderTable() {
   //
 
   return (
-    <div className="">
+    <div className="h-full flex flex-col justify-between">
       <div className="">
         <div className="">
           <Grid container spacing={2} className="py-10 justify-between">
@@ -210,7 +210,7 @@ function OrderTable() {
           </Paper>
         </div>
       </div>
-      <div className="mt-48 flex justify-center">
+      <div className="my-48 flex justify-center">
         <Pagination
           count={totalPages}
           color="secondary"
