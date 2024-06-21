@@ -54,6 +54,7 @@ function OrderTable() {
     "Payment Status",
     "Files",
     "Order Status",
+    "",
   ]);
 
   const selectedColumns = allColumnsData.filter((column) =>
@@ -438,7 +439,10 @@ function OrderTable() {
       </div>
       {/* ========================== table =========================== */}
       <div className="pb-36">
-        <Paper className="flex flex-col flex-auto rounded-0 overflow-hidden">
+        <Paper
+          className="flex flex-col flex-auto rounded-0 overflow-hidden"
+          sx={{ boxShadow: "none", border: "1px solid #DFE0EB" }}
+        >
           <div className="table-responsive">
             <Table className="simple w-full min-w-full">
               <TableHead>

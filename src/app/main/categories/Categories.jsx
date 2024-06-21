@@ -7,7 +7,7 @@ const Categories = () => {
       <div>
         <p className="text-[20px] font-bold text-[#868686] py-36">Categories</p>
       </div>
-      <div className="flex-1">
+      <div className="">
         <CategoriesTable />
       </div>
     </div>
