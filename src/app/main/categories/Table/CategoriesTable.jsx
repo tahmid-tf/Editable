@@ -25,7 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CreateCategoriesForm from "./CreateCategoriesForm";
 import EditCategoriesForm from "./EditCategoriesForm";
 
-function OrderTable() {
+function OrderTable({ deleteAlert }) {
   // ================================================= create categories model =================================================
 
   const [open, setOpen] = useState(false); // State for modal visibility
@@ -101,6 +101,7 @@ function OrderTable() {
 
   // Function to handle LuEye icon click
   const handleDeleteClick = () => {
+    deleteAlert();
     console.log("LuEye clicked");
   };
 
