@@ -23,22 +23,30 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateCategoriesForm from "./CreateCategoriesForm";
+import EditCategoriesForm from "./EditCategoriesForm";
 
 function OrderTable() {
+  // ================================================= create categories model =================================================
+
   const [open, setOpen] = useState(false); // State for modal visibility
 
-  const handleClickOpen = () => {
+  const handleOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  // ================================================= edit categories model =================================================
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    console.log("Form submitted!"); // Replace with your logic for handling form data
-    setOpen(false); // Close the modal after successful submission
+  const [editOpen, setEditOpen] = useState(false); // State for modal visibility
+
+  const handleEditOpen = () => {
+    setEditOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
   };
 
   // ================================== Table data ================================
@@ -98,6 +106,7 @@ function OrderTable() {
 
   // Function to handle FiEdit icon click
   const handleFiEditClick = () => {
+    handleEditOpen();
     console.log("FiEdit clicked");
   };
 
@@ -127,6 +136,32 @@ function OrderTable() {
 
   return (
     <div className="h-full flex flex-col justify-between">
+      {/* create categories */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className="flex justify-center items-center"
+      >
+        <div className="bg-white flex justify-center items-center">
+          {/* <h1>Modal</h1> */}
+          <CreateCategoriesForm onClose={handleClose} />
+        </div>
+      </Modal>
+      {/* edit categories */}
+      <Modal
+        open={editOpen}
+        onClose={handleEditClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className="flex justify-center items-center"
+      >
+        <div className="bg-white flex justify-center items-center">
+          {/* <h1>Modal</h1> */}
+          <EditCategoriesForm onClose={handleEditClose} />
+        </div>
+      </Modal>
       <div className="">
         <div className="">
           <Grid container spacing={2} className="py-10 justify-between">
@@ -147,34 +182,23 @@ function OrderTable() {
               <Button
                 variant="contained" // Use contained variant for better visibility
                 // size="small"
+                // bg-[#146ef5ef] hover:bg-[#0066ff]
                 sx={{
-                  backgroundColor: "black",
+                  backgroundColor: "#146ef5ef",
                   color: "white",
                   borderRadius: "4px",
                   paddingLeft: "24px",
                   paddingRight: "24px",
                   height: "38px", // Adjust height as needed
                   ":hover": {
-                    backgroundColor: "gray",
+                    backgroundColor: "#0066ff",
                     color: "white",
                   },
                 }}
-                onClick={handleClickOpen}
+                onClick={handleOpen}
               >
                 Create Category
               </Button>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-                className="flex justify-center items-center"
-              >
-                <div className="bg-white flex justify-center items-center">
-                  {/* <h1>Modal</h1> */}
-                  <CreateCategoriesForm onClose={handleClose} />
-                </div>
-              </Modal>
             </Grid>
           </Grid>
           <div className="flex justify-between py-20">

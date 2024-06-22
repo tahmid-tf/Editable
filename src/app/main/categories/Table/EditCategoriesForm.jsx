@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   previewEditThreshold: Yup.string().required("Required"),
 });
 
-const CreateCategoriesForm = ({ onClose }) => {
+const EditCategoriesForm = ({ onClose }) => {
   return (
     <div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
       <Formik
@@ -39,9 +39,7 @@ const CreateCategoriesForm = ({ onClose }) => {
         {({ isSubmitting }) => (
           <Form className="space-y-4 ">
             <div className="flex items-center justify-between">
-              <p className="text-2xl font-bold text-[#868686]">
-                Create Category
-              </p>
+              <p className="text-2xl font-bold text-[#868686]">Edit Category</p>
               <button onClick={onClose}>
                 <IoClose size={24} />
               </button>
@@ -230,9 +228,9 @@ const CreateCategoriesForm = ({ onClose }) => {
                 type="submit"
                 disabled={isSubmitting}
                 // onClick={onClose}
-                className="w-full h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff]"
+                className="w-full h-[38px] py-2  px-4 bg-[#146ef5ef] hover:bg-[#0066ff] text-white rounded-md "
               >
-                Create Category
+                Save Changes
               </button>
             </div>
           </Form>
@@ -242,4 +240,4 @@ const CreateCategoriesForm = ({ onClose }) => {
   );
 };
 
-export default CreateCategoriesForm;
+export default EditCategoriesForm;
