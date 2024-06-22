@@ -132,26 +132,28 @@ function OrderTable() {
           <Grid container spacing={2} className="py-10 justify-between">
             <Grid item>
               <TextField
+                sx={{
+                  height: "38px",
+                }}
                 // fullWidth
-                label="Search"
+                // label="Search"
+                placeholder="Search"
                 name="search"
                 value={searchValue}
-                // onChange={handleChange}
-
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </Grid>
             <Grid item>
               <Button
                 variant="contained" // Use contained variant for better visibility
-                size="small"
+                // size="small"
                 sx={{
                   backgroundColor: "black",
                   color: "white",
                   borderRadius: "4px",
                   paddingLeft: "24px",
                   paddingRight: "24px",
-                  height: "40px", // Adjust height as needed
+                  height: "38px", // Adjust height as needed
                   ":hover": {
                     backgroundColor: "gray",
                     color: "white",
