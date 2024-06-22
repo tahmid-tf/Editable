@@ -20,6 +20,15 @@ const Categories = () => {
   const closeSuccess = () => {
     setIsSuccess(false);
   };
+
+  // Error
+  const [isError, setIsError] = useState(false);
+  const errorAlert = () => {
+    setIsError(true);
+  };
+  const closeError = () => {
+    setIsError(false);
+  };
   return (
     <div className="px-36 h-full flex flex-col">
       <CategoriesAlert
@@ -27,6 +36,8 @@ const Categories = () => {
         closeDelete={closeDelete}
         isSuccess={isSuccess}
         closeSuccess={closeSuccess}
+        isError={isError}
+        closeError={closeError}
       />
       <div>
         <p className="text-[20px] font-bold text-[#868686] py-36">Categories</p>
@@ -35,6 +46,7 @@ const Categories = () => {
         <CategoriesTable
           deleteAlert={deleteAlert}
           successAlert={successAlert}
+          errorAlert={errorAlert}
         />
       </div>
     </div>
