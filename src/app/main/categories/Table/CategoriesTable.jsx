@@ -25,7 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CreateCategoriesForm from "./CreateCategoriesForm";
 import EditCategoriesForm from "./EditCategoriesForm";
 
-function OrderTable({ deleteAlert }) {
+function OrderTable({ deleteAlert, successAlert }) {
   // ================================================= create categories model =================================================
 
   const [open, setOpen] = useState(false); // State for modal visibility
@@ -147,7 +147,10 @@ function OrderTable({ deleteAlert }) {
       >
         <div className="bg-white flex justify-center items-center">
           {/* <h1>Modal</h1> */}
-          <CreateCategoriesForm onClose={handleClose} />
+          <CreateCategoriesForm
+            onClose={handleClose}
+            successAlert={successAlert}
+          />
         </div>
       </Modal>
       {/* edit categories */}

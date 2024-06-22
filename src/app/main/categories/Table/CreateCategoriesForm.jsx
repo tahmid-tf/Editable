@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   previewEditThreshold: Yup.string().required("Required"),
 });
 
-const CreateCategoriesForm = ({ onClose }) => {
+const CreateCategoriesForm = ({ onClose, successAlert }) => {
   return (
     <div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
       <Formik
@@ -32,6 +32,8 @@ const CreateCategoriesForm = ({ onClose }) => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
+          successAlert();
+          onClose();
           console.log(values);
         }}
         className="rounded-xl"
