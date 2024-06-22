@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, Pagination, TextField } from "@mui/material";
+import { Box, Grid, Modal, Pagination, TextField } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,8 +13,34 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { allColumnsData, allRowsData } from "./CategoriesData";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import CreateCategoriesForm from "./CreateCategoriesForm";
 
 function OrderTable() {
+  const [open, setOpen] = useState(false); // State for modal visibility
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    console.log("Form submitted!"); // Replace with your logic for handling form data
+    setOpen(false); // Close the modal after successful submission
+  };
+
   // ================================== Table data ================================
 
   const requiredColumns = new Set([
@@ -117,25 +143,36 @@ function OrderTable() {
             </Grid>
             <Grid item>
               <Button
-                // variant="contained"
+                variant="contained" // Use contained variant for better visibility
                 size="small"
                 sx={{
                   backgroundColor: "black",
-                  color: "white", // Add color for text visibility
+                  color: "white",
                   borderRadius: "4px",
                   paddingLeft: "24px",
                   paddingRight: "24px",
-                  // width: "100%",
-                  height: "100%", // Adjust height as needed
-
+                  height: "40px", // Adjust height as needed
                   ":hover": {
-                    backgroundColor: "gray", // Darker shade on hover
-                    color: "white", // Lighter text color on hover
+                    backgroundColor: "gray",
+                    color: "white",
                   },
                 }}
+                onClick={handleClickOpen}
               >
                 Create Category
               </Button>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                className="flex justify-center items-center"
+              >
+                <div className="bg-white flex justify-center items-center">
+                  {/* <h1>Modal</h1> */}
+                  <CreateCategoriesForm onClose={handleClose} />
+                </div>
+              </Modal>
             </Grid>
           </Grid>
           <div className="flex justify-between py-20">
