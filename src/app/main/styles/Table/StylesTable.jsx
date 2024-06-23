@@ -153,7 +153,7 @@ function StylesTable({ deleteAlert, successAlert, errorAlert }) {
         <div className="">
           <Grid container spacing={2} className="py-10 justify-between">
             <Grid item>
-              <TextField
+              {/* <TextField
                 sx={{
                   height: "38px",
                 }}
@@ -163,20 +163,41 @@ function StylesTable({ deleteAlert, successAlert, errorAlert }) {
                 name="search"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
+              /> */}
+              <TextField
+                label="Search"
+                name="search"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
               />
             </Grid>
             <Grid item>
               <Button
-                variant="contained" // Use contained variant for better visibility
+                // variant="contained"
                 // size="small"
                 // bg-[#146ef5ef] hover:bg-[#0066ff]
+                // sx={{
+                //   backgroundColor: "#146ef5ef",
+                //   color: "white",
+                //   borderRadius: "4px",
+                //   paddingLeft: "24px",
+                //   paddingRight: "24px",
+                //   height: "38px", // Adjust height as needed
+                //   ":hover": {
+                //     backgroundColor: "#0066ff",
+                //     color: "white",
+                //   },
+                // }}
+                variant="contained"
+                size="small"
                 sx={{
-                  backgroundColor: "#146ef5ef",
-                  color: "white",
-                  borderRadius: "4px",
+                  width: "100%",
+                  height: "48px",
                   paddingLeft: "24px",
                   paddingRight: "24px",
-                  height: "38px", // Adjust height as needed
+                  borderRadius: "4px",
+                  backgroundColor: "#146ef5ef",
+                  color: "white",
                   ":hover": {
                     backgroundColor: "#0066ff",
                     color: "white",

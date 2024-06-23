@@ -278,12 +278,9 @@ function OrderTable() {
         <Grid container spacing={2} className="py-10">
           <Grid item xs={3}>
             <TextField
-              // fullWidth
               label="Search"
               name="search"
               value={searchValue}
-              // onChange={handleChange}
-
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </Grid>
@@ -397,15 +394,16 @@ function OrderTable() {
               variant="contained"
               size="small"
               sx={{
-                backgroundColor: "black",
-                color: "white", // Add color for text visibility
-                borderRadius: "4px",
                 width: "100%",
-                height: "48px", // Adjust height as needed
-
+                height: "48px",
+                // paddingLeft: "24px",
+                // paddingRight: "24px",
+                borderRadius: "4px",
+                backgroundColor: "#146ef5ef",
+                color: "white",
                 ":hover": {
-                  backgroundColor: "gray", // Darker shade on hover
-                  color: "white", // Lighter text color on hover
+                  backgroundColor: "#0066ff",
+                  color: "white",
                 },
               }}
               onClick={handleNewOrderOpen}
