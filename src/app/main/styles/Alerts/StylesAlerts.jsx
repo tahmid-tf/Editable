@@ -3,7 +3,7 @@ import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "@mui/material";
 
-const CategoriesAlert = ({
+const StylesAlerts = ({
   isDelete,
   closeDelete,
   isSuccess,
@@ -119,4 +119,4 @@ const CategoriesAlert = ({
   );
 };
 
-export default CategoriesAlert;
+export default StylesAlerts;

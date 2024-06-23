@@ -9,6 +9,7 @@ import Error404Page from "../main/404/Error404Page";
 import ExampleConfig from "../main/example/ExampleConfig";
 import Orders from "../main/orders/Orders";
 import Categories from "../main/categories/Categories";
+import Styles from "../main/styles/Styles";
 
 const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig];
 /**
@@ -33,6 +34,11 @@ const routes = [
   {
     path: "categories",
     element: <Categories />,
+    auth: settingsConfig.defaultAuth,
+  },
+  {
+    path: "styles",
+    element: <Styles />,
     auth: settingsConfig.defaultAuth,
   },
   {

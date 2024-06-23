@@ -12,11 +12,12 @@ import Button from "@mui/material/Button";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { allColumnsData, allRowsData } from "./CategoriesData";
-import CreateCategoriesForm from "./CreateCategoriesForm";
-import EditCategoriesForm from "./EditCategoriesForm";
+import { allColumnsData, allRowsData } from "./StylesData";
+import CreateStylesForm from "./CreateStylesForm";
+import EditStylesForm from "./EditStylesForm";
+import clsx from "clsx";
 
-function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
+function StylesTable({ deleteAlert, successAlert, errorAlert }) {
   // ================================================= create categories model =================================================
 
   const [open, setOpen] = useState(false); // State for modal visibility
@@ -44,14 +45,10 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
 
   const requiredColumns = new Set([
     "Name",
-    "Style Price",
-    "Style Threshold",
-    "Culling Price",
-    "Culling Threshold",
-    "Retouch Price",
-    "Retouch Threshold",
-    "Preview Price",
-    "Preview Threshold",
+    "Additional Style",
+    "Categories",
+    "Additional Edits",
+    "Image",
     "",
   ]);
 
@@ -61,14 +58,10 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
 
   const selectedRowsData = allRowsData.map((row) => ({
     name: row.name,
-    stylePrice: row.stylePrice,
-    styleThreshold: row.styleThreshold,
-    cullingPrice: row.cullingPrice,
-    cullingThreshold: row.cullingThreshold,
-    retouchPrice: row.retouchPrice,
-    retouchThreshold: row.retouchThreshold,
-    previewPrice: row.previewPrice,
-    previewThreshold: row.previewThreshold,
+    additionalStyle: row.additionalStyle,
+    categories: row.categories,
+    additionalEdits: row.additionalEdits,
+    image: row.image,
     icon: row.icon,
   }));
 
@@ -140,10 +133,7 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
       >
         <div className="bg-white flex justify-center items-center">
           {/* <h1>Modal</h1> */}
-          <CreateCategoriesForm
-            onClose={handleClose}
-            successAlert={successAlert}
-          />
+          <CreateStylesForm onClose={handleClose} successAlert={successAlert} />
         </div>
       </Modal>
       {/* edit categories */}
@@ -156,7 +146,7 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
       >
         <div className="bg-white flex justify-center items-center">
           {/* <h1>Modal</h1> */}
-          <EditCategoriesForm onClose={handleEditClose} />
+          <EditStylesForm onClose={handleEditClose} />
         </div>
       </Modal>
       <div className="">
@@ -194,15 +184,33 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
                 }}
                 onClick={handleOpen}
               >
-                Create Category
+                Create Style
               </Button>
             </Grid>
           </Grid>
           <div className="flex justify-between py-20">
             <div className="flex">
               <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0 text-lg font-400">
-                <span>Total Categories:</span>
-                <b> 03</b>
+                <span>Total Styles:</span>
+                <b> 100</b>
+              </div>
+              {/* <Typography className="font-medium" color="text.secondary">
+            Total Orders: 100
+          </Typography> */}
+              <Typography className="font-medium mx-20" color="text.secondary">
+                |
+              </Typography>
+              <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+                <span>Base:</span>
+                <b> 80</b>
+              </div>
+
+              <Typography className="font-medium mx-20" color="text.secondary">
+                |
+              </Typography>
+              <div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
+                <span>Additional Styles:</span>
+                <b> 10</b>
               </div>
             </div>
           </div>
@@ -222,12 +230,13 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
                         <Typography
                           color="text.secondary"
                           className="font-semibold text-16 text-black whitespace-nowrap"
-                          style={{
-                            whiteSpace: "pre-line",
-                            wordBreak: "break-all",
-                          }}
+                          // style={{
+                          //   whiteSpace: "pre-line",
+                          //   wordBreak: "break-all",
+                          // }}
                         >
-                          {column.replace(" ", "\n")}
+                          {column}
+                          {/* {column.replace(" ", "\n")} */}
                         </Typography>
                       </TableCell>
                     ))}
@@ -239,6 +248,31 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
                     <TableRow key={index}>
                       {Object.entries(row).map(([key, value]) => {
                         switch (key) {
+                          case "image": {
+                            return (
+                              <TableCell key={key} component="th" scope="row">
+                                <div
+                                  className={clsx(
+                                    "inline-flex items-center px-[10px] py-[2px] tracking-wide",
+                                    "bg-black text-white"
+                                  )}
+                                >
+                                  <a
+                                    href={value}
+                                    // target="_blank"
+                                    download
+                                    className="tracking-[0.2px] leading-[20px] font-medium"
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "white",
+                                    }}
+                                  >
+                                    Download
+                                  </a>
+                                </div>
+                              </TableCell>
+                            );
+                          }
                           case "icon": {
                             return (
                               <TableCell key={key} component="th" scope="row">
@@ -282,4 +316,4 @@ function CategoriesTable({ deleteAlert, successAlert, errorAlert }) {
   );
 }
 
-export default memo(CategoriesTable);
+export default memo(StylesTable);
