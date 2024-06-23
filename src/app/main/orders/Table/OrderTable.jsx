@@ -3,8 +3,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
-import { Grid } from "@mui/material";
-import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { Grid, Modal } from "@mui/material";
 // table
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -18,21 +17,26 @@ import format from "date-fns/format";
 import clsx from "clsx";
 import Button from "@mui/material/Button";
 import FuseLoading from "@fuse/core/FuseLoading";
-import { Link } from "react-router-dom";
-import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { FiEdit } from "react-icons/fi";
 import { LuEye } from "react-icons/lu";
-import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
-import { MdOutlineCheckBox } from "react-icons/md";
 import { Checkbox, Pagination, TextField } from "@mui/material";
 import { allColumnsData, allRowsData } from "./OrdersData";
 import { AiFillInfoCircle } from "react-icons/ai";
 import InputWithCalendarModal from "./InputWithCalendarModal";
-import { Box, InputAdornment, IconButton } from "@mui/material";
+import { InputAdornment, IconButton } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import GeneralinfoForm from "./GeneralinfoForm";
 
 function OrderTable() {
-  // ================================== Modal ================================
+  // =================================================  new order model =================================================
+  const [newOrderOpen, setNewOrderOpen] = useState(false); // State for modal visibility
+  const handleNewOrderOpen = () => {
+    setNewOrderOpen(true);
+  };
+  const handleNewOrderClose = () => {
+    setNewOrderOpen(false);
+  };
+  // ================================== Modal calendar ================================
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   console.log("i-value", inputValue);
@@ -254,6 +258,22 @@ function OrderTable() {
 
   return (
     <div className="">
+      {/* new order modal */}
+      <Modal
+        open={newOrderOpen}
+        onClose={handleNewOrderClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className="flex justify-center items-center"
+      >
+        <div className="bg-white flex justify-center items-center">
+          {/* <h1>Modal</h1> */}
+          <GeneralinfoForm
+            onClose={handleNewOrderClose}
+            // successAlert={successAlert}
+          />
+        </div>
+      </Modal>
       <div className="">
         <Grid container spacing={2} className="py-10">
           <Grid item xs={3}>
@@ -388,6 +408,7 @@ function OrderTable() {
                   color: "white", // Lighter text color on hover
                 },
               }}
+              onClick={handleNewOrderOpen}
             >
               New Orders
             </Button>
