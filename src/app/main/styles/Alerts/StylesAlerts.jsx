@@ -46,7 +46,7 @@ const StylesAlerts = ({
           >
             Deleted
           </span>
-          Category has been deleted
+          Style has been deleted
         </Alert>
       </Snackbar>
 
@@ -79,7 +79,7 @@ const StylesAlerts = ({
           >
             Success
           </span>
-          Category Created Successfully!
+          Style Created Successfully!
         </Alert>
       </Snackbar>
 
