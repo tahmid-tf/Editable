@@ -292,7 +292,7 @@ class StyleController extends Controller
             $style->update($inputs);
 
             return response()->json([
-                'message' => 'Style created successfully',
+                'message' => 'Style Updated successfully',
                 'data' => $style,
                 'status_code' => \Symfony\Component\HttpFoundation\Response::HTTP_OK
             ]);
