@@ -3,8 +3,7 @@ import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTranslation } from "react-i18next";
 import { styled } from "@mui/material/styles";
 import OrderTable from "./Table/OrderTable";
-import OrderForm from "./Table/OrderForm";
-import InputWithCalendarModal from "./Table/InputWithCalendarModal";
+import PickStyle from "./Table/PickStyle";
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -21,13 +20,21 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
 const Orders = () => {
   const { t } = useTranslation("orderPage");
   return (
-    <div className="bg-white px-36">
-      <div>
-        <p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
+    <div>
+      {/* <div className="bg-white px-36">
+        <div>
+          <p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
+        </div>
+        <OrderTable />
+      </div> */}
+      <div className="bg-white px-36">
+        <div>
+          <p className="text-[20px] font-bold text-[#868686] py-36">
+            Pick a style
+          </p>
+        </div>
+        <PickStyle />
       </div>
-      {/* <OrderForm /> */}
-      <OrderTable />
-      {/* <InputWithCalendarModal /> */}
     </div>
   );
 };
