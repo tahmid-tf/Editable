@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\Order\PlaceOrderController;
 
 
+// Place order routes
+
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('test_admin', function () {
         return response()->json([
