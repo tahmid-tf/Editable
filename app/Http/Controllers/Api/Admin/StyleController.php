@@ -120,7 +120,6 @@ class StyleController extends Controller
 
             if ($request->hasFile('upload_image')) {
                 $inputs['upload_image'] = $request->file('upload_image')->store('images');
-                $inputs['upload_image'] = asset('storage/' . $inputs['upload_image']);
             }
 
             $inputs['categories'] = json_encode($category_array_data);
@@ -275,8 +274,6 @@ class StyleController extends Controller
 
             if ($request->hasFile('upload_image')) {
                 $inputs['upload_image'] = $request->file('upload_image')->store('images');
-                $inputs['upload_image'] = asset('storage/' . $inputs['upload_image']);
-
             } else {
                 $inputs['upload_image'] = $style->upload_image;
             }
