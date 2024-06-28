@@ -25,7 +25,7 @@ import { AiFillInfoCircle } from "react-icons/ai";
 import InputWithCalendarModal from "./InputWithCalendarModal";
 import { InputAdornment, IconButton } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import GeneralinfoForm from "./GeneralinfoForm";
+import GeneralinfoForm from "../newOrder/GeneralinfoForm";
 
 function OrderTable() {
   // =================================================  new order model =================================================
@@ -258,6 +258,10 @@ function OrderTable() {
 
   return (
     <div className="">
+      {/*page headline */}
+      <div>
+        <p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
+      </div>
       {/* new order modal */}
       <Modal
         open={newOrderOpen}

@@ -12,6 +12,13 @@ import { useAppSelector } from "app/store/hooks";
 import { useSelector } from "react-redux";
 import withAppProviders from "./withAppProviders";
 import AuthenticationProvider from "./auth/AuthenticationProvider";
+// fonts
+import "@fontsource/roboto"; // Imports Roboto with default weight (400)
+// To import specific weights and styles:
+import "@fontsource/roboto/300.css"; // Import Roboto with weight 300
+import "@fontsource/roboto/400-italic.css"; // Import Roboto with weight 400 and italic style
+// fonts
+
 // import axios from 'axios';
 /**
  * Axios HTTP Request defaults
