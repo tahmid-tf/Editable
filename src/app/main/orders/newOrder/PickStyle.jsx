@@ -12,13 +12,13 @@ const validationSchema = Yup.object({
 const PickStyle = () => {
   return (
     <Formik
-      initialValues={{ selectedStyle: "" }}
+      initialValues={{ selectedStyle: "", additionalStyle: [] }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
         console.log(values);
       }}
     >
-      {({ values, errors, touched, handleChange, setFieldValue }) => (
+      {({ values, errors, touched, setFieldValue }) => (
         <Form>
           <div>
             <p className="text-[32px] font-bold text-[#868686] py-36">
@@ -43,7 +43,7 @@ const PickStyle = () => {
                   li_1="Light & Airy Tone"
                   li_2="Slightly Faded Whites & Blacks"
                   li_3="Desaturated Grains"
-                  selectedValue={values.selectedStyle}
+                  selectedValue={values.selectedStyle === "Classic Film Tones"}
                   handleChange={(e) =>
                     setFieldValue("selectedStyle", e.target.value)
                   }
@@ -65,7 +65,7 @@ const PickStyle = () => {
                   li_1="Light & Airy Tone"
                   li_2="Slightly Faded Whites & Blacks"
                   li_3="Desaturated Grains"
-                  selectedValue={values.selectedStyle}
+                  selectedValue={values.selectedStyle === "Dark & Moody Vibes"}
                   handleChange={(e) =>
                     setFieldValue("selectedStyle", e.target.value)
                   }
@@ -87,7 +87,9 @@ const PickStyle = () => {
                   li_1="Light & Airy Tone"
                   li_2="Slightly Faded Whites & Blacks"
                   li_3="Desaturated Grains"
-                  selectedValue={values.selectedStyle}
+                  selectedValue={
+                    values.selectedStyle === "Bright & Airy Freshness"
+                  }
                   handleChange={(e) =>
                     setFieldValue("selectedStyle", e.target.value)
                   }
@@ -110,13 +112,46 @@ const PickStyle = () => {
                   li_2="Slightly Faded Whites & Blacks"
                   li_3="Desaturated Grains"
                   warning_text="Skin Retouching Not Available"
-                  selectedValue={values.selectedStyle}
+                  selectedValue={
+                    values.selectedStyle === "Basic Color & Contrast Correction"
+                  }
                   handleChange={(e) =>
                     setFieldValue("selectedStyle", e.target.value)
                   }
                 />
               </Grid>
             </Grid>
+            <div className="mt-60">
+              <div>
+                <p className="text-[32px] font-bold text-[#868686] py-36">
+                  Additional Color Styles
+                </p>
+              </div>
+              <div>
+                <Field
+                  name="additionalStyle"
+                  type="checkbox"
+                  value="Monochrome Melodies"
+                  as={StyleCard}
+                  title="Monochrome Melodies"
+                  li_1="Light & Airy Tone"
+                  li_2="Slightly Faded Whites & Blacks"
+                  li_3="Desaturated Grains"
+                  selectedValue={values.additionalStyle.includes(
+                    "Monochrome Melodies"
+                  )}
+                  handleChange={(e) => {
+                    const set = new Set(values.additionalStyle);
+                    if (set.has(e.target.value)) {
+                      set.delete(e.target.value);
+                    } else {
+                      set.add(e.target.value);
+                    }
+                    setFieldValue("additionalStyle", Array.from(set));
+                  }}
+                />
+              </div>
+            </div>
             {errors.selectedStyle && touched.selectedStyle ? (
               <div style={{ color: "red" }}>{errors.selectedStyle}</div>
             ) : null}

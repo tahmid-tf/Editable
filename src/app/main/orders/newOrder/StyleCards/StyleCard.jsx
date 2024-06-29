@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea, Radio } from "@mui/material";
+import { CardActionArea, Radio, Checkbox } from "@mui/material";
 import cardImage from "../../../../../assets/images/pick-a-style/cardimage.png";
 
 export default function StyleCard({
@@ -15,7 +15,10 @@ export default function StyleCard({
   selectedValue,
   handleChange,
   value,
+  type,
 }) {
+  const Control = type === "checkbox" ? Checkbox : Radio;
+
   return (
     <Card
       className="bg-[#F8F8F8]"
@@ -31,17 +34,16 @@ export default function StyleCard({
         }}
         className=""
       >
-        <Radio
-          checked={selectedValue === value}
+        <Control
+          checked={selectedValue}
           onChange={(e) => e.stopPropagation()} // Prevent event bubbling
           value={value}
-          name="radio-buttons"
+          name="style-selection"
           sx={{ position: "absolute", top: 8, left: 22 }}
         />
         <CardMedia
           className="px-32 pt-[53px]"
           component="img"
-          // height="140"
           image={cardImage}
           alt="Style Image"
         />
