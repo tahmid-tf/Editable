@@ -12,7 +12,15 @@ const validationSchema = Yup.object({
 const PickStyle = () => {
   return (
     <Formik
-      initialValues={{ selectedStyle: "", additionalStyle: [] }}
+      initialValues={{
+        selectedStyle: "",
+        additionalStyle: [],
+        additionalEdits: {
+          culling: false,
+          skinRetouching: false,
+          previewEdits: false,
+        },
+      }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
         console.log(values);
@@ -151,6 +159,73 @@ const PickStyle = () => {
                   }}
                 />
               </div>
+            </div>
+            <div className="mt-60">
+              <div>
+                <p className="text-[32px] font-bold text-[#868686] py-36">
+                  Additional Edits
+                </p>
+              </div>
+              <label htmlFor="cullingCheckbox">
+                <div
+                  style={{ cursor: "pointer" }}
+                  className="flex items-center"
+                >
+                  <Field
+                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    name="additionalEdits.culling"
+                    type="checkbox"
+                    id="cullingCheckbox" // Added unique ID
+                    checked={values.additionalEdits.culling}
+                    onChange={(e) =>
+                      setFieldValue("additionalEdits.culling", e.target.checked)
+                    }
+                  />
+                  <p className="pl-10 text-[20px] font-bold">Culling</p>
+                </div>
+              </label>
+              <label htmlFor="skinRetouchingCheckbox">
+                <div
+                  style={{ cursor: "pointer" }}
+                  className="flex items-center"
+                >
+                  <Field
+                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    name="additionalEdits.skinRetouching"
+                    type="checkbox"
+                    id="skinRetouchingCheckbox" // Added unique ID
+                    checked={values.additionalEdits.skinRetouching}
+                    onChange={(e) =>
+                      setFieldValue(
+                        "additionalEdits.skinRetouching",
+                        e.target.checked
+                      )
+                    }
+                  />
+                  <p className="pl-10 text-[20px] font-bold">Skin Retouching</p>
+                </div>
+              </label>
+              <label htmlFor="previewEditsCheckbox">
+                <div
+                  style={{ cursor: "pointer" }}
+                  className="flex items-center"
+                >
+                  <Field
+                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    name="additionalEdits.previewEdits"
+                    type="checkbox"
+                    id="previewEditsCheckbox" // Added unique ID
+                    checked={values.additionalEdits.previewEdits}
+                    onChange={(e) =>
+                      setFieldValue(
+                        "additionalEdits.previewEdits",
+                        e.target.checked
+                      )
+                    }
+                  />
+                  <p className="pl-10 text-[20px] font-bold">Preview Edits</p>
+                </div>
+              </label>
             </div>
             {errors.selectedStyle && touched.selectedStyle ? (
               <div style={{ color: "red" }}>{errors.selectedStyle}</div>
