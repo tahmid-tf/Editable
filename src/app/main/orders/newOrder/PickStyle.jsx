@@ -4,6 +4,7 @@ import { Grid } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
+import { AiFillInfoCircle } from "react-icons/ai";
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -237,6 +238,13 @@ const PickStyle = () => {
                     Preview Edits
                   </span>
                 </label>
+                <button
+                  onClick={() => {
+                    console.log("info icon clicked");
+                  }}
+                >
+                  <AiFillInfoCircle className="ml-8" />
+                </button>
               </div>
             </div>
             <div className="my-60">
@@ -336,7 +344,6 @@ const PickStyle = () => {
               <div style={{ color: "red" }}>{errors.selectedStyle}</div>
             ) : null}
           </div>
-          <button type="submit">Submit</button>
         </Form>
       )}
     </Formik>
