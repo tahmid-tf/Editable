@@ -43,7 +43,7 @@ const PickStyle = () => {
                 xs={12}
                 md={6}
                 xl={4}
-                className="flex items-center justify-center"
+                // className="flex items-center justify-center"
               >
                 <Field
                   name="selectedStyle"
@@ -65,7 +65,7 @@ const PickStyle = () => {
                 xs={12}
                 md={6}
                 xl={4}
-                className="flex items-center justify-center"
+                // className="flex items-center justify-center"
               >
                 <Field
                   name="selectedStyle"
@@ -87,7 +87,7 @@ const PickStyle = () => {
                 xs={12}
                 md={6}
                 xl={4}
-                className="flex items-center justify-center"
+                // className="flex items-center justify-center"
               >
                 <Field
                   name="selectedStyle"
@@ -111,7 +111,7 @@ const PickStyle = () => {
                 xs={12}
                 md={6}
                 xl={4}
-                className="flex items-center justify-center"
+                // className="flex items-center justify-center"
               >
                 <Field
                   name="selectedStyle"
@@ -170,34 +170,36 @@ const PickStyle = () => {
                 </p>
               </div>
 
-              <label htmlFor="cullingCheckbox">
-                <div
-                  style={{ cursor: "pointer" }}
-                  className="flex items-center"
+              <div className="flex items-center">
+                <label
+                  htmlFor="cullingCheckbox"
+                  className="cursor-pointer flex items-center"
                 >
                   <Field
-                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    className="cursor-pointer"
+                    style={{ width: "20px", height: "20px" }}
                     name="additionalEdits.culling"
                     type="checkbox"
-                    id="cullingCheckbox" // Added unique ID
+                    id="cullingCheckbox"
                     checked={values.additionalEdits.culling}
                     onChange={(e) =>
                       setFieldValue("additionalEdits.culling", e.target.checked)
                     }
                   />
-                  <p className="pl-10 text-[20px] font-bold">Culling</p>
-                </div>
-              </label>
-              <label htmlFor="skinRetouchingCheckbox">
-                <div
-                  style={{ cursor: "pointer" }}
-                  className="flex items-center"
+                  <span className="pl-5 text-[20px] font-bold">Culling</span>
+                </label>
+              </div>
+              <div className="flex items-center">
+                <label
+                  htmlFor="skinRetouchingCheckbox"
+                  className="cursor-pointer flex items-center"
                 >
                   <Field
-                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    className="cursor-pointer"
+                    style={{ width: "20px", height: "20px" }}
                     name="additionalEdits.skinRetouching"
                     type="checkbox"
-                    id="skinRetouchingCheckbox" // Added unique ID
+                    id="skinRetouchingCheckbox"
                     checked={values.additionalEdits.skinRetouching}
                     onChange={(e) =>
                       setFieldValue(
@@ -206,19 +208,23 @@ const PickStyle = () => {
                       )
                     }
                   />
-                  <p className="pl-10 text-[20px] font-bold">Skin Retouching</p>
-                </div>
-              </label>
-              <label htmlFor="previewEditsCheckbox">
-                <div
-                  style={{ cursor: "pointer" }}
-                  className="flex items-center"
+                  <span className="pl-5 text-[20px] font-bold">
+                    Skin Retouching
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex items-center">
+                <label
+                  htmlFor="previewEditsCheckbox"
+                  className="cursor-pointer flex items-center"
                 >
                   <Field
-                    style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                    className="cursor-pointer"
+                    style={{ width: "20px", height: "20px" }}
                     name="additionalEdits.previewEdits"
                     type="checkbox"
-                    id="previewEditsCheckbox" // Added unique ID
+                    id="previewEditsCheckbox"
                     checked={values.additionalEdits.previewEdits}
                     onChange={(e) =>
                       setFieldValue(
@@ -227,9 +233,11 @@ const PickStyle = () => {
                       )
                     }
                   />
-                  <p className="pl-10 text-[20px] font-bold">Preview Edits</p>
-                </div>
-              </label>
+                  <span className="pl-5 text-[20px] font-bold">
+                    Preview Edits
+                  </span>
+                </label>
+              </div>
             </div>
             <div className="my-60">
               <div>
