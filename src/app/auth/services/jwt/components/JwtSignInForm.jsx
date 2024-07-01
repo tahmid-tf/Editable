@@ -1,16 +1,13 @@
+import { Typography } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import _ from '@lodash';
 import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import useJwtAuth from '../useJwtAuth';
-import { Typography } from '@mui/material';
 /**
  * Form Validation Schema
  */
@@ -36,11 +33,11 @@ function JwtSignInForm() {
 	});
 	const { isValid, dirtyFields, errors } = formState;
 	useEffect(() => {
-		setValue('email', 'admin@fusetheme.com', {
+		setValue('email', 'admin@gmail.com', {
 			shouldDirty: true,
 			shouldValidate: true
 		});
-		setValue('password', 'admin', { shouldDirty: true, shouldValidate: true });
+		setValue('password', '12345678', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
 	function onSubmit(formData) {
@@ -104,18 +101,6 @@ function JwtSignInForm() {
 			/>
 
 			<div className="flex flex-col items-center justify-center sm:flex-row sm:justify-between">
-				{/* <Controller
-          name="remember"
-          control={control}
-          render={({ field }) => (
-            <FormControl>
-              <FormControlLabel
-                label="Remember me"
-                control={<Checkbox size="small" {...field} />}
-              />
-            </FormControl>
-          )}
-        /> */}
 				<Typography>
 					Forgot your password?{' '}
 					<Link

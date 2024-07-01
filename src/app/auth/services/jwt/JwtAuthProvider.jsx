@@ -100,13 +100,13 @@ function JwtAuthProvider(props) {
 		const attemptAutoLogin = async () => {
 			const accessToken = getAccessToken();
 
-			if (isTokenValid(accessToken)) {
+			if (accessToken) {
 				try {
 					setIsLoading(true);
 					const response = await axios.get(config.getUserUrl, {
 						headers: { Authorization: `Bearer ${accessToken}` }
 					});
-					const userData = response?.data;
+					const userData = response?.data?.data;
 					handleSignInSuccess(userData, accessToken);
 					return true;
 				} catch (error) {
@@ -138,8 +138,9 @@ function JwtAuthProvider(props) {
 	const handleRequest = async (url, data, handleSuccess, handleFailure) => {
 		try {
 			const response = await axios.post(url, data);
+
 			const userData = response?.data?.user;
-			const accessToken = response?.data?.access_token;
+			const accessToken = response?.data?.token;
 			handleSuccess(userData, accessToken);
 			return userData;
 		} catch (error) {
