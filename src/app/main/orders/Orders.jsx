@@ -5,20 +5,20 @@ import { styled } from "@mui/material/styles";
 import OrderTable from "./Table/OrderTable";
 import PickStyle from "./newOrder/PickStyle";
 
-const Root = styled(FusePageSimple)(({ theme }) => ({
-  "& .FusePageSimple-header": {
-    backgroundColor: theme.palette.background.paper,
-    borderBottomWidth: 1,
-    borderStyle: "solid",
-    borderColor: theme.palette.divider,
-  },
-  "& .FusePageSimple-content": {},
-  "& .FusePageSimple-sidebarHeader": {},
-  "& .FusePageSimple-sidebarContent": {},
-}));
+// const Root = styled(FusePageSimple)(({ theme }) => ({
+//   "& .FusePageSimple-header": {
+//     backgroundColor: theme.palette.background.paper,
+//     borderBottomWidth: 1,
+//     borderStyle: "solid",
+//     borderColor: theme.palette.divider,
+//   },
+//   "& .FusePageSimple-content": {},
+//   "& .FusePageSimple-sidebarHeader": {},
+//   "& .FusePageSimple-sidebarContent": {},
+// }));
 
 const Orders = () => {
-  const { t } = useTranslation("orderPage");
+  // const { t } = useTranslation("orderPage");
   return (
     <div>
       <div className="bg-white px-36">

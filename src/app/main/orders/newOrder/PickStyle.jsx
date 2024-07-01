@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StyleCard from "./StyleCards/StyleCard";
 import { Grid } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -10,9 +10,27 @@ import PriceCard from "./StyleCards/PriceCard";
 // Validation Schema
 const validationSchema = Yup.object({
   selectedStyle: Yup.string().required("A style is required"),
+  infoTotalImages: Yup.number().required("Number of images is required"),
+  driveLink: Yup.string().required("Drive link is required"),
+  // cullingTotalImages: Yup.string().when("additionalEdits.culling", {
+  //   is: true,
+  //   then: Yup.string().required("Culling Input 1 is required"),
+  // }),
+  // cullDownTotalImages: Yup.string().when("additionalEdits.culling", {
+  //   is: true,
+  //   then: Yup.string().required("Culling Input 2 is required"),
+  // }),
 });
 
 const PickStyle = () => {
+  const [showCullingInputs, setShowCullingInputs] = useState(false);
+
+  const handleCullingChange = (e, setFieldValue) => {
+    const isChecked = e.target.checked;
+    setFieldValue("additionalEdits.culling", isChecked);
+    setShowCullingInputs(isChecked);
+  };
+
   return (
     <div className="flex">
       <div>
@@ -25,8 +43,11 @@ const PickStyle = () => {
               skinRetouching: false,
               previewEdits: false,
             },
-            totalImages: 5000,
+            infoTotalImages: "",
             driveLink: "",
+            cullingTotalImages: "",
+            cullDownTotalImages: "",
+            imageSelectionMethod: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -42,12 +63,7 @@ const PickStyle = () => {
               </div>
               <div className="">
                 <Grid container spacing={5}>
-                  <Grid
-                    item
-                    md={12}
-                    xl={4}
-                    // className="flex items-center justify-center"
-                  >
+                  <Grid item md={12} xl={4}>
                     <Field
                       name="selectedStyle"
                       type="radio"
@@ -65,12 +81,7 @@ const PickStyle = () => {
                       }
                     />
                   </Grid>
-                  <Grid
-                    item
-                    md={12}
-                    xl={4}
-                    // className="flex items-center justify-center"
-                  >
+                  <Grid item md={12} xl={4}>
                     <Field
                       name="selectedStyle"
                       type="radio"
@@ -88,12 +99,7 @@ const PickStyle = () => {
                       }
                     />
                   </Grid>
-                  <Grid
-                    item
-                    md={12}
-                    xl={4}
-                    // className="flex items-center justify-center"
-                  >
+                  <Grid item md={12} xl={4}>
                     <Field
                       name="selectedStyle"
                       type="radio"
@@ -111,12 +117,7 @@ const PickStyle = () => {
                       }
                     />
                   </Grid>
-                  <Grid
-                    item
-                    md={12}
-                    xl={4}
-                    // className="flex items-center justify-center"
-                  >
+                  <Grid item md={12} xl={4}>
                     <Field
                       name="selectedStyle"
                       type="radio"
@@ -187,19 +188,117 @@ const PickStyle = () => {
                         type="checkbox"
                         id="cullingCheckbox"
                         checked={values.additionalEdits.culling}
-                        onChange={(e) =>
-                          setFieldValue(
-                            "additionalEdits.culling",
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => handleCullingChange(e, setFieldValue)}
                       />
                       <span className="pl-5 text-[20px] font-bold">
                         Culling
                       </span>
                     </label>
                   </div>
-                  <div className="flex items-center">
+
+                  {showCullingInputs && (
+                    <div className="mt-10">
+                      <div className="mt-10">
+                        <label
+                          htmlFor="cullingTotalImages"
+                          className="font-semibold"
+                          style={{
+                            lineHeight: "20px",
+                            fontSize: "14px",
+                          }}
+                        >
+                          How many images are you sending us?
+                        </label>
+                        <Field
+                          type="number"
+                          name="cullingTotalImages"
+                          placeholder=""
+                          className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                        />
+                        <ErrorMessage
+                          name="cullingTotalImages"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                      <div className="mt-16">
+                        <label
+                          htmlFor="cullDownTotalImages"
+                          className="font-semibold"
+                          style={{
+                            lineHeight: "20px",
+                            fontSize: "14px",
+                          }}
+                        >
+                          How many images should we cull down to?
+                        </label>
+                        <Field
+                          type="number"
+                          name="cullDownTotalImages"
+                          placeholder=""
+                          className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                        />
+                        <ErrorMessage
+                          name="cullDownTotalImages"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                      <div className="mt-16">
+                        <label
+                          htmlFor="imageSelectionMethod"
+                          className="font-semibold"
+                          style={{
+                            lineHeight: "20px",
+                            fontSize: "14px",
+                          }}
+                        >
+                          How would you like us to select your images?
+                        </label>
+                        <Field
+                          as="select"
+                          name="imageSelectionMethod"
+                          className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                        >
+                          <option value="" label="Select method" />
+                          <option value="Star" label="Star" />
+                          <option value="Color" label="Color" />
+                          {/* Add more options as needed */}
+                        </Field>
+                        <ErrorMessage
+                          name="imageSelectionMethod"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+
+                      {/* <div className="mt-16">
+                        <label
+                          htmlFor="imageSelectionMethod"
+                          className="font-semibold"
+                          style={{
+                            lineHeight: "20px",
+                            fontSize: "14px",
+                          }}
+                        >
+                          How would you like us to select your images?
+                        </label>
+                        <Field
+                          type="number"
+                          name="imageSelectionMethod"
+                          placeholder=""
+                          className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                        />
+                        <ErrorMessage
+                          name="imageSelectionMethod"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div> */}
+                    </div>
+                  )}
+
+                  <div className="flex items-center mt-[30px]">
                     <label
                       htmlFor="skinRetouchingCheckbox"
                       className="cursor-pointer flex items-center"
@@ -258,38 +357,39 @@ const PickStyle = () => {
                 </div>
                 <div className="my-60">
                   <div>
-                    <p className="text-[32px] font-bold text-[#868686] py-36">
+                    <p className="text-[32px] font-bold text-[#868686] pt-36">
                       Additional Info
                     </p>
                   </div>
-                  <div className="">
-                    <label
-                      htmlFor="totalImages"
-                      // className="text-md font-semibold text-black mt-16"
-                      className="font-semibold"
-                      style={{
-                        lineHeight: "20px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      How many images are you sending us?
-                    </label>
-                    <Field
-                      type="number"
-                      name="totalImages"
-                      placeholder=""
-                      className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
-                    />
-                    <ErrorMessage
-                      name="totalImages"
-                      component="div"
-                      className="text-red-500 text-xs mt-1"
-                    />
-                  </div>
+                  {/* showCullingInputs */}
+                  {!showCullingInputs && (
+                    <div className="pt-36">
+                      <label
+                        htmlFor="infoTotalImages"
+                        className="font-semibold"
+                        style={{
+                          lineHeight: "20px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        How many images are you sending us?
+                      </label>
+                      <Field
+                        type="number"
+                        name="infoTotalImages"
+                        placeholder=""
+                        className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        name="infoTotalImages"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+                  )}
                   <div className="mt-32">
                     <label
                       htmlFor="driveLink"
-                      // className="text-md font-semibold text-black mt-16"
                       className="font-semibold"
                       style={{
                         lineHeight: "20px",
@@ -318,7 +418,7 @@ const PickStyle = () => {
                       <p>1.</p>
                       <p className="pl-8">
                         All the images have finished uploading in the drive
-                        before placing the order.{" "}
+                        before placing the order.
                       </p>
                     </div>
                     <div className="flex">
@@ -346,8 +446,6 @@ const PickStyle = () => {
                 <div className="pt-32 pb-24">
                   <button
                     type="submit"
-                    // disabled={isSubmitting}
-                    // onClick={onClose}
                     className="w-[332px] h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] font-[20px]"
                   >
                     Place Order
@@ -361,7 +459,6 @@ const PickStyle = () => {
           )}
         </Formik>
       </div>
-      {/* price card */}
       <div>
         <PriceCard />
       </div>
