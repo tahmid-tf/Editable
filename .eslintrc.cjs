@@ -1,6 +1,7 @@
 module.exports = {
 	globals: {
-		localStorage: true
+		localStorage: true,
+		document: true
 	},
 	root: true,
 	parser: '@babel/eslint-parser',
