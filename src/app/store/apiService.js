@@ -10,7 +10,6 @@ const axiosBaseQuery =
 				url,
 				method,
 				data,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				params
 			});
 			return { data: result.data };
