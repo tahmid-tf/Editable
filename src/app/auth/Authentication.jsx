@@ -12,12 +12,7 @@ function Authentication(props) {
 	const { setAuthProvider, resetAuthProvider } = useAuth();
 	const userRole = useAppSelector(selectUserRole);
 	const dispatch = useAppDispatch();
-	/**
-	 * Auth Providers
-	 */
-	/**
-	 * JWT Auth
-	 */
+
 	const { user: jwtUser, authStatus: jwtAuthStatus } = useJwtAuth();
 	/**
 	 * isLoading
@@ -26,15 +21,15 @@ function Authentication(props) {
 	/**
 	 * Check if services is in loading state
 	 */
-	const inProgress = useMemo(() => jwtAuthStatus === 'configuring'[jwtAuthStatus]);
+	const inProgress = useMemo(() => jwtAuthStatus === 'configuring', [jwtAuthStatus]);
 	/**
 	 * Any user is authenticated
 	 */
-	const authenticated = useMemo(() => jwtAuthStatus === 'authenticated'[jwtAuthStatus]);
+	const authenticated = useMemo(() => jwtAuthStatus === 'authenticated', [jwtAuthStatus]);
 	/**
 	 * All users are unauthenticated
 	 */
-	const unAuthenticated = useMemo(() => jwtAuthStatus === 'unauthenticated'[jwtAuthStatus]);
+	const unAuthenticated = useMemo(() => jwtAuthStatus === 'unauthenticated', [jwtAuthStatus]);
 	/**
 	 * Sign Out
 	 */
