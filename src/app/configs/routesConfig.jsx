@@ -7,11 +7,12 @@ import SignUpConfig from '../main/sign-up/SignUpConfig';
 import SignOutConfig from '../main/sign-out/SignOutConfig';
 import Error404Page from '../main/404/Error404Page';
 import ExampleConfig from '../main/example/ExampleConfig';
-import Orders from '../main/orders/Orders';
-import Categories from '../main/categories/Categories';
-import Styles from '../main/styles/Styles';
+import Categories from '../main/admin/categories/Categories';
+import Styles from '../main/admin/styles/Styles';
+import OrdersConfig from '../main/orders/OrdersConfig';
+import adminConfig from '../main/admin/adminConfig';
 
-const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig];
+const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig, OrdersConfig, ...adminConfig];
 /**
  * The routes of the application.
  */
@@ -21,21 +22,6 @@ const routes = [
 		path: '/',
 		element: <Navigate to="/orders" />,
 		// element: <Navigate to="/example" />,
-		auth: settingsConfig.defaultAuth
-	},
-	{
-		path: 'orders',
-		element: <Orders />,
-		auth: settingsConfig.defaultAuth
-	},
-	{
-		path: 'categories',
-		element: <Categories />,
-		auth: settingsConfig.defaultAuth
-	},
-	{
-		path: 'styles',
-		element: <Styles />,
 		auth: settingsConfig.defaultAuth
 	},
 	{

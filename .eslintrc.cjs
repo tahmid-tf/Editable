@@ -52,6 +52,12 @@ module.exports = {
 				avoidEscape: true
 			}
 		],
+		'react/function-component-definition': [
+			2,
+			{
+				namedComponents: 'function-declaration'
+			}
+		],
 		'padding-line-between-statements': [
 			'warn',
 			{ blankLine: 'always', prev: 'function', next: '*' },
