@@ -197,8 +197,8 @@ const PickStyle = () => {
                   </div>
 
                   {showCullingInputs && (
-                    <div className="mt-10">
-                      <div className="mt-10">
+                    <div className="mt-20">
+                      <div className="">
                         <label
                           htmlFor="cullingTotalImages"
                           className="font-semibold"
@@ -323,7 +323,7 @@ const PickStyle = () => {
                     </label>
                   </div>
 
-                  <div className="flex items-center">
+                  <div className="flex items-center mt-[30px]">
                     <label
                       htmlFor="previewEditsCheckbox"
                       className="cursor-pointer flex items-center"
