@@ -27,7 +27,7 @@ import { InputAdornment, IconButton } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import GeneralinfoForm from "../newOrder/GeneralinfoForm";
 
-function OrderTable() {
+function OrderTable({ onOrderSubmit }) {
   // =================================================  new order model =================================================
   const [newOrderOpen, setNewOrderOpen] = useState(false); // State for modal visibility
   const handleNewOrderOpen = () => {
@@ -275,6 +275,7 @@ function OrderTable() {
           <GeneralinfoForm
             onClose={handleNewOrderClose}
             // successAlert={successAlert}
+            onOrderSubmit={onOrderSubmit}
           />
         </div>
       </Modal>

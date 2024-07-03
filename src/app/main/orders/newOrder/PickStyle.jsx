@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
   // }),
 });
 
-const PickStyle = () => {
+const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
   const [showCullingInputs, setShowCullingInputs] = useState(false);
   const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] =
     useState(false);
@@ -127,6 +127,8 @@ const PickStyle = () => {
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
+              onPickStyleSubmit();
+              successAlert();
               console.log(values);
             }}
           >

@@ -12,7 +12,7 @@ const validationSchema = Yup.object().shape({
   paymentStatus: Yup.string().required("Required"),
 });
 
-const GeneralinfoForm = ({ onClose, successAlert }) => {
+const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
   return (
     <div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
       <Formik
@@ -26,8 +26,9 @@ const GeneralinfoForm = ({ onClose, successAlert }) => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          successAlert();
+          // successAlert();
           onClose();
+          onOrderSubmit();
           console.log(values);
         }}
         className="rounded-xl"
