@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { AiFillInfoCircle } from "react-icons/ai";
 import PriceCard from "./StyleCards/PriceCard";
 import NewOrderNav from "./NewOrderNav";
+import Tooltip from "@mui/material/Tooltip";
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -490,6 +491,62 @@ const PickStyle = () => {
                           Preview Edits
                         </span>
                       </label>
+                      <Tooltip
+                        color="red"
+                        placement="right"
+                        // title="The Preview Edit service provides a preview of approximately 10% of the culled or final editable images, for your consideration and approval."
+                        title={
+                          <span style={{ fontSize: "16px" }} className="">
+                            The Preview Edit service provides a preview of
+                            approximately 10% of the culled or final editable
+                            images, for your consideration and approval.
+                          </span>
+                        }
+                        componentsProps={{
+                          tooltip: {
+                            sx: {
+                              fontSize: "16px",
+                              backgroundColor: "white", // Customize the background color
+                              color: "black", // Customize the text color
+                              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                              padding: "20px",
+                              borderRadius: "20px",
+                            },
+                          },
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            console.log("info icon clicked");
+                          }}
+                        >
+                          <AiFillInfoCircle className="ml-8" />
+                        </button>
+                      </Tooltip>
+                    </div>
+                    {/* <div className="flex items-center mt-[30px]">
+                      <label
+                        htmlFor="previewEditsCheckbox"
+                        className="cursor-pointer flex items-center"
+                      >
+                        <Field
+                          className="cursor-pointer"
+                          style={{ width: "20px", height: "20px" }}
+                          name="additionalEdits.previewEdits"
+                          type="checkbox"
+                          id="previewEditsCheckbox"
+                          checked={values.additionalEdits.previewEdits}
+                          onChange={(e) =>
+                            setFieldValue(
+                              "additionalEdits.previewEdits",
+                              e.target.checked
+                            )
+                          }
+                        />
+                        <span className="pl-5 text-[20px] font-bold">
+                          Preview Edits
+                        </span>
+                      </label>
                       <button
                         onClick={() => {
                           console.log("info icon clicked");
@@ -497,7 +554,7 @@ const PickStyle = () => {
                       >
                         <AiFillInfoCircle className="ml-8" />
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                   {/* ==================== Additional Info ==================== */}
                   <div className="my-60">
@@ -597,8 +654,6 @@ const PickStyle = () => {
                       Place Order
                     </button>
                   </div>
-
-                  {/* <CheckboxInput /> */}
                   {errors.selectedStyle && touched.selectedStyle ? (
                     <div style={{ color: "red" }}>{errors.selectedStyle}</div>
                   ) : null}
