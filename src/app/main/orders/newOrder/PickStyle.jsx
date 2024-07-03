@@ -108,7 +108,7 @@ const PickStyle = () => {
         <NewOrderNav />
       </div>
       <div className="flex">
-        <div>
+        <div className="">
           <Formik
             initialValues={{
               selectedStyle: "",
@@ -136,9 +136,9 @@ const PickStyle = () => {
                     Pick a style
                   </p>
                 </div>
-                <div className="">
+                <div className="pr-[100px]">
                   <Grid container spacing={5}>
-                    <Grid item md={12} xl={4}>
+                    <Grid item md={12} lg={6} xl={4}>
                       <Field
                         name="selectedStyle"
                         type="radio"
@@ -157,7 +157,7 @@ const PickStyle = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item md={12} xl={4}>
+                    <Grid item md={12} lg={6} xl={4}>
                       <Field
                         name="selectedStyle"
                         type="radio"
@@ -176,7 +176,7 @@ const PickStyle = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item md={12} xl={4}>
+                    <Grid item md={12} lg={6} xl={4}>
                       <Field
                         name="selectedStyle"
                         type="radio"
@@ -195,7 +195,7 @@ const PickStyle = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item md={12} xl={4}>
+                    <Grid item md={12} lg={6} xl={4}>
                       <Field
                         name="selectedStyle"
                         type="radio"
@@ -426,9 +426,7 @@ const PickStyle = () => {
                         />
                       </div>
                     )}
-                    {/* this 2 logic is working well. use only one */}
-                    {/* {showSkinRetouchingInputs && !isBasicColorSelected && ( */}
-                    {showInput.default && (
+                    {showSkinRetouchingInputs && !isBasicColorSelected && (
                       <div className="mt-20">
                         <div className="mt-16">
                           <label
@@ -509,7 +507,8 @@ const PickStyle = () => {
                       </p>
                     </div>
                     {/* showCullingInputs */}
-                    {!showCullingInputs && !showSkinRetouchingInputs && (
+                    {/* {!showCullingInputs && !showSkinRetouchingInputs && ( */}
+                    {showInput.default && (
                       <div className="pt-36">
                         <label
                           htmlFor="imageQuantity"
@@ -609,7 +608,7 @@ const PickStyle = () => {
           </Formik>
         </div>
         <div
-          className="pl-[100px]"
+          className=""
           style={{ position: "sticky", top: 78, alignSelf: "flex-start" }}
         >
           <PriceCard />
