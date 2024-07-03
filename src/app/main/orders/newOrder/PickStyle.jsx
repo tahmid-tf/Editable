@@ -6,13 +6,14 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { AiFillInfoCircle } from "react-icons/ai";
 import PriceCard from "./StyleCards/PriceCard";
+import CheckboxInput from "./CheckboxInput";
 
 // Validation Schema
 const validationSchema = Yup.object({
   selectedStyle: Yup.string().required("A style is required"),
-  infoTotalImages: Yup.number().required("Number of images is required"),
+  imageQuantity: Yup.number().required("Number of images is required"),
   driveLink: Yup.string().required("Drive link is required"),
-  // cullingTotalImages: Yup.string().when("additionalEdits.culling", {
+  // imageQuantity: Yup.string().when("additionalEdits.culling", {
   //   is: true,
   //   then: Yup.string().required("Culling Input 1 is required"),
   // }),
@@ -24,12 +25,82 @@ const validationSchema = Yup.object({
 
 const PickStyle = () => {
   const [showCullingInputs, setShowCullingInputs] = useState(false);
+  const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] =
+    useState(false);
+
+  const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
 
   const handleCullingChange = (e, setFieldValue) => {
     const isChecked = e.target.checked;
     setFieldValue("additionalEdits.culling", isChecked);
     setShowCullingInputs(isChecked);
   };
+  const handleSkinRetouchingChange = (e, setFieldValue) => {
+    const isChecked = e.target.checked;
+    setFieldValue("additionalEdits.skinRetouching", isChecked);
+    setshowSkinRetouchingInputsInputs(isChecked);
+  };
+
+  // culling skinretuching and additional info => Image Quantity showing
+
+  const [firstSelected, setFirstSelected] = useState("");
+  const [showInput, setShowInput] = useState({
+    culling: false,
+    skinRetouching: false,
+    default: true, // Show input in default section initially
+  });
+
+  const handleCheckboxChange = (name, checked, setFieldValue, values) => {
+    setFieldValue(`additionalEdits.${name}`, checked);
+
+    if (checked && !firstSelected) {
+      setFirstSelected(name);
+      setShowInput({
+        culling: name === "culling",
+        skinRetouching: name === "skinRetouching",
+        default: false,
+      });
+    } else if (!checked && firstSelected === name) {
+      setFirstSelected("");
+      if (name === "culling" && values.additionalEdits.skinRetouching) {
+        setFirstSelected("skinRetouching");
+        setShowInput({
+          culling: false,
+          skinRetouching: true,
+          default: false,
+        });
+      } else if (name === "skinRetouching" && values.additionalEdits.culling) {
+        setFirstSelected("culling");
+        setShowInput({
+          culling: true,
+          skinRetouching: false,
+          default: false,
+        });
+      } else {
+        setShowInput({
+          culling: false,
+          skinRetouching: false,
+          default: true,
+        });
+      }
+    } else if (checked) {
+      if (firstSelected === "culling" && name === "skinRetouching") {
+        setShowInput({
+          culling: true,
+          skinRetouching: false,
+          default: false,
+        });
+      } else if (firstSelected === "skinRetouching" && name === "culling") {
+        setShowInput({
+          culling: false,
+          skinRetouching: true,
+          default: false,
+        });
+      }
+    }
+  };
+
+  // culling skinretuching and additional info => Image Quantity showing .end
 
   return (
     <div className="flex">
@@ -43,11 +114,11 @@ const PickStyle = () => {
               skinRetouching: false,
               previewEdits: false,
             },
-            infoTotalImages: "",
+            imageQuantity: 5000,
             driveLink: "",
-            cullingTotalImages: "",
             cullDownTotalImages: "",
-            imageSelectionMethod: "",
+            imageSelectionMethodCulling: "",
+            imageSelectionMethodSkinRetouching: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -76,9 +147,10 @@ const PickStyle = () => {
                       selectedValue={
                         values.selectedStyle === "Classic Film Tones"
                       }
-                      handleChange={(e) =>
-                        setFieldValue("selectedStyle", e.target.value)
-                      }
+                      handleChange={(e) => {
+                        setFieldValue("selectedStyle", e.target.value);
+                        setIsBasicColorSelected(false);
+                      }}
                     />
                   </Grid>
                   <Grid item md={12} xl={4}>
@@ -94,9 +166,10 @@ const PickStyle = () => {
                       selectedValue={
                         values.selectedStyle === "Dark & Moody Vibes"
                       }
-                      handleChange={(e) =>
-                        setFieldValue("selectedStyle", e.target.value)
-                      }
+                      handleChange={(e) => {
+                        setFieldValue("selectedStyle", e.target.value);
+                        setIsBasicColorSelected(false);
+                      }}
                     />
                   </Grid>
                   <Grid item md={12} xl={4}>
@@ -112,9 +185,10 @@ const PickStyle = () => {
                       selectedValue={
                         values.selectedStyle === "Bright & Airy Freshness"
                       }
-                      handleChange={(e) =>
-                        setFieldValue("selectedStyle", e.target.value)
-                      }
+                      handleChange={(e) => {
+                        setFieldValue("selectedStyle", e.target.value);
+                        setIsBasicColorSelected(false);
+                      }}
                     />
                   </Grid>
                   <Grid item md={12} xl={4}>
@@ -132,9 +206,10 @@ const PickStyle = () => {
                         values.selectedStyle ===
                         "Basic Color & Contrast Correction"
                       }
-                      handleChange={(e) =>
-                        setFieldValue("selectedStyle", e.target.value)
-                      }
+                      handleChange={(e) => {
+                        setFieldValue("selectedStyle", e.target.value);
+                        setIsBasicColorSelected(true);
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -169,6 +244,7 @@ const PickStyle = () => {
                     />
                   </div>
                 </div>
+                {/* ==================== Additional Edits ==================== */}
                 <div className="mt-60">
                   <div>
                     <p className="text-[32px] font-bold text-[#868686] py-36">
@@ -176,6 +252,7 @@ const PickStyle = () => {
                     </p>
                   </div>
 
+                  {/* -------------------- Culling -------------------- */}
                   <div className="flex items-center">
                     <label
                       htmlFor="cullingCheckbox"
@@ -184,23 +261,31 @@ const PickStyle = () => {
                       <Field
                         className="cursor-pointer"
                         style={{ width: "20px", height: "20px" }}
-                        name="additionalEdits.culling"
                         type="checkbox"
+                        name="additionalEdits.culling"
                         id="cullingCheckbox"
                         checked={values.additionalEdits.culling}
-                        onChange={(e) => handleCullingChange(e, setFieldValue)}
+                        // onChange={(e) => handleCullingChange(e, setFieldValue)}
+                        onChange={(e) => {
+                          handleCheckboxChange(
+                            "culling",
+                            e.target.checked,
+                            setFieldValue,
+                            values
+                          );
+                          handleCullingChange(e, setFieldValue);
+                        }}
                       />
                       <span className="pl-5 text-[20px] font-bold">
                         Culling
                       </span>
                     </label>
                   </div>
-
-                  {showCullingInputs && (
+                  {showInput.culling && (
                     <div className="mt-20">
                       <div className="">
                         <label
-                          htmlFor="cullingTotalImages"
+                          htmlFor="imageQuantity"
                           className="font-semibold"
                           style={{
                             lineHeight: "20px",
@@ -211,16 +296,20 @@ const PickStyle = () => {
                         </label>
                         <Field
                           type="number"
-                          name="cullingTotalImages"
+                          name="imageQuantity"
                           placeholder=""
                           className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
                         />
                         <ErrorMessage
-                          name="cullingTotalImages"
+                          name="imageQuantity"
                           component="div"
                           className="text-red-500 text-xs mt-1"
                         />
                       </div>
+                    </div>
+                  )}
+                  {showCullingInputs && (
+                    <div className="mt-20">
                       <div className="mt-16">
                         <label
                           htmlFor="cullDownTotalImages"
@@ -246,7 +335,7 @@ const PickStyle = () => {
                       </div>
                       <div className="mt-16">
                         <label
-                          htmlFor="imageSelectionMethod"
+                          htmlFor="imageSelectionMethodCulling"
                           className="font-semibold"
                           style={{
                             lineHeight: "20px",
@@ -257,7 +346,7 @@ const PickStyle = () => {
                         </label>
                         <Field
                           as="select"
-                          name="imageSelectionMethod"
+                          name="imageSelectionMethodCulling"
                           className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
                         >
                           <option value="" label="Select method" />
@@ -266,63 +355,116 @@ const PickStyle = () => {
                           {/* Add more options as needed */}
                         </Field>
                         <ErrorMessage
-                          name="imageSelectionMethod"
+                          name="imageSelectionMethodCulling"
                           component="div"
                           className="text-red-500 text-xs mt-1"
                         />
                       </div>
+                    </div>
+                  )}
 
-                      {/* <div className="mt-16">
+                  {/* --------------------  Skin Retouching -------------------- */}
+                  {!isBasicColorSelected && (
+                    <div className="flex items-center mt-[30px]">
+                      <label
+                        htmlFor="skinRetouchingCheckbox"
+                        className="cursor-pointer flex items-center"
+                      >
+                        <Field
+                          className="cursor-pointer"
+                          style={{ width: "20px", height: "20px" }}
+                          name="additionalEdits.skinRetouching"
+                          type="checkbox"
+                          id="skinRetouchingCheckbox"
+                          checked={values.additionalEdits.skinRetouching}
+                          // onChange={(e) =>
+                          //   handleSkinRetouchingChange(e, setFieldValue)
+                          // }
+                          onChange={(e) => {
+                            handleCheckboxChange(
+                              "skinRetouching",
+                              e.target.checked,
+                              setFieldValue,
+                              values
+                            );
+                            handleSkinRetouchingChange(e, setFieldValue);
+                          }}
+                        />
+                        <span className="pl-5 text-[20px] font-bold">
+                          Skin Retouching
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                  {/* showSkinRetouchingInputs */}
+                  {showInput.skinRetouching && (
+                    <div className="">
+                      <label
+                        htmlFor="imageQuantity"
+                        className="font-semibold"
+                        style={{
+                          lineHeight: "20px",
+                          fontSize: "14px",
+                        }}
+                      >
+                        How many images are you sending us?
+                      </label>
+                      <Field
+                        type="number"
+                        name="imageQuantity"
+                        placeholder=""
+                        className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+                      />
+                      <ErrorMessage
+                        name="imageQuantity"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+                  )}
+                  {/* this 2 logic is working well. use only one */}
+                  {/* {showSkinRetouchingInputs && !isBasicColorSelected && ( */}
+                  {showInput.default && (
+                    <div className="mt-20">
+                      <div className="mt-16">
                         <label
-                          htmlFor="imageSelectionMethod"
+                          htmlFor="imageSelectionMethodSkinRetouching"
                           className="font-semibold"
                           style={{
                             lineHeight: "20px",
                             fontSize: "14px",
                           }}
                         >
-                          How would you like us to select your images?
+                          How would you like us to select the images for skin
+                          retouching?
                         </label>
                         <Field
-                          type="number"
-                          name="imageSelectionMethod"
-                          placeholder=""
+                          as="select"
+                          name="imageSelectionMethodSkinRetouching"
                           className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
-                        />
+                        >
+                          <option value="" label="Select method" />
+                          <option value="allImages" label="All Images" />
+                          <option
+                            value="portraitsOnly"
+                            label="Portraits Only"
+                          />
+                          <option
+                            value="tenPercent"
+                            label="Best 10% of Culled Down/Final Editable Images"
+                          />
+                          {/* Add more options as needed */}
+                        </Field>
                         <ErrorMessage
-                          name="imageSelectionMethod"
+                          name="imageSelectionMethodSkinRetouching"
                           component="div"
                           className="text-red-500 text-xs mt-1"
                         />
-                      </div> */}
+                      </div>
                     </div>
                   )}
 
-                  <div className="flex items-center mt-[30px]">
-                    <label
-                      htmlFor="skinRetouchingCheckbox"
-                      className="cursor-pointer flex items-center"
-                    >
-                      <Field
-                        className="cursor-pointer"
-                        style={{ width: "20px", height: "20px" }}
-                        name="additionalEdits.skinRetouching"
-                        type="checkbox"
-                        id="skinRetouchingCheckbox"
-                        checked={values.additionalEdits.skinRetouching}
-                        onChange={(e) =>
-                          setFieldValue(
-                            "additionalEdits.skinRetouching",
-                            e.target.checked
-                          )
-                        }
-                      />
-                      <span className="pl-5 text-[20px] font-bold">
-                        Skin Retouching
-                      </span>
-                    </label>
-                  </div>
-
+                  {/* -------------------- Preview Edits -------------------- */}
                   <div className="flex items-center mt-[30px]">
                     <label
                       htmlFor="previewEditsCheckbox"
@@ -355,6 +497,7 @@ const PickStyle = () => {
                     </button>
                   </div>
                 </div>
+                {/* ==================== Additional Info ==================== */}
                 <div className="my-60">
                   <div>
                     <p className="text-[32px] font-bold text-[#868686] pt-36">
@@ -362,10 +505,10 @@ const PickStyle = () => {
                     </p>
                   </div>
                   {/* showCullingInputs */}
-                  {!showCullingInputs && (
+                  {!showCullingInputs && !showSkinRetouchingInputs && (
                     <div className="pt-36">
                       <label
-                        htmlFor="infoTotalImages"
+                        htmlFor="imageQuantity"
                         className="font-semibold"
                         style={{
                           lineHeight: "20px",
@@ -376,12 +519,12 @@ const PickStyle = () => {
                       </label>
                       <Field
                         type="number"
-                        name="infoTotalImages"
+                        name="imageQuantity"
                         placeholder=""
                         className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
                       />
                       <ErrorMessage
-                        name="infoTotalImages"
+                        name="imageQuantity"
                         component="div"
                         className="text-red-500 text-xs mt-1"
                       />
@@ -451,6 +594,8 @@ const PickStyle = () => {
                     Place Order
                   </button>
                 </div>
+
+                {/* <CheckboxInput /> */}
                 {errors.selectedStyle && touched.selectedStyle ? (
                   <div style={{ color: "red" }}>{errors.selectedStyle}</div>
                 ) : null}
