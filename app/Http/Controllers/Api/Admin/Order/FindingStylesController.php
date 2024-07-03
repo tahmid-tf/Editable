@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class PlaceOrderController extends Controller
+class FindingStylesController extends Controller
 {
     public function general_info_and_category(Request $request)
     {
