@@ -82,8 +82,8 @@ const CheckboxInput = () => {
               <Field
                 className="cursor-pointer"
                 style={{ width: "20px", height: "20px" }}
-                name="additionalEdits.culling"
                 type="checkbox"
+                name="additionalEdits.culling"
                 id="cullingCheckbox"
                 checked={values.additionalEdits.culling}
                 onChange={(e) =>
