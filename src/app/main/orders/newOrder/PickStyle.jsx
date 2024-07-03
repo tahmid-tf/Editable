@@ -359,7 +359,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
                             <option value="" label="Select method" />
                             <option value="Star" label="Star" />
                             <option value="Color" label="Color" />
-                            {/* Add more options as needed */}
                           </Field>
                           <ErrorMessage
                             name="imageSelectionMethodCulling"
@@ -384,9 +383,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
                             type="checkbox"
                             id="skinRetouchingCheckbox"
                             checked={values.additionalEdits.skinRetouching}
-                            // onChange={(e) =>
-                            //   handleSkinRetouchingChange(e, setFieldValue)
-                            // }
                             onChange={(e) => {
                               handleCheckboxChange(
                                 "skinRetouching",
@@ -496,7 +492,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
                       <Tooltip
                         color="red"
                         placement="right"
-                        // title="The Preview Edit service provides a preview of approximately 10% of the culled or final editable images, for your consideration and approval."
                         title={
                           <span style={{ fontSize: "16px" }} className="">
                             The Preview Edit service provides a preview of
@@ -526,37 +521,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
                         </button>
                       </Tooltip>
                     </div>
-                    {/* <div className="flex items-center mt-[30px]">
-                      <label
-                        htmlFor="previewEditsCheckbox"
-                        className="cursor-pointer flex items-center"
-                      >
-                        <Field
-                          className="cursor-pointer"
-                          style={{ width: "20px", height: "20px" }}
-                          name="additionalEdits.previewEdits"
-                          type="checkbox"
-                          id="previewEditsCheckbox"
-                          checked={values.additionalEdits.previewEdits}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "additionalEdits.previewEdits",
-                              e.target.checked
-                            )
-                          }
-                        />
-                        <span className="pl-5 text-[20px] font-bold">
-                          Preview Edits
-                        </span>
-                      </label>
-                      <button
-                        onClick={() => {
-                          console.log("info icon clicked");
-                        }}
-                      >
-                        <AiFillInfoCircle className="ml-8" />
-                      </button>
-                    </div> */}
                   </div>
                   {/* ==================== Additional Info ==================== */}
                   <div className="my-60">
