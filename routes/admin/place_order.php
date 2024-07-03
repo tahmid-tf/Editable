@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\SelectedStyleWithAmountCalculationController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\Order\FindingStylesController;
+use App\Http\Controllers\Api\Admin\Order\SelectedStyleWithAmountCalculationController;
+use Illuminate\Support\Facades\Route;
 
 
 // Place order routes
