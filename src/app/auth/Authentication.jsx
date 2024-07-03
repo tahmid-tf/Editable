@@ -3,9 +3,12 @@ import FuseAuthorization from '@fuse/core/FuseAuthorization/FuseAuthorization';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import FuseSplashScreen from '@fuse/core/FuseSplashScreen/FuseSplashScreen';
+import { setNavigation } from 'app/theme-layouts/shared-components/navigation/store/navigationSlice';
 import { resetUser, selectUserRole, setUser } from './user/store/userSlice';
 import useAuth from './useAuth';
 import useJwtAuth from './services/jwt/useJwtAuth';
+import adminNavigationConfig from '../main/admin/adminNavigationConfig';
+import userNavigationConfig from '../main/user/userNavigationConfig';
 
 function Authentication(props) {
 	const { children } = props;
@@ -50,6 +53,7 @@ function Authentication(props) {
 	 * Handle sign in
 	 */
 	const handleSignIn = useCallback((provider, userState) => {
+		dispatch(setNavigation(userState?.role?.includes('admin') ? adminNavigationConfig : userNavigationConfig));
 		dispatch(setUser(userState)).then(() => {
 			setAuthProvider(provider);
 			setIsLoading(false);
