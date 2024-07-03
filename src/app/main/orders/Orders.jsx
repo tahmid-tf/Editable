@@ -21,7 +21,7 @@ const Orders = () => {
   // const { t } = useTranslation("orderPage");
   return (
     <div>
-      <div className="bg-white px-36">
+      <div className="bg-white px-[26px]">
         {/* <OrderTable /> */}
         <PickStyle />
       </div>

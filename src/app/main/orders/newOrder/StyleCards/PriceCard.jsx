@@ -43,7 +43,8 @@ export default function PriceCard() {
     <Card
       sx={{
         position: "relative",
-        boxShadow: 4,
+        // boxShadow: 4,
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
       }}
       // onClick={() => handleChange({ target: { value } })}
     >
@@ -51,6 +52,7 @@ export default function PriceCard() {
         sx={{
           width: 440,
           height: 595,
+          cursor: "default",
         }}
         className=""
       >
