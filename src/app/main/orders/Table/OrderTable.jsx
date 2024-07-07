@@ -491,10 +491,10 @@ const OrderTableHeader = () => {
 							sx={{
 								borderRadius: 4,
 								padding: 2,
-								'& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
-									{
-										display: 'none'
-									}
+								// '& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
+								// 	{
+								// 		display: 'none'
+								// 	}
 							}}
 						/>
 					</LocalizationProvider>
