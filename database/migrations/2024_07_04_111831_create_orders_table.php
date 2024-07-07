@@ -47,7 +47,7 @@ class CreateOrdersTable extends Migration
             $table->string('skin_retouching_type')->nullable();
 
             $table->enum('additional_info', ['yes', 'no'])->nullable();
-            $table->enum('preview_edits', ['yes', 'no'])->nullable();
+            $table->string('preview_edits')->nullable();
 
 
 //            Users Info

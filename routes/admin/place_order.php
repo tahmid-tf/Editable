@@ -30,7 +30,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Order creation and dynamically sorting [ Stage 3 ] ---------------------------
 
-
+    Route::get('order_list', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class,'search'])->name('admin.order_list');
 
     // --------------------------- Order creation and dynamically sorting [ Stage 3 ] ---------------------------
 
