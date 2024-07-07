@@ -921,6 +921,16 @@ function OrderTable() {
 				enableTopToolbar={false}
 				enablePagination={false}
 				enableBottomToolbar={false}
+				renderRowActions={() => (
+					<div className="flex gap-5">
+						<button onClick={handleLuEyeClick}>
+							<LuEye size={20} />
+						</button>
+						<button onClick={handleFiEditClick}>
+							<FiEdit size={18} />
+						</button>
+					</div>
+				)}
 			/>
 
 			<div className="py-36">
