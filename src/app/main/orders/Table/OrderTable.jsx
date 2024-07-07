@@ -171,7 +171,7 @@ function CustomActionBar(props) {
 }
 
 const AnotherCustomComp = (props) => {
-	const { className, ownerState, setDateValue, dateValue } = props;
+	const { className, ownerState, setDateValue, dateValue, setOpenDate } = props;
 	console.log({ props });
 	return (
 		<DialogActions
@@ -207,6 +207,7 @@ const AnotherCustomComp = (props) => {
 				<Button
 					variant="outlined"
 					sx={{ borderRadius: '8px' }}
+					onClick={() => setOpenDate(false)}
 				>
 					Cancel
 				</Button>
@@ -214,6 +215,7 @@ const AnotherCustomComp = (props) => {
 					variant="contained"
 					color="primary"
 					sx={{ borderRadius: '8px' }}
+					onClick={() => setOpenDate(false)}
 				>
 					Apply
 				</Button>
@@ -476,7 +478,7 @@ const OrderTableHeader = () => {
 									}
 								},
 								toolbar: { hidden: true },
-								actionBar: { dateValue, setDateValue }
+								actionBar: { dateValue, setDateValue, setOpenDate }
 							}}
 							slots={{
 								actionBar: AnotherCustomComp
@@ -504,21 +506,10 @@ const OrderTableHeader = () => {
 			>
 				<div className="bg-white flex justify-center items-center">
 					{/* <h1>Modal</h1> */}
-					{/* <GeneralinfoForm
+					<GeneralinfoForm
 						onClose={handleNewOrderClose}
 						// successAlert={successAlert}
-					/> */}
-					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<StaticDateRangePicker
-							slotProps={{
-								shortcuts: {
-									items: shortcutsItems
-								},
-								actionBar: { actions: [] }
-							}}
-							calendars={2}
-						/>
-					</LocalizationProvider>
+					/>
 				</div>
 			</Modal>
 		</div>
