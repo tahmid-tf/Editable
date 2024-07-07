@@ -8,6 +8,8 @@ use App\Models\Api\Admin\Editor;
 use App\Models\Api\Admin\Order;
 use App\Models\Api\Admin\Style;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AdminOrderController extends Controller
 {
@@ -30,7 +32,7 @@ class AdminOrderController extends Controller
 //        }
 
         if ($searchParams['email']) {
-            $query->where('users_email', 'LIKE', '%' .$searchParams['email']. '%');
+            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
         }
 
         if ($searchParams['order_status']) {
@@ -70,5 +72,68 @@ class AdminOrderController extends Controller
         return response()->json([
             'data' => $orders
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        //        ------------------------------------------------- validation block -------------------------------------------------
+
+
+        try {
+            $validator = Validator::make($request->all(), [
+                'users_email' => 'required|string|email|max:255',
+                'users_phone' => 'required|string|max:20', // Assuming a max length for phone number
+                'order_type' => 'required|in:standard,express,custom',
+                'order_name' => 'required|string|max:255',
+                'category_id' => 'required|integer',
+                'payment_status' => 'required|in:pending,successful,failed',
+                'order_date' => 'nullable|date',
+                'order_id' => 'nullable|string|max:255',
+                'amount' => 'required|string|max:255', // Assuming amount is stored as a string
+                'editors_id' => 'nullable|string|max:255',
+                'order_status' => 'required|in:pending,completed,cancelled,preview',
+                'file_uploaded_by_user' => 'nullable|string|max:255',
+                'file_uploaded_by_admin_after_edit' => 'nullable|string|max:255',
+                'styles_array' => 'required|json',
+                'number_of_images_provided' => 'required|integer',
+                'culling' => 'nullable|in:yes,no',
+                'images_culled_down_to' => 'nullable|string|max:255',
+                'select_image_culling_type' => 'nullable|string|max:255',
+                'skin_retouching' => 'nullable|in:yes,no',
+                'skin_retouching_type' => 'nullable|string|max:255',
+                'additional_info' => 'nullable|in:yes,no',
+                'preview_edits' => 'nullable|string|max:255',
+                'user_id' => 'nullable|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $inputs = $validator->validated();
+
+//        ------------------------------------------------- validation block -------------------------------------------------
+
+//        ------------------------------------------------- code block -------------------------------------------------
+
+
+            $order = Order::create($inputs);
+
+            return response()->json([
+                'data' => $order,
+                'message' => 'Order created successfully.',
+                'status' => 200
+            ],200);
+
+//        ------------------------------------------------- code block -------------------------------------------------
+
+//        ------------------------------------------------- validation block -------------------------------------------------
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 422);
+        }
+
+//        ------------------------------------------------- validation block -------------------------------------------------
+
     }
 }
