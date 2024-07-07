@@ -33,8 +33,6 @@ import { DateField, LocalizationProvider, usePickersTranslations } from '@mui/x-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import useId from '@mui/material/utils/useId';
-import { setDate } from 'date-fns';
-
 const shortcutsItems = [
 	{
 		label: 'This Week',
@@ -223,10 +221,11 @@ const AnotherCustomComp = (props) => {
 		</DialogActions>
 	);
 };
+
 const OrderTableHeader = () => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
-	const [dateValue, setDateValue] = useState([]);
+	const [dateValue, setDateValue] = useState([dayjs(new Date()), dayjs(new Date())]);
 	console.log({ dateValue });
 	const handleNewOrderOpen = () => {
 		setNewOrderOpen(true);
@@ -491,7 +490,11 @@ const OrderTableHeader = () => {
 							value={dateValue}
 							sx={{
 								borderRadius: 4,
-								padding: 2
+								padding: 2,
+								'& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
+									{
+										display: 'none'
+									}
 							}}
 						/>
 					</LocalizationProvider>
