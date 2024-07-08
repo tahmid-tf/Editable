@@ -3,76 +3,44 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-import { Box, DialogActions, Grid, Menu, Modal } from '@mui/material';
+import {
+	Box,
+	DialogActions,
+	Grid,
+	Menu,
+	Modal,
+	Checkbox,
+	Pagination,
+	TextField,
+	InputAdornment,
+	IconButton
+} from '@mui/material';
 // table
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { memo, useState } from 'react';
+import { memo, useState, useMemo, useCallback, useEffect } from 'react';
 import format from 'date-fns/format';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
-import { Checkbox, Pagination, TextField } from '@mui/material';
-import { allColumnsData, allRowsData } from './OrdersData';
-import { AiFillInfoCircle } from 'react-icons/ai';
-import InputWithCalendarModal from './InputWithCalendarModal';
-import { InputAdornment, IconButton } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import GeneralinfoForm from '../newOrder/GeneralinfoForm';
-import { useMemo } from 'react';
 import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import { DateField, LocalizationProvider, usePickersTranslations } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import useId from '@mui/material/utils/useId';
-const shortcutsItems = [
-	{
-		label: 'This Week',
-		getValue: () => {
-			const today = dayjs();
-			return [today.startOf('week'), today.endOf('week')];
-		}
-	},
-	{
-		label: 'Last Week',
-		getValue: () => {
-			const today = dayjs();
-			const prevWeek = today.subtract(7, 'day');
-			return [prevWeek.startOf('week'), prevWeek.endOf('week')];
-		}
-	},
-	{
-		label: 'Last 7 Days',
-		getValue: () => {
-			const today = dayjs();
-			return [today.subtract(7, 'day'), today];
-		}
-	},
-	{
-		label: 'Current Month',
-		getValue: () => {
-			const today = dayjs();
-			return [today.startOf('month'), today.endOf('month')];
-		}
-	},
-	{
-		label: 'Next Month',
-		getValue: () => {
-			const today = dayjs();
-			const startOfNextMonth = today.endOf('month').add(1, 'day');
-			return [startOfNextMonth, startOfNextMonth.endOf('month')];
-		}
-	},
-	{ label: 'Reset', getValue: () => [null, null] }
-];
+import _ from 'lodash';
+import {
+	datePickerShortcutsItems,
+	editorOptions,
+	orderStatusOptions,
+	paymentStatusOptions
+} from 'src/app/appUtils/constant';
+import GeneralinfoForm from '../newOrder/GeneralinfoForm';
+import { allColumnsData, allRowsData } from './OrdersData';
+import { useGetOrdersDataQuery } from '../orderApi';
 
 function CustomActionBar(props) {
 	const { onAccept, onClear, onCancel, onSetToday, actions, className } = props;
@@ -222,17 +190,44 @@ const AnotherCustomComp = (props) => {
 	);
 };
 
-const OrderTableHeader = () => {
+const OrderTableHeader = ({
+	search,
+	setSearch,
+	orderStatus,
+	setOrderStatus,
+	paymentStatus,
+	setPaymentStatus,
+	editor,
+	setEditor
+}) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
 	const [dateValue, setDateValue] = useState([dayjs(new Date()), dayjs(new Date())]);
-	console.log({ dateValue });
+	const [searchInputValue, setSearchInputValue] = useState(search);
+
 	const handleNewOrderOpen = () => {
 		setNewOrderOpen(true);
 	};
 	const handleNewOrderClose = () => {
 		setNewOrderOpen(false);
 	};
+
+	const debouncedHandleSearchChange = useCallback(
+		_.debounce((value) => {
+			setSearch(value);
+		}, 500),
+		[]
+	);
+
+	const handleSearchChange = (e) => {
+		setSearchInputValue(e.target.value);
+		debouncedHandleSearchChange(e.target.value);
+	};
+	useEffect(() => {
+		return () => {
+			debouncedHandleSearchChange.cancel();
+		};
+	}, [debouncedHandleSearchChange]);
 	return (
 		<div className="">
 			<Grid
@@ -247,8 +242,8 @@ const OrderTableHeader = () => {
 					<TextField
 						label="Search"
 						name="search"
-						// value={searchValue}
-						// onChange={(e) => setSearchValue(e.target.value)}
+						value={searchInputValue}
+						onChange={handleSearchChange}
 					/>
 				</Grid>
 				<Grid
@@ -261,10 +256,9 @@ const OrderTableHeader = () => {
 							labelId="order-status-label"
 							id="orderStatus"
 							name="orderStatus"
-							// value={orderStatusValue}
+							value={orderStatus}
 							label="Order Status"
-							// onChange={handleChange}
-							// onChange={(e) => setOrderStatusValue(e.target.value)}
+							onChange={(e) => setOrderStatus(e.target.value)}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -273,14 +267,14 @@ const OrderTableHeader = () => {
 								width: '12em'
 							}}
 						>
-							{/* {orderStatusOptions.map((option) => (
+							{orderStatusOptions.map((option, i) => (
 								<MenuItem
-									key={option}
-									value={option}
+									key={i}
+									value={option.value}
 								>
-									{option}
+									{option.name}
 								</MenuItem>
-							))} */}
+							))}
 						</Select>
 					</FormControl>
 				</Grid>
@@ -294,9 +288,9 @@ const OrderTableHeader = () => {
 							labelId="payment-status-label"
 							id="paymentStatus"
 							name="paymentStatus"
-							// value={paymentStatusValue}
+							value={paymentStatus}
 							label="Payment Status"
-							// onChange={handleChange}
+							onChange={(e) => setPaymentStatus(e.target.value)}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -305,14 +299,14 @@ const OrderTableHeader = () => {
 								width: '12em'
 							}}
 						>
-							{/* {paymentStatusOptions.map((option) => (
+							{paymentStatusOptions.map((option, i) => (
 								<MenuItem
-									key={option}
-									value={option}
+									key={i}
+									value={option.value}
 								>
-									{option}
+									{option.name}
 								</MenuItem>
-							))} */}
+							))}
 						</Select>
 					</FormControl>
 				</Grid>
@@ -326,7 +320,7 @@ const OrderTableHeader = () => {
 							labelId="editor-label"
 							id="editor"
 							name="editor"
-							// value={editorValue}
+							value={editor}
 							label="Editor"
 							sx={{
 								'& .MuiSelect-select': {
@@ -335,15 +329,16 @@ const OrderTableHeader = () => {
 								},
 								width: '12em'
 							}}
+							onChange={(e) => setEditor(e.target.value)}
 						>
-							{/* {editorOptions.map((option) => (
+							{editorOptions.map((option, i) => (
 								<MenuItem
-									key={option}
-									value={option}
+									key={i}
+									value={option.value}
 								>
-									{option}
+									{option.name}
 								</MenuItem>
-							))} */}
+							))}
 						</Select>
 					</FormControl>
 				</Grid>
@@ -357,25 +352,30 @@ const OrderTableHeader = () => {
 							placeholder="MM-DD-YYYY"
 							variant="outlined"
 							fullWidth
+							sx={{
+								pl: 0,
+								'& > .MuiInputBase-root': {
+									paddingRight: 1
+								}
+							}}
 							// disabled
 							onClick={() => setOpenDate(true)}
 							// value={inputValue}
-							// InputProps={{
-							// 	endAdornment: (
-							// 		<InputAdornment position="end">
-							// 			<IconButton
-							// 			// onClick={handleOpen}
-							// 			>
-							// 				<CalendarTodayIcon />
-							// 			</IconButton>
-							// 		</InputAdornment>
-							// 	)
-							// }}
-						/>
-						<InputWithCalendarModal
-						// open={open}
-						// onClose={handleClose}
-						// onDateChange={handleDateChange}
+							InputProps={{
+								endAdornment: (
+									<InputAdornment
+										position="end"
+										sx={{ p: 0 }}
+									>
+										<IconButton
+											sx={{ p: 0 }}
+											// onClick={handleOpen}
+										>
+											<CalendarTodayIcon />
+										</IconButton>
+									</InputAdornment>
+								)
+							}}
 						/>
 					</div>
 				</Grid>
@@ -471,7 +471,7 @@ const OrderTableHeader = () => {
 						<StaticDateRangePicker
 							slotProps={{
 								shortcuts: {
-									items: shortcutsItems,
+									items: datePickerShortcutsItems,
 									sx: {
 										borderRight: '1px solid #e2e8f0'
 									}
@@ -490,7 +490,7 @@ const OrderTableHeader = () => {
 							value={dateValue}
 							sx={{
 								borderRadius: 4,
-								padding: 2,
+								padding: 2
 								// '& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
 								// 	{
 								// 		display: 'none'
@@ -520,20 +520,35 @@ const OrderTableHeader = () => {
 };
 
 function OrderTable() {
-	// =================================================  new order model =================================================
-	// State for modal visibility
-
-	// ================================== Modal calendar ================================
-	const [open, setOpen] = useState(false);
 	const [inputValue, setInputValue] = useState('');
-	console.log('i-value', inputValue);
 
-	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	// filtering state
+	const [orderStatusValue, setOrderStatusValue] = useState('');
+	const [paymentStatusValue, setPaymentStatusValue] = useState('');
+	const [editorValue, setEditorValue] = useState('');
+	const [selectedDate, setSelectedDate] = useState(null);
+	const [searchValue, setSearchValue] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [rowPerPage, setRowPerPage] = useState(10);
 
-	const handleDateChange = (startDate, endDate) => {
-		setInputValue(`${startDate} - ${endDate}`);
-	};
+	const [showAll, setShowAll] = useState(false);
+
+	console.log({
+		orderStatusValue,
+		paymentStatusValue,
+		editorValue,
+		searchValue
+	});
+	// fetch table data
+	const { data, isLoading } = useGetOrdersDataQuery({
+		orderStatusValue,
+		paymentStatusValue,
+		editorValue,
+		searchValue,
+		page: currentPage,
+		rowPerPage
+	});
+	console.log(data?.data);
 
 	// ================================== Table data ================================
 	const requiredColumns = new Set([
@@ -561,28 +576,6 @@ function OrderTable() {
 		orderStatus: row.orderStatus,
 		icon: row.icon
 	}));
-
-	// ================================ form ================================
-
-	// const [searchValue, setSearchValue] = React.useState("");
-	const [orderStatusValue, setOrderStatusValue] = useState('');
-	// console.log("orderStatusValue", orderStatusValue);
-	const [paymentStatusValue, setPaymentStatusValue] = useState('');
-	const [editorValue, setEditorValue] = useState('');
-	const [selectedDate, setSelectedDate] = useState(null);
-
-	const orderStatusOptions = ['Order Status', 'Pending', 'Completed', 'Cancelled', 'Preview Edit'];
-	const paymentStatusOptions = ['Payment Status', 'Pending', 'Successful'];
-	const editorOptions = ['Editor', 'Assign Editor', 'Ayman', 'Jane Smith', 'Michael Brown'];
-
-	// const handleDateChange = (newValue) => {
-	//   setSelectedDate(newValue);
-	// };
-
-	// ================================ form end ================================
-	// ================================ filter ================================
-	const [searchValue, setSearchValue] = useState('');
-
 	const filterRows = (rows) => {
 		return rows.filter((row) => {
 			const matchesSearchValue = row.id.toLowerCase().includes(searchValue.toLowerCase());
@@ -615,22 +608,15 @@ function OrderTable() {
 			return matchesSearchValue && matchesOrderStatus && matchesPaymentStatus && matchesEditor && isDateInRange;
 		});
 	};
-
-	// ================================ filter end ================================
-
-	// columns and rows
-	// const [showAll, setShowAll] = useState(true);
-	const [showAll, setShowAll] = useState(false);
+	const visibleColumns = showAll ? allColumnsData : selectedColumns;
+	// const visibleRows = showAll ? allRowsData : selectedRowsData;
+	const visibleRows = filterRows(showAll ? allRowsData : selectedRowsData);
 
 	// Toggle checkbox state on click
 	const handleClick = () => {
 		setShowAll(!showAll);
 	};
 	// Toggle checkbox end
-
-	const visibleColumns = showAll ? allColumnsData : selectedColumns;
-	// const visibleRows = showAll ? allRowsData : selectedRowsData;
-	const visibleRows = filterRows(showAll ? allRowsData : selectedRowsData);
 
 	// Editors
 	// Extract unique editor names
@@ -654,15 +640,6 @@ function OrderTable() {
 			[rowId]: event.target.value
 		}));
 	};
-	const customFilteringFunction = (searchValue, rowData) => {
-		// Convert searchValue and row data to lowercase for case-insensitive search
-		console.log({ searchValue });
-		console.log({ rowData });
-		// const lowerSearchValue = searchValue?.toLowerCase();
-		// const lowerRowData = Object.values(rowData).map((value) => value?.toString().toLowerCase());
-
-		// return lowerRowData.some((value) => value.includes(lowerSearchValue));
-	};
 	// order type
 	const uniqueOrders = [...new Set(allRowsData.map((row) => row.orderType))];
 	const [orderTypeValues, setOrderTypeValues] = useState({});
@@ -685,37 +662,21 @@ function OrderTable() {
 	};
 
 	//
-	let isLoading = false;
-
-	if (isLoading) {
-		return <FuseLoading />;
-	}
 	//
 
 	// page navigation
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPages] = useState(20); // Assuming total pages are known
 
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
 
-	const handleInputChange = (event) => {
-		const pageNumber = parseInt(event.target.value, 10);
-
-		if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
-			setCurrentPage(pageNumber);
-		}
-	};
-	// page navigation .end
-
 	const columns = useMemo(
 		() => [
 			{
-				accessorKey: 'date',
+				accessorKey: 'order_date',
 				header: 'Order Date',
 				size: 64,
-				accessorFn: (row) => `${format(new Date(row.date), 'MMM dd, y')}`,
+				accessorFn: (row) => `${format(new Date(row.order_date), 'MMM dd, y')}`,
 				muiTableHeadCellProps: {
 					align: 'center'
 				},
@@ -724,7 +685,7 @@ function OrderTable() {
 				}
 			},
 			{
-				accessorKey: 'id',
+				accessorKey: 'order_id',
 				header: 'Order ID',
 				muiTableHeadCellProps: {
 					align: 'center'
@@ -734,7 +695,7 @@ function OrderTable() {
 				}
 			},
 			{
-				accessorKey: 'remaining',
+				accessorKey: 'id',
 				header: 'Remaining Days',
 				muiTableHeadCellProps: {
 					align: 'center'
@@ -774,29 +735,30 @@ function OrderTable() {
 				}
 			},
 			{
-				accessorKey: 'editorName',
+				accessorKey: 'editor',
 				header: 'Editor',
 				muiTableHeadCellProps: {
 					align: 'center'
 				},
 				muiTableBodyCellProps: {
 					align: 'center'
-				}
+				},
+				accessorFn: (row) => `${row?.editor?.editor_name}`
 			},
 			{
-				accessorKey: 'paymentStatus',
+				accessorKey: 'payment_status',
 				header: 'Payment Status',
 				Cell: ({ row }) => (
 					<div
 						className={clsx(
 							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
-							row?.original?.paymentStatus === 'Successful' && 'bg-[#039855] text-white',
-							row?.original?.paymentStatus === 'Failed' && 'bg-[#CB1717] text-white',
-							row?.original?.paymentStatus === 'Pending' && 'bg-[#FFCC00] text-black'
+							row?.original?.payment_status === 'successful' && 'bg-[#039855] text-white',
+							row?.original?.payment_status === 'failed' && 'bg-[#CB1717] text-white',
+							row?.original?.payment_status === 'pending' && 'bg-[#FFCC00] text-black'
 						)}
 					>
-						<div className="tracking-[0.2px] leading-[20px] font-medium">
-							{row?.original?.paymentStatus}
+						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+							{row?.original?.payment_status}
 						</div>
 					</div>
 				),
@@ -810,17 +772,18 @@ function OrderTable() {
 			{
 				accessorKey: 'files',
 				header: 'Files',
-				Cell: ({ row }) => (
+				Cell: () => (
 					<div
 						className={clsx(
 							'inline-flex items-center px-[10px] py-[2px] tracking-wide',
 							'bg-black text-white'
 						)}
 					>
-						<a
-							href={row?.original?.files}
+						<button
+							type="button"
+							// href={row?.original?.files}
 							// target="_blank"
-							download
+							// download
 							className="tracking-[0.2px] leading-[20px] font-medium"
 							style={{
 								textDecoration: 'none',
@@ -828,7 +791,7 @@ function OrderTable() {
 							}}
 						>
 							Download
-						</a>
+						</button>
 					</div>
 				),
 				muiTableHeadCellProps: {
@@ -839,34 +802,34 @@ function OrderTable() {
 				}
 			},
 			{
-				accessorKey: 'orderStatus',
+				accessorKey: 'order_status',
 				header: 'Order Status',
 				Cell: ({ row }) => (
 					<Typography
 						className={clsx(
 							'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
-							(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Pending' &&
+							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 								'bg-[#FFCC00] text-black',
-							(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Completed' &&
+							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
 								'bg-[#039855] text-white ',
-							(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Cancelled' &&
+							(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
 								'bg-[#CB1717] text-white',
-							(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Preview Edit' &&
+							(orderStatusValues[row.id] || row?.original?.order_status) === 'preview Edit' &&
 								'bg-[#CBCBCB] text-Black'
 						)}
 					>
 						<select
-							value={orderStatusValues[row.id] || row?.original?.orderStatus}
+							value={orderStatusValues[row.id] || row?.original?.order_status}
 							onChange={(event) => handleOrderStatusChanges(row.id, event)}
 							className={clsx(
 								'inline-flex items-center tracking-wide ',
-								(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Pending' &&
+								(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 									'bg-[#FFCC00] text-black',
-								(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Completed' &&
+								(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
 									'bg-[#039855] text-white ',
-								(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Cancelled' &&
+								(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
 									'bg-[#CB1717] text-white',
-								(orderStatusValues[row.id] || row?.original?.orderStatus) === 'Preview Edit' &&
+								(orderStatusValues[row.id] || row?.original?.order_status) === 'preview Edit' &&
 									'bg-[#CBCBCB] text-Black'
 							)}
 						>
@@ -905,17 +868,37 @@ function OrderTable() {
 				}
 			}
 		],
-		[allRowsData]
+		[data, isLoading]
 	);
+
+	useEffect(() => {
+		setCurrentPage(Number(data?.data?.current_page));
+		setRowPerPage(Number(data?.data?.per_page));
+	}, [data]);
+
+	if (isLoading) {
+		return <FuseLoading />;
+	}
+
 	return (
 		<div className="">
 			<div>
 				<p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
 			</div>
 
-			<OrderTableHeader />
+			<OrderTableHeader
+				orderStatus={orderStatusValue}
+				paymentStatus={paymentStatusValue}
+				search={searchValue}
+				editor={editorValue}
+				setOrderStatus={setOrderStatusValue}
+				setPaymentStatus={setPaymentStatusValue}
+				setEditor={setEditorValue}
+				setSearch={setSearchValue}
+			/>
 			<DataTable
-				data={allRowsData}
+				isLoading={isLoading}
+				data={data?.data?.data}
 				columns={columns}
 				enableColumnActions={false}
 				enableGrouping={false}
@@ -926,10 +909,16 @@ function OrderTable() {
 				enableBottomToolbar={false}
 				renderRowActions={() => (
 					<div className="flex gap-5">
-						<button onClick={handleLuEyeClick}>
+						<button
+							type="button"
+							onClick={handleLuEyeClick}
+						>
 							<LuEye size={20} />
 						</button>
-						<button onClick={handleFiEditClick}>
+						<button
+							type="button"
+							onClick={handleFiEditClick}
+						>
 							<FiEdit size={18} />
 						</button>
 					</div>
@@ -939,7 +928,7 @@ function OrderTable() {
 			<div className="py-36">
 				<div className="flex justify-center items-center">
 					<Pagination
-						count={totalPages}
+						count={data?.data?.last_page}
 						color="primary"
 						page={currentPage}
 						onChange={handleChangePage}
@@ -953,6 +942,8 @@ function OrderTable() {
 							pt: '5px'
 						}}
 						variant="outlined"
+						value={rowPerPage}
+						onChange={(e) => setRowPerPage(e.target.value)}
 					>
 						<MenuItem value={10}>10</MenuItem>
 						<MenuItem value={20}>20</MenuItem>

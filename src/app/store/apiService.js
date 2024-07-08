@@ -1,27 +1,18 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-import Axios from 'axios';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import config from '../auth/services/jwt/jwtAuthConfig';
 
-const axiosBaseQuery =
-	() =>
-	async ({ url, method, data, params }) => {
-		try {
-			Axios.defaults.baseURL = '/api';
-			const result = await Axios({
-				url,
-				method,
-				data,
-				params
-			});
-			return { data: result.data };
-		} catch (axiosError) {
-			const error = axiosError;
-			return {
-				error
-			};
-		}
-	};
+const baseQuery = fetchBaseQuery({
+	baseUrl: import.meta.env.VITE_BASE_URL,
+	prepareHeaders: (headers) => {
+		const token = localStorage.getItem(config.tokenStorageKey);
+
+		if (token) headers.set('authorization', `Bearer ${token}`);
+
+		return headers;
+	}
+});
 export const apiService = createApi({
-	baseQuery: axiosBaseQuery(),
+	baseQuery,
 	endpoints: () => ({}),
 	reducerPath: 'apiService'
 });
