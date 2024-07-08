@@ -15,11 +15,12 @@ export const orderSlice = createSlice({
 	initialState,
 	reducers: {
 		addOrderGeneralInfo: (state, action) => {
-			state.email = action.email;
-			state.phone = action.phone;
-			state.order_type = action.order_type;
-			state.category = action.category;
-			state.payment_status = action.payment_status;
+			state.email = action.payload.email;
+			state.phone = action.payload.phone;
+			state.order_name = action.payload.order_name;
+			state.order_type = action.payload.order_type;
+			state.category = action.payload.category;
+			state.payment_status = action.payload.payment_status;
 		},
 		addOrderStyleInfo: (state, action) => {
 			console.log(action.payload);

@@ -39,7 +39,13 @@ const OrderTableHeader = ({
 	editor,
 	setEditor,
 	setStartDate,
-	setEndDate
+	setEndDate,
+	totalOrder,
+	pendingOrder,
+	completeOrder,
+	handleAllColumns,
+	showAllColumns,
+	setShowAllColumns
 }) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
@@ -54,6 +60,13 @@ const OrderTableHeader = ({
 		setNewOrderOpen(false);
 	};
 
+	const handleClick = () => {
+		setShowAllColumns((prev) => {
+			handleAllColumns(!prev);
+			return !prev;
+		});
+	};
+
 	const debouncedHandleSearchChange = useCallback(
 		_.debounce((value) => {
 			setSearch(value);
@@ -65,6 +78,7 @@ const OrderTableHeader = ({
 		setSearchInputValue(e.target.value);
 		debouncedHandleSearchChange(e.target.value);
 	};
+
 	useEffect(() => {
 		return () => {
 			debouncedHandleSearchChange.cancel();
@@ -252,7 +266,7 @@ const OrderTableHeader = ({
 				<div className="flex">
 					<div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0 text-lg font-400">
 						<span>Total Orders:</span>
-						<b> 100</b>
+						<b> {totalOrder}</b>
 					</div>
 					<Typography
 						className="font-medium mx-20"
@@ -262,7 +276,7 @@ const OrderTableHeader = ({
 					</Typography>
 					<div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
 						<span>Completed Orders:</span>
-						<b> 80</b>
+						<b> {completeOrder}</b>
 					</div>
 
 					<Typography
@@ -273,16 +287,16 @@ const OrderTableHeader = ({
 					</Typography>
 					<div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0  text-lg font-400">
 						<span>Pending Orders:</span>
-						<b> 10</b>
+						<b> {pendingOrder}</b>
 					</div>
 				</div>
 				<div
 					className="flex items-center cursor-pointer"
-					// onClick={handleClick}
+					onClick={handleClick}
 					aria-hidden="true"
 				>
 					<Checkbox
-						// checked={showAll}
+						checked={showAllColumns}
 						size="small"
 					/>
 					<Typography

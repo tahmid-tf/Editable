@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { Pagination } from '@mui/material';
+import { Box, Pagination } from '@mui/material';
 // table
 import Typography from '@mui/material/Typography';
 import { useState, useMemo, useEffect } from 'react';
@@ -11,6 +11,7 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
+import { calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { allColumnsData, allRowsData } from './OrdersData';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
@@ -31,13 +32,7 @@ function OrderTable() {
 	const [endDate, setEndDate] = useState('');
 
 	const [showAll, setShowAll] = useState(false);
-
-	console.log({
-		orderStatusValue,
-		paymentStatusValue,
-		editorValue,
-		searchValue
-	});
+	const [showAllColumns, setShowAllColumns] = useState(false);
 	// fetch table data
 	const { data, isLoading } = useGetOrdersDataQuery({
 		orderStatusValue,
@@ -49,7 +44,7 @@ function OrderTable() {
 		page: currentPage,
 		rowPerPage
 	});
-	console.log(data?.data);
+	console.log(data);
 
 	// ================================== Table data ================================
 	const requiredColumns = new Set([
@@ -170,211 +165,360 @@ function OrderTable() {
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
+	const initialColumns = [
+		{
+			id: 'order_date_formatted',
+			accessorKey: 'order_date',
+			header: 'Order Date',
+			Cell: ({ row }) => format(new Date(row?.original?.order_date), 'MMM dd, y'),
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			accessorKey: 'order_id',
+			header: 'Order ID',
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			id: 'remaining_days',
+			accessorKey: 'order_date',
+			header: 'Remaining Days',
+			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.order_date)}/07 days</Box>,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			accessorKey: 'previewstatus',
+			header: 'Preview Edit Status',
+			// eslint-disable-next-line react/no-unstable-nested-components
+			Cell: ({ row }) => {
+				// console.log({ row });
 
-	const columns = useMemo(
-		() => [
-			{
-				accessorKey: 'order_date',
-				header: 'Order Date',
-				size: 64,
-				accessorFn: (row) => `${format(new Date(row.order_date), 'MMM dd, y')}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
-			},
-			{
-				accessorKey: 'order_id',
-				header: 'Order ID',
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
-			},
-			{
-				accessorKey: 'id',
-				header: 'Remaining Days',
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
-			},
-			{
-				accessorKey: 'previewstatus',
-				header: 'Preview Edit Status',
-				// eslint-disable-next-line react/no-unstable-nested-components
-				Cell: ({ row }) => {
-					// console.log({ row });
-					return (
-						<div
-							className={clsx(
-								'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
-								row?.original?.previewstatus === 'Approved' && 'bg-[#039855] text-white',
-								row?.original?.previewstatus === 'N/A' && 'bg-[#CBCBCB] text-black',
-								row?.original?.previewstatus === 'Rejected' && 'bg-[#CB1717] text-white',
-								row?.original?.previewstatus === 'User Review Pending' && 'bg-[#CBCBCB] text-black',
-								row?.original?.previewstatus === 'Pending' && 'bg-[#FFCC00] text-black'
-							)}
-						>
-							<div className="tracking-[0.2px] leading-[20px] font-medium">
-								{row?.original?.previewstatus}
-							</div>
-						</div>
-					);
-				},
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
-			},
-			{
-				accessorKey: 'editor',
-				header: 'Editor',
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				},
-				accessorFn: (row) => `${row?.editor?.editor_name}`
-			},
-			{
-				accessorKey: 'payment_status',
-				header: 'Payment Status',
-				Cell: ({ row }) => (
+				return (
 					<div
 						className={clsx(
 							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
-							row?.original?.payment_status === 'successful' && 'bg-[#039855] text-white',
-							row?.original?.payment_status === 'failed' && 'bg-[#CB1717] text-white',
-							row?.original?.payment_status === 'pending' && 'bg-[#FFCC00] text-black'
+							row?.original?.previewstatus === 'Approved' && 'bg-[#039855] text-white',
+							row?.original?.previewstatus === 'N/A' && 'bg-[#CBCBCB] text-black',
+							row?.original?.previewstatus === 'Rejected' && 'bg-[#CB1717] text-white',
+							row?.original?.previewstatus === 'User Review Pending' && 'bg-[#CBCBCB] text-black',
+							row?.original?.previewstatus === 'Pending' && 'bg-[#FFCC00] text-black',
+							'bg-[#CBCBCB] text-black'
 						)}
 					>
-						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
-							{row?.original?.payment_status}
+						<div className="tracking-[0.2px] leading-[20px] font-medium">
+							{/* {row?.original?.previewstatus} */}
+							N/A
 						</div>
 					</div>
-				),
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				);
 			},
-			{
-				accessorKey: 'files',
-				header: 'Files',
-				Cell: () => (
-					<div
-						className={clsx(
-							'inline-flex items-center px-[10px] py-[2px] tracking-wide',
-							'bg-black text-white'
-						)}
-					>
-						<button
-							type="button"
-							// href={row?.original?.files}
-							// target="_blank"
-							// download
-							className="tracking-[0.2px] leading-[20px] font-medium"
-							style={{
-								textDecoration: 'none',
-								color: 'white'
-							}}
-						>
-							Download
-						</button>
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			accessorKey: 'editor',
+			header: 'Editor',
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			},
+			accessorFn: (row) => `${row?.editor?.editor_name}`
+		},
+		{
+			accessorKey: 'payment_status',
+			header: 'Payment Status',
+			Cell: ({ row }) => (
+				<div
+					className={clsx(
+						'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
+						row?.original?.payment_status === 'successful' && 'bg-[#039855] text-white',
+						row?.original?.payment_status === 'failed' && 'bg-[#CB1717] text-white',
+						row?.original?.payment_status === 'pending' && 'bg-[#FFCC00] text-black'
+					)}
+				>
+					<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+						{row?.original?.payment_status}
 					</div>
-				),
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				</div>
+			),
+			muiTableHeadCellProps: {
+				align: 'center'
 			},
-			{
-				accessorKey: 'order_status',
-				header: 'Order Status',
-				Cell: ({ row }) => (
-					<Typography
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			accessorKey: 'files',
+			header: 'Files',
+			Cell: () => (
+				<div
+					className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
+				>
+					<button
+						type="button"
+						// href={row?.original?.files}
+						// target="_blank"
+						// download
+						className="tracking-[0.2px] leading-[20px] font-medium"
+						style={{
+							textDecoration: 'none',
+							color: 'white'
+						}}
+						disabled
+					>
+						Download
+					</button>
+				</div>
+			),
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			accessorKey: 'order_status',
+			header: 'Order Status',
+			Cell: ({ row }) => (
+				<Typography
+					className={clsx(
+						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
+							'bg-[#FFCC00] text-black',
+						(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
+							'bg-[#039855] text-white ',
+						(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
+							'bg-[#CB1717] text-white',
+						(orderStatusValues[row.id] || row?.original?.order_status) === 'preview' &&
+							'bg-[#CBCBCB] text-Black'
+					)}
+				>
+					<select
+						value={row?.original?.order_status}
+						onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+							'inline-flex items-center tracking-wide ',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 								'bg-[#FFCC00] text-black',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
 								'bg-[#039855] text-white ',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
 								'bg-[#CB1717] text-white',
-							(orderStatusValues[row.id] || row?.original?.order_status) === 'preview Edit' &&
+							(orderStatusValues[row.id] || row?.original?.order_status) === 'preview' &&
 								'bg-[#CBCBCB] text-Black'
 						)}
+						defaultChecked={row?.original?.order_status}
 					>
-						<select
-							value={orderStatusValues[row.id] || row?.original?.order_status}
-							onChange={(event) => handleOrderStatusChanges(row.id, event)}
-							className={clsx(
-								'inline-flex items-center tracking-wide ',
-								(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
-									'bg-[#FFCC00] text-black',
-								(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
-									'bg-[#039855] text-white ',
-								(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
-									'bg-[#CB1717] text-white',
-								(orderStatusValues[row.id] || row?.original?.order_status) === 'preview Edit' &&
-									'bg-[#CBCBCB] text-Black'
-							)}
+						<option
+							className="bg-white text-black"
+							value="pending"
 						>
-							<option
-								className="bg-white text-black"
-								value="Pending"
-							>
-								Pending
-							</option>
-							<option
-								className="bg-white text-black"
-								value="Completed"
-							>
-								Completed
-							</option>
-							<option
-								className="bg-white text-black"
-								value="Cancelled"
-							>
-								Cancelled
-							</option>
-							<option
-								className="bg-white text-black"
-								value="Preview Edit"
-							>
-								Preview Edit
-							</option>
-						</select>
-					</Typography>
-				),
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+							Pending
+						</option>
+						<option
+							className="bg-white text-black"
+							value="completed"
+						>
+							Completed
+						</option>
+						<option
+							className="bg-white text-black"
+							value="cancelled"
+						>
+							Cancelled
+						</option>
+						<option
+							className="bg-white text-black"
+							value="preview"
+						>
+							Preview Edit
+						</option>
+					</select>
+				</Typography>
+			),
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
 			}
-		],
-		[data, isLoading]
-	);
+		}
+	];
+	const additionalColumns = [
+		{
+			index: 2,
+			accessorKey: 'order_name',
+			header: 'Order Name',
+			Cell: ({ row }) => row?.original?.order_name,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 3,
+			accessorKey: 'order_type',
+			header: 'Order Type',
+			Cell: ({ row }) => row?.original?.order_type,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 4,
+			accessorKey: 'users_name',
+			header: 'Order Name',
+			Cell: ({ row }) => row?.original?.users_name,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 5,
+			accessorKey: 'users_email',
+			header: 'Order Email',
+			Cell: ({ row }) => row?.original?.users_email,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 6,
+			accessorKey: 'users_phone',
+			header: 'Order Email',
+			Cell: ({ row }) => row?.original?.users_phone,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 7,
+			accessorKey: 'delivery_date',
+			header: 'Delivery Date',
+			Cell: ({ row }) => row?.original?.delivery_date,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 8,
+			accessorKey: 'amount',
+			header: 'Price',
+			Cell: ({ row }) => row?.original?.amount,
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		},
+		{
+			index: 14,
+			accessorKey: 'download',
+			header: 'Download Link',
+			Cell: ({ row }) => (
+				<div
+					className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
+				>
+					<button
+						type="button"
+						// href={row?.original?.files}
+						// target="_blank"
+						// download
+						className="tracking-[0.2px] leading-[20px] font-medium"
+						style={{
+							textDecoration: 'none',
+							color: 'white'
+						}}
+						disabled
+					>
+						Download
+					</button>
+				</div>
+			),
+			muiTableHeadCellProps: {
+				align: 'center'
+			},
+			muiTableBodyCellProps: {
+				align: 'center'
+			}
+		}
+	];
 
+	const [columns, setColumns] = useState(initialColumns);
+
+	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading]);
+	const initialColumnOrder = [
+		'order_date_formatted',
+		'order_id',
+		'remaining_days',
+		'previewstatus',
+		'editor',
+		'order_status',
+		'payment_status',
+		'files',
+		'mrt-row-select'
+	];
+
+	const [columnOrder, setColumnOrder] = useState(initialColumnOrder);
+	const handleAllColumns = (showAllColumns) => {
+		if (showAllColumns) {
+			const updatedColumns = [...initialColumns, ...additionalColumns];
+			const updatedColumnOrder = [...initialColumnOrder];
+			setColumns(updatedColumns);
+
+			additionalColumns.forEach((addColl) => {
+				updatedColumnOrder.splice(addColl.index, 0, addColl.accessorKey);
+			});
+			setColumnOrder(updatedColumnOrder);
+		} else {
+			setColumns(initialColumns);
+		}
+	};
 	useEffect(() => {
-		setCurrentPage(Number(data?.data?.current_page));
-		setRowPerPage(Number(data?.data?.per_page));
+		if (data?.data) {
+			setCurrentPage(Number(data?.data?.current_page));
+			setRowPerPage(Number(data?.data?.per_page));
+		}
 	}, [data]);
 
 	if (isLoading) {
@@ -398,11 +542,20 @@ function OrderTable() {
 				setSearch={setSearchValue}
 				setStartDate={setStartDate}
 				setEndDate={setEndDate}
+				totalOrder={data?.total_orders_count}
+				completeOrder={data?.completed_orders_count}
+				pendingOrder={data?.pending_orders_count}
+				handleAllColumns={handleAllColumns}
+				setShowAllColumns={setShowAllColumns}
+				showAllColumns={showAllColumns}
 			/>
 			<DataTable
 				isLoading={isLoading}
 				data={data?.data?.data}
-				columns={columns}
+				state={{
+					columnOrder
+				}}
+				columns={memoizedColumns}
 				enableColumnActions={false}
 				enableGrouping={false}
 				enableColumnDragging={false}
