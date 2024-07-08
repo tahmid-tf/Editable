@@ -58,8 +58,9 @@ class AdminOrderController extends Controller
             $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
         }
 
+
         $paginate = request('paginate', 10);
-        $orders = $query->paginate($paginate);
+        $orders = $query->orderBy('created_at', 'desc')->paginate($paginate);
 
         $orders->getCollection()->transform(function ($order) {
             $order->category = Category::withTrashed()->find($order->category_id);
@@ -69,7 +70,19 @@ class AdminOrderController extends Controller
             return $order;
         });
 
+
+        $total_orders_count = Order::count();
+        $completed_orders_count = Order::where('order_status','completed')->count();
+        $pending_orders_count = Order::where('order_status','pending')->count();
+        $cancelled_orders_count = Order::where('order_status','cancelled')->count();
+        $preview_orders_count = Order::where('order_status','preview')->count();
+
         return response()->json([
+            'total_orders_count' => $total_orders_count,
+            'pending_orders_count' => $pending_orders_count,
+            'cancelled_orders_count' => $cancelled_orders_count,
+            'completed_orders_count' => $completed_orders_count,
+            'preview_orders_count' => $preview_orders_count,
             'data' => $orders
         ]);
     }

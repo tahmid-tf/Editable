@@ -26,8 +26,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- selected style with amount calculation [ Stage 2 ] ---------------------------
 
-
-
     // --------------------------- Order creation and dynamically sorting [ Stage 3 ] ---------------------------
 
     Route::get('order_list', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class,'search'])->name('admin.order_list');
