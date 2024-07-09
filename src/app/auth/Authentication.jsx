@@ -3,34 +3,20 @@ import FuseAuthorization from '@fuse/core/FuseAuthorization/FuseAuthorization';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import FuseSplashScreen from '@fuse/core/FuseSplashScreen/FuseSplashScreen';
-import { useAuthenticator } from '@aws-amplify/ui-react';
-import { fetchUserAttributes } from '@aws-amplify/auth';
+import { setNavigation } from 'app/theme-layouts/shared-components/navigation/store/navigationSlice';
 import { resetUser, selectUserRole, setUser } from './user/store/userSlice';
 import useAuth from './useAuth';
-import UserModel from './user/models/UserModel';
 import useJwtAuth from './services/jwt/useJwtAuth';
-import useFirebaseAuth from './services/firebase/useFirebaseAuth';
+import adminNavigationConfig from '../main/admin/adminNavigationConfig';
+import userNavigationConfig from '../main/user/userNavigationConfig';
 
 function Authentication(props) {
 	const { children } = props;
 	const { setAuthProvider, resetAuthProvider } = useAuth();
 	const userRole = useAppSelector(selectUserRole);
 	const dispatch = useAppDispatch();
-	/**
-	 * Auth Providers
-	 */
-	/**
-	 * Amplify Auth
-	 */
-	const { user: amplifyUser, authStatus: amplifyAuthStatus } = useAuthenticator();
-	/**
-	 * JWT Auth
-	 */
+
 	const { user: jwtUser, authStatus: jwtAuthStatus } = useJwtAuth();
-	/**
-	 * Firebase Auth
-	 */
-	const { user: firebaseUser, authStatus: firebaseAuthStatus } = useFirebaseAuth();
 	/**
 	 * isLoading
 	 */
@@ -38,33 +24,15 @@ function Authentication(props) {
 	/**
 	 * Check if services is in loading state
 	 */
-	const inProgress = useMemo(
-		() =>
-			amplifyAuthStatus === 'configuring' ||
-			jwtAuthStatus === 'configuring' ||
-			firebaseAuthStatus === 'configuring',
-		[amplifyAuthStatus, jwtAuthStatus, firebaseAuthStatus]
-	);
+	const inProgress = useMemo(() => jwtAuthStatus === 'configuring', [jwtAuthStatus]);
 	/**
 	 * Any user is authenticated
 	 */
-	const authenticated = useMemo(
-		() =>
-			amplifyAuthStatus === 'authenticated' ||
-			jwtAuthStatus === 'authenticated' ||
-			firebaseAuthStatus === 'authenticated',
-		[amplifyAuthStatus, jwtAuthStatus, firebaseAuthStatus]
-	);
+	const authenticated = useMemo(() => jwtAuthStatus === 'authenticated', [jwtAuthStatus]);
 	/**
 	 * All users are unauthenticated
 	 */
-	const unAuthenticated = useMemo(
-		() =>
-			amplifyAuthStatus === 'unauthenticated' &&
-			jwtAuthStatus === 'unauthenticated' &&
-			firebaseAuthStatus === 'unauthenticated',
-		[amplifyAuthStatus, jwtAuthStatus, firebaseAuthStatus]
-	);
+	const unAuthenticated = useMemo(() => jwtAuthStatus === 'unauthenticated', [jwtAuthStatus]);
 	/**
 	 * Sign Out
 	 */
@@ -85,6 +53,7 @@ function Authentication(props) {
 	 * Handle sign in
 	 */
 	const handleSignIn = useCallback((provider, userState) => {
+		dispatch(setNavigation(userState?.role?.includes('admin') ? adminNavigationConfig : userNavigationConfig));
 		dispatch(setUser(userState)).then(() => {
 			setAuthProvider(provider);
 			setIsLoading(false);
@@ -105,41 +74,10 @@ function Authentication(props) {
 			return;
 		}
 
-		if (amplifyUser) {
-			fetchUserAttributes()
-				.then((userAttributes) => {
-					handleSignIn(
-						'amplify',
-						UserModel({
-							uid: amplifyUser.userId,
-							data: {
-								displayName: userAttributes?.name,
-								email: userAttributes?.email
-							},
-							role: ['admin']
-						})
-					);
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		}
-
 		if (jwtUser) {
 			handleSignIn('jwt', jwtUser);
 		}
-
-		if (firebaseUser) {
-			handleSignIn(
-				'firebase',
-				UserModel({
-					uid: firebaseUser.uid,
-					data: firebaseUser.data,
-					role: ['admin']
-				})
-			);
-		}
-	}, [inProgress, authenticated, amplifyUser, jwtUser, firebaseUser, isLoading]);
+	}, [inProgress, authenticated, jwtUser, isLoading]);
 	return useMemo(
 		() =>
 			isLoading ? (

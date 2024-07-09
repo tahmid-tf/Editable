@@ -1,22 +1,22 @@
-import FuseLayout from "@fuse/core/FuseLayout";
-import FuseTheme from "@fuse/core/FuseTheme";
-import { SnackbarProvider } from "notistack";
-import rtlPlugin from "stylis-plugin-rtl";
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/react";
-import { selectCurrentLanguageDirection } from "app/store/i18nSlice";
-import themeLayouts from "app/theme-layouts/themeLayouts";
-import { selectMainTheme } from "@fuse/core/FuseSettings/fuseSettingsSlice";
-import MockAdapterProvider from "@mock-api/MockAdapterProvider";
-import { useAppSelector } from "app/store/hooks";
-import { useSelector } from "react-redux";
-import withAppProviders from "./withAppProviders";
-import AuthenticationProvider from "./auth/AuthenticationProvider";
+import FuseLayout from '@fuse/core/FuseLayout';
+import FuseTheme from '@fuse/core/FuseTheme';
+import { SnackbarProvider } from 'notistack';
+import rtlPlugin from 'stylis-plugin-rtl';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
+import { selectCurrentLanguageDirection } from 'app/store/i18nSlice';
+import themeLayouts from 'app/theme-layouts/themeLayouts';
+import { selectMainTheme } from '@fuse/core/FuseSettings/fuseSettingsSlice';
+import MockAdapterProvider from '@mock-api/MockAdapterProvider';
+import { useAppSelector } from 'app/store/hooks';
+import { useSelector } from 'react-redux';
+import withAppProviders from './withAppProviders';
+import AuthenticationProvider from './auth/AuthenticationProvider';
 // fonts
-import "@fontsource/roboto"; // Imports Roboto with default weight (400)
+import '@fontsource/roboto'; // Imports Roboto with default weight (400)
 // To import specific weights and styles:
-import "@fontsource/roboto/300.css"; // Import Roboto with weight 300
-import "@fontsource/roboto/400-italic.css"; // Import Roboto with weight 400 and italic style
+import '@fontsource/roboto/300.css'; // Import Roboto with weight 300
+import '@fontsource/roboto/400-italic.css'; // Import Roboto with weight 400 and italic style
 // fonts
 
 // import axios from 'axios';
@@ -27,53 +27,55 @@ import "@fontsource/roboto/400-italic.css"; // Import Roboto with weight 400 and
 // axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 // axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
 const emotionCacheOptions = {
-  rtl: {
-    key: "muirtl",
-    stylisPlugins: [rtlPlugin],
-    insertionPoint: document.getElementById("emotion-insertion-point"),
-  },
-  ltr: {
-    key: "muiltr",
-    stylisPlugins: [],
-    insertionPoint: document.getElementById("emotion-insertion-point"),
-  },
+	rtl: {
+		key: 'muirtl',
+		stylisPlugins: [rtlPlugin],
+		insertionPoint: document.getElementById('emotion-insertion-point')
+	},
+	ltr: {
+		key: 'muiltr',
+		stylisPlugins: [],
+		insertionPoint: document.getElementById('emotion-insertion-point')
+	}
 };
 
 /**
  * The main App component.
  */
 function App() {
-  /**
-   * The language direction from the Redux store.
-   */
-  const langDirection = useAppSelector(selectCurrentLanguageDirection);
-  /**
-   * The main theme from the Redux store.
-   */
-  const mainTheme = useSelector(selectMainTheme);
-  return (
-    <MockAdapterProvider>
-      <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
-        <FuseTheme theme={mainTheme} direction={langDirection}>
-          <AuthenticationProvider>
-            <SnackbarProvider
-              maxSnack={5}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              classes={{
-                containerRoot:
-                  "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
-              }}
-            >
-              <FuseLayout layouts={themeLayouts} />
-            </SnackbarProvider>
-          </AuthenticationProvider>
-        </FuseTheme>
-      </CacheProvider>
-    </MockAdapterProvider>
-  );
+	/**
+	 * The language direction from the Redux store.
+	 */
+	const langDirection = useAppSelector(selectCurrentLanguageDirection);
+	/**
+	 * The main theme from the Redux store.
+	 */
+	const mainTheme = useSelector(selectMainTheme);
+	return (
+		<MockAdapterProvider>
+			<CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
+				<FuseTheme
+					theme={mainTheme}
+					direction={langDirection}
+				>
+					<AuthenticationProvider>
+						<SnackbarProvider
+							maxSnack={5}
+							anchorOrigin={{
+								vertical: 'bottom',
+								horizontal: 'right'
+							}}
+							classes={{
+								containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99'
+							}}
+						>
+							<FuseLayout layouts={themeLayouts} />
+						</SnackbarProvider>
+					</AuthenticationProvider>
+				</FuseTheme>
+			</CacheProvider>
+		</MockAdapterProvider>
+	);
 }
 
 export default withAppProviders(App);

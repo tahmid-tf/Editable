@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import OrderTable from "./Table/OrderTable";
 import PickStyle from "./newOrder/PickStyle";
@@ -39,5 +40,6 @@ const Orders = () => {
     </div>
   );
 };
+
 
 export default Orders;
