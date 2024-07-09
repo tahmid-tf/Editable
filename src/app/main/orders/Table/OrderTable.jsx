@@ -394,7 +394,7 @@ function OrderTable() {
 		{
 			index: 4,
 			accessorKey: 'users_name',
-			header: 'Order Name',
+			header: 'User Name',
 			Cell: ({ row }) => row?.original?.users_name,
 			muiTableHeadCellProps: {
 				align: 'center'
@@ -406,7 +406,7 @@ function OrderTable() {
 		{
 			index: 5,
 			accessorKey: 'users_email',
-			header: 'Order Email',
+			header: 'User Email',
 			Cell: ({ row }) => row?.original?.users_email,
 			muiTableHeadCellProps: {
 				align: 'center'
@@ -418,7 +418,7 @@ function OrderTable() {
 		{
 			index: 6,
 			accessorKey: 'users_phone',
-			header: 'Order Email',
+			header: 'User Email',
 			Cell: ({ row }) => row?.original?.users_phone,
 			muiTableHeadCellProps: {
 				align: 'center'
