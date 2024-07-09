@@ -14,7 +14,8 @@ const validationSchema = Yup.object().shape({
 	paymentStatus: Yup.string().required('Required')
 });
 
-const GeneralinfoForm = ({ onClose, successAlert }) => {
+
+const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 	const dispatch = useAppDispatch();
 	return (
 		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
@@ -71,6 +72,7 @@ const GeneralinfoForm = ({ onClose, successAlert }) => {
 								className="text-red-500 text-xs mt-1"
 							/>
 						</div>
+
 
 						<div className="form-group">
 							<label

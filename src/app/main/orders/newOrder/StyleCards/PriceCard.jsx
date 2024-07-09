@@ -3,32 +3,56 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { CardActionArea, Radio, Checkbox } from "@mui/material";
 import { BiSolidShoppingBag } from "react-icons/bi";
+import { useState } from "react";
 
-export default function PriceCard({
-  title,
-  li_1,
-  li_2,
-  li_3,
-  warning_text,
-  selectedValue,
-  handleChange,
-  value,
-  type,
-}) {
-  const Control = type === "checkbox" ? Checkbox : Radio;
+export default function PriceCard() {
+  // const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked); // Toggle the isChecked state
+
+    if (isChecked) {
+      console.log("call a function to change order type expressed to Standerd");
+    }
+  };
+
+  // pricingCard to update API DATA
+  const priceData = {
+    monochromPrice: 300,
+    cullingPrice: 100,
+    skinRetuchingPrice: 1000,
+    expressDalevaryPrice: 500,
+  };
+  const amount =
+    priceData.monochromPrice +
+    priceData.cullingPrice +
+    priceData.skinRetuchingPrice;
+
+  let totalPrice;
+
+  if (isChecked) {
+    totalPrice = amount + priceData.expressDalevaryPrice;
+  } else {
+    totalPrice = amount;
+  }
+  console.log("totalPrice", totalPrice);
+  // pricingCard
 
   return (
     <Card
       sx={{
         position: "relative",
-        boxShadow: 4,
+        // boxShadow: 4,
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.3)",
       }}
-      onClick={() => handleChange({ target: { value } })}
+      // onClick={() => handleChange({ target: { value } })}
     >
       <CardActionArea
         sx={{
           width: 440,
           height: 595,
+          cursor: "default",
         }}
         className=""
       >
@@ -44,7 +68,7 @@ export default function PriceCard({
                   className="font-600 text-[#121212]"
                   style={{ fontFamily: "Roboto", fontSize: "38px" }}
                 >
-                  USD 1,400
+                  USD {totalPrice}
                 </p>
               </div>
             </div>
@@ -68,20 +92,24 @@ export default function PriceCard({
                 <p className="text-[16px] text-[#707070]">
                   Monochrome Melodies (1000 items)
                 </p>
-                <p className="text-[16px] text-[#121212] font-semibold">$300</p>
+                <p className="text-[16px] text-[#121212] font-semibold">
+                  ${priceData.monochromPrice}
+                </p>
               </div>
               <div className="py-10  flex items-center justify-between">
                 <p className="text-[16px] text-[#707070]">
                   Culling (5000 items)
                 </p>
-                <p className="text-[16px] text-[#121212] font-semibold">$100</p>
+                <p className="text-[16px] text-[#121212] font-semibold">
+                  ${priceData.cullingPrice}
+                </p>
               </div>
               <div className="py-10  flex items-center justify-between">
                 <p className="text-[16px] text-[#707070]">
                   Skin Retouching (1000 items)
                 </p>
                 <p className="text-[16px] text-[#121212] font-semibold">
-                  $1,000
+                  ${priceData.skinRetuchingPrice}
                 </p>
               </div>
             </div>
@@ -89,14 +117,22 @@ export default function PriceCard({
             <div className="pt-10">
               <div className="py-10  flex items-center justify-between">
                 <p className="text-[18px] pl-[32px] text-[#707070]">Amount</p>
-                <p className="text-[18px] font-semibold">USD 1,400</p>
+                <p className="text-[18px] font-semibold">USD {amount}</p>
               </div>
               <div className="py-10  flex items-center justify-between">
                 <div className="flex justify-center items-center">
-                  <Checkbox size="" color="primary" />
+                  {/* <Checkbox size="" color="primary" /> */}
+                  <Checkbox
+                    size="small"
+                    color="primary"
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                  />
                   <p className="text-[18px] text-[#707070]">Express Delivery</p>
                 </div>
-                <p className="text-[18px] font-semibold">USD 1,820</p>
+                <p className="text-[18px] font-semibold">
+                  USD {priceData.expressDalevaryPrice}
+                </p>
               </div>
             </div>
           </div>

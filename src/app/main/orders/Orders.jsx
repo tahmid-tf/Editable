@@ -1,33 +1,45 @@
-import React from 'react';
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import { useTranslation } from 'react-i18next';
-import { styled } from '@mui/material/styles';
-import OrderTable from './Table/OrderTable';
-import PickStyle from './newOrder/PickStyle';
 
-const Root = styled(FusePageSimple)(({ theme }) => ({
-	'& .FusePageSimple-header': {
-		backgroundColor: theme.palette.background.paper,
-		borderBottomWidth: 1,
-		borderStyle: 'solid',
-		borderColor: theme.palette.divider
-	},
-	'& .FusePageSimple-content': {},
-	'& .FusePageSimple-sidebarHeader': {},
-	'& .FusePageSimple-sidebarContent': {}
-}));
+import React, { useState } from "react";
+import OrderTable from "./Table/OrderTable";
+import PickStyle from "./newOrder/PickStyle";
+import OrdersAlerts from "./Alerts/OrdersAlerts";
 
-function Orders() {
-	const { t } = useTranslation('orderPage');
+const Orders = () => {
+  const [showOrderTable, setShowOrderTable] = useState(true);
 
-	return (
-		<div>
-			<div className="bg-white px-36 mt-10">
-				<OrderTable />
-				{/* <PickStyle /> */}
-			</div>
-		</div>
-	);
-}
+  const handleOrderTableSubmit = () => {
+    setShowOrderTable(false);
+  };
+
+  const handlePickStyleSubmit = () => {
+    setShowOrderTable(true);
+  };
+
+  // Alert Success
+  const [isSuccess, setIsSuccess] = useState(false);
+  const successAlert = () => {
+    setIsSuccess(true);
+  };
+  const closeSuccess = () => {
+    setIsSuccess(false);
+  };
+
+  return (
+    <div>
+      <OrdersAlerts isSuccess={isSuccess} closeSuccess={closeSuccess} />
+      <div className="bg-white px-[26px]">
+        {showOrderTable ? (
+          <OrderTable onOrderSubmit={handleOrderTableSubmit} />
+        ) : (
+          <PickStyle
+            onPickStyleSubmit={handlePickStyleSubmit}
+            successAlert={successAlert}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 export default Orders;
