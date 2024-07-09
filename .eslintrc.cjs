@@ -55,7 +55,7 @@ module.exports = {
 		'react/function-component-definition': [
 			2,
 			{
-				namedComponents: 'function-declaration'
+				namedComponents: ['function-declaration', 'arrow-function']
 			}
 		],
 		'padding-line-between-statements': [
@@ -112,6 +112,13 @@ module.exports = {
 		'react/no-array-index-key': 'off',
 		'no-restricted-exports': ['off', { restrictedNamedExports: ['default'] }],
 		'import/no-import-module-exports': 'off',
-		'import/no-extraneous-dependencies': 'off'
+		'import/no-extraneous-dependencies': 'off',
+		'react/no-unstable-nested-components': ['off'],
+		'jsx-a11y/control-has-associated-label': [
+			'error',
+			{
+				ignoreElements: ['button']
+			}
+		]
 	}
 };
