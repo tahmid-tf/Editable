@@ -206,6 +206,7 @@ class AdminOrderController extends Controller
         });
 
         return response()->json([
+            'entire_order_count' => $query->count(),
             'total_orders_count' => $total_orders_count,
             'pending_orders_count' => $pending_orders_count,
             'cancelled_orders_count' => $cancelled_orders_count,
