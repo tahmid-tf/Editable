@@ -16,8 +16,7 @@ import { allColumnsData, allRowsData } from './OrdersData';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
 
-
-function OrderTable() {
+function OrderTable({ onOrderSubmit }) {
 	const [inputValue, setInputValue] = useState('');
 
 	// filtering state
@@ -549,6 +548,7 @@ function OrderTable() {
 				handleAllColumns={handleAllColumns}
 				setShowAllColumns={setShowAllColumns}
 				showAllColumns={showAllColumns}
+				onOrderSubmit={onOrderSubmit}
 			/>
 			<DataTable
 				isLoading={isLoading}

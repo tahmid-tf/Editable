@@ -14,7 +14,6 @@ const validationSchema = Yup.object().shape({
 	paymentStatus: Yup.string().required('Required')
 });
 
-
 const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 	const dispatch = useAppDispatch();
 	return (
@@ -42,6 +41,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 							payment_status: values?.paymentStatus
 						})
 					);
+					onOrderSubmit();
 				}}
 				className="rounded-xl"
 			>
@@ -72,7 +72,6 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 								className="text-red-500 text-xs mt-1"
 							/>
 						</div>
-
 
 						<div className="form-group">
 							<label
@@ -107,8 +106,8 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 							>
 								<option value="">Select Order Type</option>
-								<option value="pending">Standard</option>
-								<option value="pending">Express</option>
+								<option value="standard">Standard</option>
+								<option value="express">Express</option>
 							</Field>
 							<ErrorMessage
 								name="orderType"

@@ -45,7 +45,8 @@ const OrderTableHeader = ({
 	completeOrder,
 	handleAllColumns,
 	showAllColumns,
-	setShowAllColumns
+	setShowAllColumns,
+	onOrderSubmit
 }) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
@@ -366,6 +367,7 @@ const OrderTableHeader = ({
 					{/* <h1>Modal</h1> */}
 					<GeneralinfoForm
 						onClose={handleNewOrderClose}
+						onOrderSubmit={onOrderSubmit}
 						// successAlert={successAlert}
 					/>
 				</div>
