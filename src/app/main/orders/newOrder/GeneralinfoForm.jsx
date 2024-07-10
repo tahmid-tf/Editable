@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
 const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 	const dispatch = useAppDispatch();
 	return (
-		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
+		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
 			<Formik
 				initialValues={{
 					userEmail: 'john.doe@gmail.com',

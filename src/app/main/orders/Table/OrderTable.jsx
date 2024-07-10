@@ -528,6 +528,7 @@ function OrderTable({ onOrderSubmit }) {
 				setShowAllColumns={setShowAllColumns}
 				showAllColumns={showAllColumns}
 				onOrderSubmit={onOrderSubmit}
+				setPage={setCurrentPage}
 			/>
 			<DataTable
 				isLoading={isLoading}
@@ -593,7 +594,10 @@ function OrderTable({ onOrderSubmit }) {
 						}}
 						variant="outlined"
 						value={rowPerPage}
-						onChange={(e) => setRowPerPage(e.target.value)}
+						onChange={(e) => {
+							setRowPerPage(e.target.value);
+							setPage(1)
+						}}
 					>
 						<MenuItem value={10}>10</MenuItem>
 						<MenuItem value={20}>20</MenuItem>

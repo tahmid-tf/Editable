@@ -3,12 +3,13 @@ import { DateField } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 
 const CustomActionComponent = (props) => {
-	const { className, setDateValue, dateValue, setOpenDate, setStartDate, setEndDate } = props;
+	const { className, setDateValue, dateValue, setOpenDate, setStartDate, setEndDate, setPage } = props;
 
 	const handleApplyClick = () => {
 		setStartDate(dateValue[0] ? dayjs(dateValue[0]).format() : '');
 		setEndDate(dateValue[1] ? dayjs(dateValue[1]).format() : '');
 		setOpenDate(false);
+		setPage(1);
 	};
 	const handleCancelClick = () => {
 		setOpenDate(false);

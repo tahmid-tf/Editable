@@ -46,7 +46,8 @@ const OrderTableHeader = ({
 	handleAllColumns,
 	showAllColumns,
 	setShowAllColumns,
-	onOrderSubmit
+	onOrderSubmit,
+	setPage
 }) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
@@ -71,6 +72,7 @@ const OrderTableHeader = ({
 	const debouncedHandleSearchChange = useCallback(
 		_.debounce((value) => {
 			setSearch(value);
+			setPage(1);
 		}, 500),
 		[]
 	);
@@ -107,7 +109,10 @@ const OrderTableHeader = ({
 							name="orderStatus"
 							value={orderStatus}
 							label="Order Status"
-							onChange={(e) => setOrderStatus(e.target.value)}
+							onChange={(e) => {
+								setOrderStatus(e.target.value);
+								setPage(1);
+							}}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -134,7 +139,10 @@ const OrderTableHeader = ({
 							name="paymentStatus"
 							value={paymentStatus}
 							label="Payment Status"
-							onChange={(e) => setPaymentStatus(e.target.value)}
+							onChange={(e) => {
+								setPaymentStatus(e.target.value);
+								setPage(1);
+							}}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -168,7 +176,10 @@ const OrderTableHeader = ({
 								},
 								width: '12em'
 							}}
-							onChange={(e) => setEditor(e.target.value)}
+							onChange={(e) => {
+								setEditor(e.target.value);
+								setPage(1);
+							}}
 						>
 							{editorOptions.map((option, i) => (
 								<MenuItem
@@ -314,7 +325,7 @@ const OrderTableHeader = ({
 									}
 								},
 								toolbar: { hidden: true },
-								actionBar: { dateValue, setDateValue, setOpenDate, setStartDate, setEndDate }
+								actionBar: { dateValue, setDateValue, setOpenDate, setStartDate, setEndDate, setPage }
 							}}
 							slots={{
 								actionBar: CustomActionComponent
@@ -341,7 +352,7 @@ const OrderTableHeader = ({
 				aria-describedby="modal-modal-description"
 				className="flex justify-center items-center"
 			>
-				<div className="bg-white flex justify-center items-center">
+				<div className="bg-white flex justify-center items-center rounded-[4px]">
 					{/* <h1>Modal</h1> */}
 					<GeneralinfoForm
 						onClose={handleNewOrderClose}
