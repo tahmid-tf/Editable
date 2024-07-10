@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { Box, Pagination } from '@mui/material';
+import { Box, Pagination, Tooltip } from '@mui/material';
 // table
 import Typography from '@mui/material/Typography';
 import { useState, useMemo, useEffect } from 'react';
@@ -11,10 +11,12 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
-import { calculateRemainingDays } from 'src/app/appUtils/appUtils';
-import { allColumnsData, allRowsData } from './OrdersData';
+import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
+import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
+import { AiFillInfoCircle } from 'react-icons/ai';
+import dayjs from 'dayjs';
 
 function OrderTable({ onOrderSubmit }) {
 	const [inputValue, setInputValue] = useState('');
@@ -23,7 +25,6 @@ function OrderTable({ onOrderSubmit }) {
 	const [orderStatusValue, setOrderStatusValue] = useState('');
 	const [paymentStatusValue, setPaymentStatusValue] = useState('');
 	const [editorValue, setEditorValue] = useState('');
-	const [selectedDate, setSelectedDate] = useState(null);
 	const [searchValue, setSearchValue] = useState('');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
@@ -31,7 +32,6 @@ function OrderTable({ onOrderSubmit }) {
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
 
-	const [showAll, setShowAll] = useState(false);
 	const [showAllColumns, setShowAllColumns] = useState(false);
 	// fetch table data
 	const { data, isLoading } = useGetOrdersDataQuery({
@@ -46,102 +46,12 @@ function OrderTable({ onOrderSubmit }) {
 	});
 	console.log(data);
 
-	// ================================== Table data ================================
-	const requiredColumns = new Set([
-		'Order Date',
-		'Order ID',
-		'Remaining Days',
-		'Preview Edit Status',
-		'Editor',
-		'Payment Status',
-		'Files',
-		'Order Status',
-		''
-	]);
-
-	const selectedColumns = allColumnsData.filter((column) => requiredColumns.has(column));
-
-	const selectedRowsData = allRowsData.map((row) => ({
-		date: row.date,
-		id: row.id,
-		remaining: row.remaining,
-		previewstatus: row.previewstatus,
-		editorName: row.editorName,
-		paymentStatus: row.paymentStatus,
-		files: row.files,
-		orderStatus: row.orderStatus,
-		icon: row.icon
-	}));
-	const filterRows = (rows) => {
-		return rows.filter((row) => {
-			const matchesSearchValue = row.id.toLowerCase().includes(searchValue.toLowerCase());
-			const matchesOrderStatus =
-				orderStatusValue === '' || orderStatusValue === 'Order Status' || row.orderStatus === orderStatusValue;
-			const matchesPaymentStatus =
-				paymentStatusValue === '' ||
-				paymentStatusValue === 'Payment Status' ||
-				row.paymentStatus === paymentStatusValue;
-			const matchesEditor = editorValue === '' || editorValue === 'Editor' || row.editorName === editorValue;
-			// Date range filter logic
-			const isEmptyDateRange = !inputValue || inputValue.trim() === '';
-			const isDateInRange =
-				isEmptyDateRange ||
-				(function () {
-					const [startDateString, endDateString] = inputValue.split(' - ');
-					const startDate = new Date(startDateString);
-					const endDate = new Date(endDateString);
-					endDate.setDate(endDate.getDate() + 1); // to make this logic workable increase one day
-					// console.log("endDate", endDate);
-					const rowDate = new Date(row.date);
-
-					// Check for single day or date range (inclusive)
-					return startDate.getTime() === endDate.getTime()
-						? startDate.getTime() <= rowDate.getTime() // Include both start and end dates for single day selection
-						: startDate.getTime() <= rowDate.getTime() && rowDate.getTime() <= endDate.getTime(); // Existing range check (inclusive)
-				})();
-			// Date range filter logic - end
-
-			return matchesSearchValue && matchesOrderStatus && matchesPaymentStatus && matchesEditor && isDateInRange;
-		});
-	};
-	const visibleColumns = showAll ? allColumnsData : selectedColumns;
-	// const visibleRows = showAll ? allRowsData : selectedRowsData;
-	const visibleRows = filterRows(showAll ? allRowsData : selectedRowsData);
-
-	// Toggle checkbox state on click
-	const handleClick = () => {
-		setShowAll(!showAll);
-	};
-	// Toggle checkbox end
-
-	// Editors
-	// Extract unique editor names
-	const uniqueEditors = [...new Set(selectedRowsData.map((row) => row.editorName))];
-	const [editorSelectedValues, setEditorSelectedValues] = useState('Assign Editor');
-
-	const handleEditorChange = (rowId, event) => {
-		setEditorSelectedValues((prevValues) => ({
-			...prevValues,
-			[rowId]: event.target.value
-		}));
-	};
-
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
 	// console.log("osv", orderStatusValues);
 
 	const handleOrderStatusChanges = (rowId, event) => {
 		setOrderStatusValues((prevValues) => ({
-			...prevValues,
-			[rowId]: event.target.value
-		}));
-	};
-	// order type
-	const uniqueOrders = [...new Set(allRowsData.map((row) => row.orderType))];
-	const [orderTypeValues, setOrderTypeValues] = useState({});
-
-	const handleOrderTypeChange = (rowId, event) => {
-		setOrderTypeValues((prevValues) => ({
 			...prevValues,
 			[rowId]: event.target.value
 		}));
@@ -179,7 +89,7 @@ function OrderTable({ onOrderSubmit }) {
 			}
 		},
 		{
-			accessorKey: 'order_id',
+			accessorKey: 'id',
 			header: 'Order ID',
 			muiTableHeadCellProps: {
 				align: 'center'
@@ -211,17 +121,17 @@ function OrderTable({ onOrderSubmit }) {
 					<div
 						className={clsx(
 							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
-							row?.original?.previewstatus === 'Approved' && 'bg-[#039855] text-white',
-							row?.original?.previewstatus === 'N/A' && 'bg-[#CBCBCB] text-black',
-							row?.original?.previewstatus === 'Rejected' && 'bg-[#CB1717] text-white',
-							row?.original?.previewstatus === 'User Review Pending' && 'bg-[#CBCBCB] text-black',
-							row?.original?.previewstatus === 'Pending' && 'bg-[#FFCC00] text-black',
-							'bg-[#CBCBCB] text-black'
+							row?.original?.previewstatus === 'Approved'
+								? 'bg-[#039855] text-white'
+								: row?.original?.previewstatus === 'Rejected'
+									? 'bg-[#CB1717] text-white'
+									: row?.original?.previewstatus === 'Pending'
+										? 'bg-[#FFCC00] text-black'
+										: 'bg-[#CBCBCB] text-black'
 						)}
 					>
 						<div className="tracking-[0.2px] leading-[20px] font-medium">
-							{/* {row?.original?.previewstatus} */}
-							N/A
+							{row?.original?.previewstatus ? row?.original?.previewstatus : 'N/A'}
 						</div>
 					</div>
 				);
@@ -242,7 +152,36 @@ function OrderTable({ onOrderSubmit }) {
 			muiTableBodyCellProps: {
 				align: 'center'
 			},
-			accessorFn: (row) => `${row?.editor?.editor_name}`
+			Cell: ({ row }) => (
+				<Typography
+					className={clsx(
+						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#FFCC00] text-black'
+					)}
+				>
+					<select
+						value={row?.original?.editor?.editor_name ? row?.original?.editor?.editor_name : ''}
+						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
+						className={clsx(
+							'inline-flex items-center tracking-wide ',
+							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#FFCC00] text-black'
+						)}
+						defaultChecked={''}
+						defaultValue={''}
+					>
+						{editorOptions?.map((editors, i) => (
+							<option
+								key={i}
+								className="bg-white text-black"
+								value={editors.value}
+							>
+								{editors.name}
+							</option>
+						))}
+					</select>
+				</Typography>
+			)
+			// accessorFn: (row) => `${row?.editor?.editor_name}`
 		},
 		{
 			accessorKey: 'payment_status',
@@ -316,7 +255,7 @@ function OrderTable({ onOrderSubmit }) {
 					)}
 				>
 					<select
-						value={row?.original?.order_status}
+						value={row?.original?.order_status ? row?.original?.order_status : ''}
 						onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
 							'inline-flex items-center tracking-wide ',
@@ -331,30 +270,15 @@ function OrderTable({ onOrderSubmit }) {
 						)}
 						defaultChecked={row?.original?.order_status}
 					>
-						<option
-							className="bg-white text-black"
-							value="pending"
-						>
-							Pending
-						</option>
-						<option
-							className="bg-white text-black"
-							value="completed"
-						>
-							Completed
-						</option>
-						<option
-							className="bg-white text-black"
-							value="cancelled"
-						>
-							Cancelled
-						</option>
-						<option
-							className="bg-white text-black"
-							value="preview"
-						>
-							Preview Edit
-						</option>
+						{orderStatusOptions?.map((orderData, i) => (
+							<option
+								className="bg-white text-black"
+								value={orderData.value}
+								key={i}
+							>
+								{orderData.name}
+							</option>
+						))}
 					</select>
 				</Typography>
 			),
@@ -383,7 +307,22 @@ function OrderTable({ onOrderSubmit }) {
 			index: 3,
 			accessorKey: 'order_type',
 			header: 'Order Type',
-			Cell: ({ row }) => row?.original?.order_type,
+			Cell: ({ row }) => {
+				// console.log({ row });
+
+				return (
+					<div
+						className={
+							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black'
+						}
+					>
+						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+							{row?.original?.order_type}
+						</div>
+					</div>
+				);
+			},
+
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -431,7 +370,7 @@ function OrderTable({ onOrderSubmit }) {
 			index: 7,
 			accessorKey: 'delivery_date',
 			header: 'Delivery Date',
-			Cell: ({ row }) => row?.original?.delivery_date,
+			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.order_date, row?.original?.order_type)}`,
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -443,7 +382,47 @@ function OrderTable({ onOrderSubmit }) {
 			index: 8,
 			accessorKey: 'amount',
 			header: 'Price',
-			Cell: ({ row }) => row?.original?.amount,
+			Cell: ({ row }) => (
+				<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+					<Typography>$ {row?.original?.amount}</Typography>
+					<Tooltip
+						color="red"
+						placement="right"
+						title={
+							<span
+								style={{ fontSize: '16px' }}
+								className=""
+							>
+								price tooltip
+							</span>
+						}
+						componentsProps={{
+							tooltip: {
+								sx: {
+									fontSize: '16px',
+									backgroundColor: 'white', // Customize the background color
+									color: 'black', // Customize the text color
+									boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+									padding: '10px',
+									borderRadius: '10px'
+								}
+							}
+						}}
+					>
+						<button
+							onClick={() => {
+								console.log('info icon clicked');
+							}}
+							type="button"
+						>
+							<AiFillInfoCircle
+								className="ml-8"
+								size={14}
+							/>
+						</button>
+					</Tooltip>
+				</Box>
+			),
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -489,7 +468,7 @@ function OrderTable({ onOrderSubmit }) {
 	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading]);
 	const initialColumnOrder = [
 		'order_date_formatted',
-		'order_id',
+		'id',
 		'remaining_days',
 		'previewstatus',
 		'editor',
@@ -586,11 +565,25 @@ function OrderTable({ onOrderSubmit }) {
 				<div className="flex justify-center items-center">
 					<Pagination
 						count={data?.data?.last_page}
-						color="primary"
 						page={currentPage}
 						onChange={handleChangePage}
 						variant="text"
 						shape="rounded"
+						sx={{
+							'& .MuiPaginationItem-root': {
+								// color: '#0066ff',
+								'&.Mui-selected': {
+									backgroundColor: '#0066ff',
+									color: 'white'
+								},
+								'&.Mui-selected:hover': {
+									bgcolor: '#0066ff'
+								},
+								'& button:hover': {
+									backgroundColor: 'rgba(0, 102, 255, 0.1)'
+								}
+							}
+						}}
 					/>
 					<Select
 						sx={{

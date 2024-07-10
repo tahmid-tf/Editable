@@ -16,3 +16,17 @@ export const calculateRemainingDays = (orderDate) => {
 
 	return daysRemaining > 0 ? daysRemaining : 0;
 };
+export const calculateDeliveryDays = (orderDate, orderType, customDay) => {
+	// console.log({});
+	// Parse the order date using dayjs
+	const parsedOrderDate = dayjs(orderDate);
+	if (!parsedOrderDate.isValid()) {
+		return '';
+	}
+	// Add 7 days to the parsed order date
+	const deliveryDate = parsedOrderDate.add(
+		orderType === 'standard' ? 15 : orderType === 'express' ? 7 : customDay,
+		'day'
+	);
+	return deliveryDate.format('MMM D, YYYY');
+};

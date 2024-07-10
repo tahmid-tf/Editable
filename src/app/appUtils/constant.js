@@ -42,7 +42,7 @@ export const paymentStatusOptions = [
 ];
 export const editorOptions = [
 	{
-		name: 'Editor',
+		name: 'Assign Editor',
 		value: ''
 	},
 	{
@@ -52,6 +52,10 @@ export const editorOptions = [
 	{
 		name: 'Jon deo',
 		value: 'jon_deo'
+	},
+	{
+		name: 'Tahmid',
+		value: 'Tahmid'
 	}
 ];
 
