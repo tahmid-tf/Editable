@@ -26,10 +26,6 @@ class AdminOrderController extends Controller
             'start_date' => request('start_date'),
             'end_date' => request('end_date'),
         ];
-//
-//        if ($searchParams['email']) {
-//            $query->where('users_email', 'LIKE', '%' . substr($searchParams['email'], 1, -1) . '%');
-//        }
 
         if ($searchParams['email']) {
             $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
@@ -75,8 +71,6 @@ class AdminOrderController extends Controller
 
             return $order;
         });
-
-
 
 
         return response()->json([
@@ -138,7 +132,7 @@ class AdminOrderController extends Controller
                 'data' => $order,
                 'message' => 'Order created successfully.',
                 'status' => 200
-            ],200);
+            ], 200);
 
 //        ------------------------------------------------- code block -------------------------------------------------
 
@@ -151,4 +145,74 @@ class AdminOrderController extends Controller
 //        ------------------------------------------------- validation block -------------------------------------------------
 
     }
+
+    public function tested_search_with_paginate()
+    {
+        $query = Order::query();
+
+        $searchParams = [
+            'email' => request('email'),
+            'order_status' => request('order_status'),
+            'payment_status' => request('payment_status'),
+            'editor' => request('editor'),
+            'start_date' => request('start_date'),
+            'end_date' => request('end_date'),
+        ];
+
+        if ($searchParams['email']) {
+            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
+        }
+
+        if ($searchParams['order_status']) {
+            $query->where('order_status', $searchParams['order_status']);
+        }
+
+        if ($searchParams['payment_status']) {
+            $query->where('payment_status', $searchParams['payment_status']);
+        }
+
+        if ($searchParams['editor']) {
+            $editor = Editor::withTrashed()->where('editor_name', 'LIKE', '%' . $searchParams['editor'] . '%')->first();
+            if ($editor) {
+                $query->where('editors_id', $editor->id);
+            } else {
+                // If no editor is found, set the query to return no results
+                $query->whereNull('editors_id');
+            }
+        }
+
+        if ($searchParams['start_date']) {
+            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
+            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+        }
+
+        $paginate = request('paginate', 10);
+        $orders = $query->orderBy('created_at', 'desc')->paginate($paginate);
+
+        // Count values based on the paginated results
+        $paginatedOrders = $orders->getCollection();
+        $total_orders_count = $paginatedOrders->count();
+        $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
+        $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
+        $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
+        $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
+
+        $orders->getCollection()->transform(function ($order) {
+            $order->category = Category::withTrashed()->find($order->category_id);
+            $order->editor = Editor::withTrashed()->find($order->editors_id);
+            $order->styles = Style::withTrashed()->whereIn('id', json_decode($order->styles_array))->get();
+
+            return $order;
+        });
+
+        return response()->json([
+            'total_orders_count' => $total_orders_count,
+            'pending_orders_count' => $pending_orders_count,
+            'cancelled_orders_count' => $cancelled_orders_count,
+            'completed_orders_count' => $completed_orders_count,
+            'preview_orders_count' => $preview_orders_count,
+            'data' => $orders,
+        ]);
+    }
 }
+
