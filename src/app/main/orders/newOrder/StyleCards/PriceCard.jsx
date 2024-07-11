@@ -7,53 +7,51 @@ import { useState } from 'react';
 import { useCallback } from 'react';
 import { useAppDispatch } from 'app/store/hooks';
 import { addOrderAmount } from '../../orderSlice';
+import { useEffect } from 'react';
 
 export default function PriceCard({ priceInfo, formValue }) {
 	// const [isChecked, setIsChecked] = useState(true);
 	const [isChecked, setIsChecked] = useState(false);
 	const dispatch = useAppDispatch();
-	let amount = 0;
+
+	const mainStylePrice = useCallback(() => {
+		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.style_price);
+		const calculatedValue = value && formValue?.selectedStyle ? value : 0;
+		return calculatedValue;
+	}, [formValue?.imageQuantity, priceInfo?.category?.style_price, formValue?.selectedStyle]);
+
+	const cullingPrice = useCallback(() => {
+		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.culling_price);
+		const calculatedValue = value && formValue?.additionalEdits?.culling ? value : 0;
+		return calculatedValue;
+	}, [formValue?.imageQuantity, priceInfo?.category?.culling_price, formValue?.additionalEdits?.culling]);
+
+	const skinRetouchingPrice = useCallback(() => {
+		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.skin_retouch_price);
+		const calculatedValue = value && formValue?.additionalEdits?.skinRetouching ? value : 0;
+		return calculatedValue;
+	}, [formValue?.imageQuantity, priceInfo?.category?.skin_retouch_price, formValue?.additionalEdits?.skinRetouching]);
+
+	const previewEditPrice = useCallback(() => {
+		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.preview_edit_price);
+		const calculatedValue = value && formValue?.additionalEdits?.previewEdits ? value : 0;
+		return calculatedValue;
+	}, [formValue?.imageQuantity, priceInfo?.category?.preview_edit_price, formValue?.additionalEdits?.previewEdits]);
+
+	const amount = mainStylePrice() + cullingPrice() + skinRetouchingPrice() + previewEditPrice();
+
 	const expressDeliveryAmount = useCallback(() => {
 		const calculatedValue = amount * (30 / 100);
 		return calculatedValue ? calculatedValue : 0;
-	}, [amount, priceInfo]);
+	}, [amount]);
 
-	let totalPrice = useCallback(() => {
+	const totalPrice = useCallback(() => {
 		const calculatedValue = isChecked ? amount + expressDeliveryAmount() : amount;
 		dispatch(addOrderAmount(calculatedValue ? calculatedValue : 0));
 		return calculatedValue ? calculatedValue : 0;
-	}, [amount, isChecked, priceInfo]);
+	}, [amount, isChecked]);
 
-	const mainStylePrice = useCallback(() => {
-		const calculatedValue = formValue?.imageQuantity * parseFloat(priceInfo?.category?.style_price);
-		return calculatedValue ? calculatedValue : 0;
-	}, [formValue?.imageQuantity, priceInfo?.category?.style_price]);
-	const cullingPrice = useCallback(() => {
-		const calculatedValue = formValue?.imageQuantity * parseFloat(priceInfo?.category?.culling_price);
-		return calculatedValue ? calculatedValue : 0;
-	}, [formValue?.imageQuantity, priceInfo?.category?.style_price]);
-	const skinRetouchingPrice = useCallback(() => {
-		const calculatedValue = formValue?.imageQuantity * parseFloat(priceInfo?.category?.skin_retouch_price);
-		return calculatedValue ? calculatedValue : 0;
-	}, [formValue?.imageQuantity, priceInfo?.category?.style_price]);
-	const previewEditPrice = useCallback(() => {
-		const calculatedValue = formValue?.imageQuantity * parseFloat(priceInfo?.category?.preview_edit_price);
-		return calculatedValue ? calculatedValue : 0;
-	}, [formValue?.imageQuantity, priceInfo?.category?.style_price]);
-
-	if (formValue?.selectedStyle && mainStylePrice()) {
-		amount += mainStylePrice();
-	}
-	if (formValue?.additionalEdits?.culling && cullingPrice()) {
-		amount += cullingPrice();
-	}
-	if (formValue?.additionalEdits?.skinRetouching && skinRetouchingPrice()) {
-		amount += skinRetouchingPrice();
-	}
-	if (formValue?.additionalEdits?.previewEdits && previewEditPrice()) {
-		amount += previewEditPrice();
-	}
-
+	
 	const handleCheckboxChange = () => {
 		setIsChecked(!isChecked); // Toggle the isChecked state
 
@@ -90,7 +88,7 @@ export default function PriceCard({ priceInfo, formValue }) {
 									className="font-600 text-[#121212]"
 									style={{ fontFamily: 'Roboto', fontSize: '38px' }}
 								>
-									USD {totalPrice()}
+									USD {totalPrice()?.toFixed(2)}
 								</p>
 							</div>
 						</div>
@@ -113,7 +111,9 @@ export default function PriceCard({ priceInfo, formValue }) {
 									<p className="text-[16px] text-[#707070]">
 										{formValue?.selectedStyle} ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">${mainStylePrice()}</p>
+									<p className="text-[16px] text-[#121212] font-semibold">
+										${mainStylePrice()?.toFixed(2)}
+									</p>
 								</div>
 							) : (
 								<></>
@@ -123,7 +123,9 @@ export default function PriceCard({ priceInfo, formValue }) {
 									<p className="text-[16px] text-[#707070]">
 										Culling ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">${cullingPrice()}</p>
+									<p className="text-[16px] text-[#121212] font-semibold">
+										${cullingPrice()?.toFixed(2)}
+									</p>
 								</div>
 							) : (
 								<></>
@@ -133,7 +135,9 @@ export default function PriceCard({ priceInfo, formValue }) {
 									<p className="text-[16px] text-[#707070]">
 										Skin Retouching ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">${skinRetouchingPrice()}</p>
+									<p className="text-[16px] text-[#121212] font-semibold">
+										${skinRetouchingPrice()?.toFixed(2)}
+									</p>
 								</div>
 							) : (
 								<></>
@@ -143,7 +147,9 @@ export default function PriceCard({ priceInfo, formValue }) {
 									<p className="text-[16px] text-[#707070]">
 										Preview Edit ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">${previewEditPrice()}</p>
+									<p className="text-[16px] text-[#121212] font-semibold">
+										${previewEditPrice()?.toFixed(2)}
+									</p>
 								</div>
 							) : (
 								<></>
@@ -153,7 +159,7 @@ export default function PriceCard({ priceInfo, formValue }) {
 						<div className="pt-10">
 							<div className="py-10  flex items-center justify-between">
 								<p className="text-[18px] pl-[32px] text-[#707070]">Amount</p>
-								<p className="text-[18px] font-semibold">USD {amount}</p>
+								<p className="text-[18px] font-semibold">USD {amount?.toFixed(2)}</p>
 							</div>
 							<div className="py-10  flex items-center justify-between">
 								<div className="flex justify-center items-center">
@@ -166,7 +172,7 @@ export default function PriceCard({ priceInfo, formValue }) {
 									/>
 									<p className="text-[18px] text-[#707070]">Express Delivery</p>
 								</div>
-								<p className="text-[18px] font-semibold">USD {expressDeliveryAmount()}</p>
+								<p className="text-[18px] font-semibold">USD {expressDeliveryAmount()?.toFixed(2)}</p>
 							</div>
 						</div>
 					</div>
