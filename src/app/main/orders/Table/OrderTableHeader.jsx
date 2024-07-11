@@ -45,7 +45,9 @@ const OrderTableHeader = ({
 	completeOrder,
 	handleAllColumns,
 	showAllColumns,
-	setShowAllColumns
+	setShowAllColumns,
+	onOrderSubmit,
+	setPage
 }) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
@@ -70,6 +72,7 @@ const OrderTableHeader = ({
 	const debouncedHandleSearchChange = useCallback(
 		_.debounce((value) => {
 			setSearch(value);
+			setPage(1);
 		}, 500),
 		[]
 	);
@@ -86,25 +89,17 @@ const OrderTableHeader = ({
 	}, [debouncedHandleSearchChange]);
 	return (
 		<div className="">
-			<Grid
-				container
-				spacing={2}
-				className="py-10"
-			>
-				<Grid
-					item
-					xs={3}
-				>
-					<TextField
-						label="Search"
-						name="search"
-						value={searchInputValue}
-						onChange={handleSearchChange}
-					/>
-				</Grid>
-				<Grid
-					item
-					xs={2}
+			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+				<TextField
+					label="Search"
+					name="search"
+					value={searchInputValue}
+					onChange={handleSearchChange}
+				/>
+				<Box
+					display={'flex'}
+					gap={2}
+					alignItems={'center'}
 				>
 					<FormControl fullWidth>
 						<InputLabel id="order-status-label">Order Status</InputLabel>
@@ -114,7 +109,10 @@ const OrderTableHeader = ({
 							name="orderStatus"
 							value={orderStatus}
 							label="Order Status"
-							onChange={(e) => setOrderStatus(e.target.value)}
+							onChange={(e) => {
+								setOrderStatus(e.target.value);
+								setPage(1);
+							}}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -133,11 +131,6 @@ const OrderTableHeader = ({
 							))}
 						</Select>
 					</FormControl>
-				</Grid>
-				<Grid
-					item
-					xs={2}
-				>
 					<FormControl fullWidth>
 						<InputLabel id="payment-status-label">Payment Status</InputLabel>
 						<Select
@@ -146,7 +139,10 @@ const OrderTableHeader = ({
 							name="paymentStatus"
 							value={paymentStatus}
 							label="Payment Status"
-							onChange={(e) => setPaymentStatus(e.target.value)}
+							onChange={(e) => {
+								setPaymentStatus(e.target.value);
+								setPage(1);
+							}}
 							sx={{
 								'& .MuiSelect-select': {
 									backgroundColor: 'white',
@@ -165,11 +161,6 @@ const OrderTableHeader = ({
 							))}
 						</Select>
 					</FormControl>
-				</Grid>
-				<Grid
-					item
-					xs={2}
-				>
 					<FormControl fullWidth>
 						<InputLabel id="editor-label">Editor</InputLabel>
 						<Select
@@ -185,7 +176,10 @@ const OrderTableHeader = ({
 								},
 								width: '12em'
 							}}
-							onChange={(e) => setEditor(e.target.value)}
+							onChange={(e) => {
+								setEditor(e.target.value);
+								setPage(1);
+							}}
 						>
 							{editorOptions.map((option, i) => (
 								<MenuItem
@@ -197,12 +191,10 @@ const OrderTableHeader = ({
 							))}
 						</Select>
 					</FormControl>
-				</Grid>
-				<Grid
-					item
-					xs={2}
-				>
-					<Box onClick={() => setOpenDate(true)}>
+					<Box
+						onClick={() => setOpenDate(true)}
+						width={'100%'}
+					>
 						<TextField
 							label="Order Date"
 							placeholder="MM-DD-YYYY"
@@ -236,32 +228,30 @@ const OrderTableHeader = ({
 							}}
 						/>
 					</Box>
-				</Grid>
-				<Grid
-					item
-					xs={1}
-				>
-					<Button
-						variant="contained"
-						size="small"
-						sx={{
-							width: '100%',
-							height: '48px',
-							borderRadius: '4px',
-							backgroundColor: '#146ef5ef',
-							color: 'white',
-							':hover': {
-								backgroundColor: '#0066ff',
-								color: 'white'
-							},
-							whiteSpace: 'nowrap'
-						}}
-						onClick={handleNewOrderOpen}
-					>
-						New Orders
-					</Button>
-				</Grid>
-			</Grid>
+					<Box>
+						<Button
+							variant="contained"
+							size="large"
+							sx={{
+								width: '6em',
+								height: '48px',
+								borderRadius: '4px',
+								backgroundColor: '#146ef5ef',
+								color: 'white',
+								':hover': {
+									backgroundColor: '#0066ff',
+									color: 'white'
+								},
+								whiteSpace: 'nowrap'
+							}}
+							onClick={handleNewOrderOpen}
+						>
+							New Order
+						</Button>
+					</Box>
+				</Box>
+			</Box>
+
 			<div className="flex justify-between py-20">
 				<div className="flex">
 					<div className="tracking-[0.2px] leading-[20px] inline-block flex-shrink-0 text-lg font-400">
@@ -335,7 +325,7 @@ const OrderTableHeader = ({
 									}
 								},
 								toolbar: { hidden: true },
-								actionBar: { dateValue, setDateValue, setOpenDate, setStartDate, setEndDate }
+								actionBar: { dateValue, setDateValue, setOpenDate, setStartDate, setEndDate, setPage }
 							}}
 							slots={{
 								actionBar: CustomActionComponent
@@ -362,10 +352,11 @@ const OrderTableHeader = ({
 				aria-describedby="modal-modal-description"
 				className="flex justify-center items-center"
 			>
-				<div className="bg-white flex justify-center items-center">
+				<div className="bg-white flex justify-center items-center rounded-[4px]">
 					{/* <h1>Modal</h1> */}
 					<GeneralinfoForm
 						onClose={handleNewOrderClose}
+						onOrderSubmit={onOrderSubmit}
 						// successAlert={successAlert}
 					/>
 				</div>

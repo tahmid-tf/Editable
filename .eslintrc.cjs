@@ -11,8 +11,8 @@ module.exports = {
 			presets: ['@babel/preset-react']
 		}
 	},
-	plugins: ['prettier', 'unused-imports'],
-	extends: ['airbnb', 'plugin:prettier/recommended'],
+	plugins: ['prettier', 'unused-imports', 'jsx-a11y'],
+	extends: ['airbnb', 'plugin:prettier/recommended', 'plugin:jsx-a11y/recommended'],
 	settings: {
 		'import/resolver': {
 			node: {
@@ -117,8 +117,12 @@ module.exports = {
 		'jsx-a11y/control-has-associated-label': [
 			'error',
 			{
-				ignoreElements: ['button']
+				ignoreElements: ['button', 'option']
 			}
-		]
+		],
+		'jsx-a11y/label-has-associated-control': [0],
+		'jsx-a11y/anchor-is-valid': {
+			components: ['Link'] // Ignore the rule for Link components
+		}
 	}
 };

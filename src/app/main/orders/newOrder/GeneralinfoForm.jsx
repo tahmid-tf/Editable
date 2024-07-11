@@ -14,10 +14,10 @@ const validationSchema = Yup.object().shape({
 	paymentStatus: Yup.string().required('Required')
 });
 
-const GeneralinfoForm = ({ onClose, successAlert }) => {
+const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 	const dispatch = useAppDispatch();
 	return (
-		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
+		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
 			<Formik
 				initialValues={{
 					userEmail: 'john.doe@gmail.com',
@@ -41,6 +41,7 @@ const GeneralinfoForm = ({ onClose, successAlert }) => {
 							payment_status: values?.paymentStatus
 						})
 					);
+					onOrderSubmit();
 				}}
 				className="rounded-xl"
 			>
@@ -105,8 +106,8 @@ const GeneralinfoForm = ({ onClose, successAlert }) => {
 								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 							>
 								<option value="">Select Order Type</option>
-								<option value="pending">Standard</option>
-								<option value="pending">Express</option>
+								<option value="standard">Standard</option>
+								<option value="express">Express</option>
 							</Field>
 							<ErrorMessage
 								name="orderType"

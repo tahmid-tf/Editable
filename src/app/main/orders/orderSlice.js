@@ -7,7 +7,8 @@ const initialState = {
 	order_type: '',
 	order_name: '',
 	category: 0,
-	payment_status: ''
+	payment_status: '',
+	amount: 0
 };
 
 export const orderSlice = createSlice({
@@ -22,8 +23,8 @@ export const orderSlice = createSlice({
 			state.category = action.payload.category;
 			state.payment_status = action.payload.payment_status;
 		},
-		addOrderStyleInfo: (state, action) => {
-			console.log(action.payload);
+		addOrderAmount: (state, action) => {
+			state.amount = action.payload;
 		}
 	},
 	selectors: {
@@ -38,7 +39,7 @@ rootReducer.inject(orderSlice);
 const injectedSlice = orderSlice.injectInto(rootReducer);
 
 // Action creators are generated for each case reducer function
-export const { addOrderGeneralInfo } = orderSlice.actions;
+export const { addOrderGeneralInfo, addOrderAmount } = orderSlice.actions;
 
 export const { selectOrderState } = injectedSlice.selectors;
 
