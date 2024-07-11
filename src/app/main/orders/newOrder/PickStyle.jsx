@@ -232,7 +232,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 					order_status: 'pending',
 					styles_array: JSON.stringify([values.selectedMainStyleId, ...values.selectedAdditionalStyleId]),
 					number_of_images_provided: values.imageQuantity,
-					order_date: new Date(),
 					order_id: 'dadadwaad',
 					editors_id: '1',
 					file_uploaded_by_user: values.driveLink,
