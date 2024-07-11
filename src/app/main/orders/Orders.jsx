@@ -4,7 +4,7 @@ import PickStyle from './newOrder/PickStyle';
 import OrdersAlerts from './Alerts/OrdersAlerts';
 
 const Orders = () => {
-	const [showOrderTable, setShowOrderTable] = useState(false);
+	const [showOrderTable, setShowOrderTable] = useState(true);
 
 	const handleOrderTableSubmit = () => {
 		setShowOrderTable(false);
