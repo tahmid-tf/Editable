@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { useAppSelector } from 'app/store/hooks';
 import { selectOrderState } from '../orderSlice';
 import { getMaxThreshold } from 'src/app/appUtils/appUtils';
+import dayjs from 'dayjs';
 const styleData = [
 	{
 		id: 1,
@@ -87,7 +88,7 @@ const initialValues = {
 const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
 	const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] = useState(false);
-
+	const [orderCalcValue, setOrderCalcValue] = useState({});
 	const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
 
 	const [getValueForOrderCalculation, { data }] = useGetValueForOrderCalculationMutation();
@@ -177,6 +178,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 		}).then((calculatedData) => {
 			const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
 			setFieldValue('maxThreshold', maxThreshold);
+			setOrderCalcValue(calculatedData.data);
 		});
 	};
 	const handleAdditionalStyleClick = async (e, additionalStyleId, values, setFieldValue) => {
@@ -193,6 +195,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 			}).then((calculatedData) => {
 				const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
 				setFieldValue('maxThreshold', maxThreshold);
+				setOrderCalcValue(calculatedData.data);
 			});
 		} else {
 			allAdditionalStyles.add(e.target.value);
@@ -204,6 +207,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 			}).then((calculatedData) => {
 				const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
 				setFieldValue('maxThreshold', maxThreshold);
+				setOrderCalcValue(calculatedData.data);
 			});
 		}
 
@@ -227,7 +231,17 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 					amount: `${orderState.amount}`,
 					order_status: 'pending',
 					styles_array: JSON.stringify([values.selectedMainStyleId, ...values.selectedAdditionalStyleId]),
-					number_of_images_provided: values.imageQuantity
+					number_of_images_provided: values.imageQuantity,
+					order_date: new Date(),
+					order_id: 'dadadwaad',
+					editors_id: '1',
+					file_uploaded_by_user: values.driveLink,
+					culling: values.additionalEdits.culling ? 'yes' : 'no',
+					images_culled_down_to: `${values?.cullDownTotalImages}`,
+					select_image_culling_type: values?.imageSelectionMethodCulling,
+					skin_retouching: values.additionalEdits.skinRetouching ? 'yes' : 'no',
+					skin_retouching_type: values?.imageSelectionMethodSkinRetouching,
+					preview_edits: values.additionalEdits.previewEdits ? 'yes' : 'no'
 				};
 
 				const response = await placeOrder(body);
@@ -237,6 +251,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 			}}
 		>
 			{({ values, errors, touched, setFieldValue }) => {
+				console.log({ values });
 				return (
 					<Form>
 						<div className="py-[40px]">
@@ -318,7 +333,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 													name="additionalEdits.culling"
 													id="cullingCheckbox"
 													checked={values.additionalEdits.culling}
-													disabled={data?.culling !== 'yes'}
+													disabled={orderCalcValue?.culling !== 'yes'}
 													onChange={(e) => {
 														handleCheckboxChange(
 															'culling',
@@ -328,7 +343,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 														);
 														handleCullingChange(e, setFieldValue);
 														const maxThreshold = getMaxThreshold(
-															data?.data,
+															orderCalcValue,
 															values.additionalEdits
 														);
 														setFieldValue('maxThreshold', maxThreshold);
@@ -337,7 +352,9 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 												<span
 													className={clsx(
 														'pl-5 text-[20px] font-bold',
-														data?.culling === 'yes' ? 'text-black' : 'text-[#868686]'
+														orderCalcValue?.culling === 'yes'
+															? 'text-black'
+															: 'text-[#868686]'
 													)}
 												>
 													Culling
@@ -447,7 +464,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 														name="additionalEdits.skinRetouching"
 														type="checkbox"
 														id="skinRetouchingCheckbox"
-														disabled={data?.skin_retouch !== 'yes'}
+														disabled={orderCalcValue?.skin_retouch !== 'yes'}
 														checked={values.additionalEdits.skinRetouching}
 														onChange={(e) => {
 															handleCheckboxChange(
@@ -458,7 +475,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 															);
 															handleSkinRetouchingChange(e, setFieldValue);
 															const maxThreshold = getMaxThreshold(
-																data?.data,
+																orderCalcValue,
 																values.additionalEdits
 															);
 															setFieldValue('maxThreshold', maxThreshold);
@@ -467,7 +484,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 													<span
 														className={clsx(
 															'pl-5 text-[20px] font-bold',
-															data?.skin_retouch === 'yes'
+															orderCalcValue?.skin_retouch === 'yes'
 																? 'text-black'
 																: 'text-[#868686]'
 														)}
@@ -561,12 +578,12 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 													type="checkbox"
 													id="previewEditsCheckbox"
 													checked={values.additionalEdits.previewEdits}
-													disabled={data?.preview_edits !== 'yes'}
+													disabled={orderCalcValue?.preview_edits !== 'yes'}
 													onChange={(e) => {
 														setFieldValue('additionalEdits.previewEdits', e.target.checked);
 
 														const maxThreshold = getMaxThreshold(
-															data?.data,
+															orderCalcValue,
 															values.additionalEdits
 														);
 														setFieldValue('maxThreshold', maxThreshold);
@@ -575,7 +592,9 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 												<span
 													className={clsx(
 														'pl-5 text-[20px] font-bold',
-														data?.preview_edits === 'yes' ? 'text-black' : 'text-[#868686]'
+														orderCalcValue?.preview_edits === 'yes'
+															? 'text-black'
+															: 'text-[#868686]'
 													)}
 												>
 													Preview Edits
@@ -725,7 +744,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 								style={{ position: 'sticky', top: 78, alignSelf: 'flex-start' }}
 							>
 								<PriceCard
-									priceInfo={data}
+									priceInfo={orderCalcValue}
 									formValue={values}
 								/>
 							</div>
