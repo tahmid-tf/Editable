@@ -156,7 +156,7 @@ function OrderTable({ onOrderSubmit }) {
 				<Typography
 					className={clsx(
 						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
-						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#FFCC00] text-black'
+						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 					)}
 				>
 					<select
@@ -164,7 +164,7 @@ function OrderTable({ onOrderSubmit }) {
 						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
 							'inline-flex items-center tracking-wide ',
-							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#FFCC00] text-black'
+							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
 						defaultChecked={''}
 						defaultValue={''}
@@ -544,6 +544,14 @@ function OrderTable({ onOrderSubmit }) {
 				enableTopToolbar={false}
 				enablePagination={false}
 				enableBottomToolbar={false}
+				muiTableBodyProps={{
+					sx: {
+						//stripe the rows, make odd rows a darker color
+						'& tr:hover > td:after': {
+							backgroundColor: 'transparent !important'
+						}
+					}
+				}}
 				renderRowActions={() => (
 					<div className="flex gap-5">
 						<button
@@ -596,7 +604,7 @@ function OrderTable({ onOrderSubmit }) {
 						value={rowPerPage}
 						onChange={(e) => {
 							setRowPerPage(e.target.value);
-							setPage(1)
+							setPage(1);
 						}}
 					>
 						<MenuItem value={10}>10</MenuItem>
