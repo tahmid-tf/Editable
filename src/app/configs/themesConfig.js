@@ -27,7 +27,8 @@ export const themesConfig = {
 			text: lightPaletteText,
 			common: {
 				black: 'rgb(17, 24, 39)',
-				white: 'rgb(255, 255, 255)'
+				white: 'rgb(255, 255, 255)',
+				gray: '#868686'
 			},
 			primary: {
 				light: '#64748b',

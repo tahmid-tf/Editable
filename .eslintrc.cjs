@@ -90,12 +90,16 @@ module.exports = {
 		'max-classes-per-file': 'off',
 		'react/jsx-filename-extension': 'off',
 		'import/extensions': 'off',
-		'no-unused-vars': 'off',
-		'unused-imports/no-unused-imports': 'error',
+		'no-unused-vars': 'error',
+		'unused-imports/no-unused-imports': [
+			'error',
+			{ vars: 'all', varsIgnorePattern: '' } // Remove the ignore pattern
+		],
 		'unused-imports/no-unused-vars': [
 			'warn',
 			{ vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }
 		],
+		'import/no-unused-imports': 'error',
 		'no-useless-constructor': 'off',
 		'no-tabs': 'off',
 		'react/jsx-indent': 'off',
