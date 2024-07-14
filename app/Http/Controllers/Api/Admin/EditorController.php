@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\Admin\Editor;
+use App\Models\Api\Admin\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -16,11 +17,33 @@ class EditorController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $editors = Editor::all();
+        $name = $request->input('name');
+
+        $query = Editor::query();
+
+        if ($name) {
+            $query->where('editor_name', 'like', '%' . $name . '%');
+        }
+
+        $editors = $query->paginate(10);
+
+        $data = $editors->toArray();
+
+        foreach ($data['data'] as &$editor) {
+            $editor['pending_orders_count'] = Order::where('editors_id', $editor['id'])
+                ->where('order_status', 'pending')
+                ->withTrashed()
+                ->count();
+            $editor['completed_orders_count'] = Order::where('editors_id', $editor['id'])
+                ->where('order_status', 'completed')
+                ->withTrashed()
+                ->count();
+        }
+
         return response()->json([
-            'data' => $editors,
+            'data' => $data,
             'status' => Response::HTTP_OK,
         ], Response::HTTP_OK);
     }
@@ -72,7 +95,7 @@ class EditorController extends Controller
             }
 
             // If editor doesn't exist, proceed with creation
-            $editor = Editor::create($request->all());
+            $editor = Editor::create($inputs);
 
             return response()->json([
                 'status' => 'success',
