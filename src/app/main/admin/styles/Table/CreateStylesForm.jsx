@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { IoClose } from 'react-icons/io5';
 import { Modal } from '@mui/material';
 import { useGetAllCategoriesQuery } from '../../categories/CategoriesApi';
-import { useCreateStyleMutation } from '../AdminStylePageApi';
+import { useCreateStyleMutation, useUploadImageMutation } from '../AdminStylePageApi';
 
 const validationSchema = Yup.object().shape({
 	style_name: Yup.string().required('Required'),
@@ -18,9 +18,11 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 	const [imagePreview, setImagePreview] = useState(null);
 	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 10000000 });
 	const [createStyle] = useCreateStyleMutation();
+	const [uploadImage] = useUploadImageMutation();
 
 	const handleImageChange = (event, setFieldValue) => {
 		const file = event.target.files[0];
+		console.log(event.target.files);
 		if (file) {
 			setImagePreview(URL.createObjectURL(file));
 			setFieldValue('upload_image', file);
@@ -55,7 +57,7 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 						initialValues={{
 							style_name: '',
 							description: '',
-							upload_image: null,
+							upload_image: '',
 							categories: [],
 							additional_style: '',
 							culling: 'no',
@@ -65,10 +67,21 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 						validationSchema={validationSchema}
 						onSubmit={async (values) => {
 							console.log(values);
-							const response = await createStyle(values);
-							if (response.data) {
-								successAlert();
-								handleCloseModal();
+							const image = new FormData();
+							image.append('upload_image', values.upload_image);
+
+							const imageResponse = await uploadImage(image);
+
+							if (imageResponse.data) {
+								console.log(imageResponse.data);
+								const response = await createStyle({
+									...values,
+									upload_image: imageResponse?.data?.upload_image
+								});
+								if (response.data) {
+									successAlert();
+									handleCloseModal();
+								}
 							}
 						}}
 						className="rounded-xl"

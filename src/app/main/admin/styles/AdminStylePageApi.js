@@ -31,8 +31,15 @@ const AdminStylePageApi = apiService.enhanceEndpoints({ addTagTypes }).injectEnd
 				method: 'DELETE'
 			}),
 			invalidatesTags: ['allStyles']
-		})
+		}),
+        uploadImage:builder.mutation({
+            query:(body)=>({
+                url:'admin/style/file_string_output',
+                method:'POST',
+                body
+            })
+        })
 	})
 });
-export const { useGetAllStylesQuery, useCreateStyleMutation, useDeleteStyleMutation, useUpdateStyleMutation } =
+export const { useGetAllStylesQuery, useCreateStyleMutation, useDeleteStyleMutation, useUpdateStyleMutation,useUploadImageMutation } =
 	AdminStylePageApi;
