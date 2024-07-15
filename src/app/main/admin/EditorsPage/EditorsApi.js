@@ -1,7 +1,7 @@
 import apiService from 'app/store/apiService';
 
 const addTagTypes = ['allEditors'];
-const orderApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
+const EditorsApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
 	endpoints: (builder) => ({
 		getAllEditors: builder.query({
 			query: ({ page, rowPerPage, search }) =>
@@ -37,4 +37,4 @@ const orderApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
 	})
 });
 export const { useGetAllEditorsQuery, useCreateNewEditorMutation, useUpdateEditorMutation, useDeleteEditorMutation } =
-	orderApi;
+	EditorsApi;

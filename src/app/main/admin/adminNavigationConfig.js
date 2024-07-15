@@ -19,7 +19,7 @@ const adminNavigationConfig = [
 				title: 'Styles',
 				translate: 'Styles',
 				type: 'item',
-				url: 'styles'
+				url: 'admin/styles'
 			},
 			{
 				id: 'all-editors',

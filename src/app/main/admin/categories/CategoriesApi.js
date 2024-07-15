@@ -1,7 +1,7 @@
 import apiService from 'app/store/apiService';
 
 const addTagTypes = ['allCategories'];
-const orderApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
+const categoryApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
 	endpoints: (builder) => ({
 		getAllCategories: builder.query({
 			query: ({ search, page, rowPerPage }) =>
@@ -39,4 +39,4 @@ export const {
 	useGetAllCategoriesQuery,
 	useUpdateCategoryMutation,
 	useDeleteCategoryMutation
-} = orderApi;
+} = categoryApi;
