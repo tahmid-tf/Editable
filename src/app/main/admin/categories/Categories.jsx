@@ -224,14 +224,18 @@ const Categories = () => {
 							setSearch={setSearch}
 							handleButtonClick={handleOpenModal}
 							buttonText={'Create Editor'}
-						/>
+						>
+							<div className='mb-16'>
+								Total Categories: <span className='font-bold'>{data?.data?.total}</span>
+							</div>
+						</CustomTableHeader>
 					)}
 					renderRowActions={({ row }) => (
 						<CustomRowAction
 							row={row}
 							handleDeleteClick={handleDeleteClick}
 							handleEditClick={handleEditClick}
-						/>
+						></CustomRowAction>
 					)}
 				/>
 				<CustomPagination
