@@ -42,13 +42,14 @@ const Categories = () => {
 			<div>
 				<p className="text-[20px] font-bold text-[#868686] py-36">Categories</p>
 			</div>
-			<div className="flex-1">
+			{/* <div className="flex-1">
 				<CategoriesTable
 					deleteAlert={deleteAlert}
 					successAlert={successAlert}
 					errorAlert={errorAlert}
 				/>
-			</div>
+			</div> */}
+			
 		</div>
 	);
 };

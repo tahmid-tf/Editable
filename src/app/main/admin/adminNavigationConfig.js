@@ -8,11 +8,11 @@ const adminNavigationConfig = [
 		children: [
 			...commonNavigationItems,
 			{
-				id: 'categories',
+				id: 'admin-categories',
 				title: 'Categories',
 				translate: 'Categories',
 				type: 'item',
-				url: 'categories'
+				url: 'admin/categories'
 			},
 			{
 				id: 'styles',
