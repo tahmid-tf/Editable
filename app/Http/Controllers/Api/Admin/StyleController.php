@@ -13,6 +13,14 @@ use Symfony\Component\HttpFoundation;
 
 class StyleController extends Controller
 {
+
+
+    public function file_string_output(Request $request){
+        $inputs['upload_image'] = $request->file('upload_image')->store('images');
+        return response()->json($inputs);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -133,9 +141,9 @@ class StyleController extends Controller
 
 //            -------------------------- fetching the style image and decoding array --------------------------
 
-            if ($request->hasFile('upload_image')) {
-                $inputs['upload_image'] = $request->file('upload_image')->store('images');
-            }
+//            if ($request->hasFile('upload_image')) {
+//                $inputs['upload_image'] = $request->file('upload_image')->store('images');
+//            }
 
             $inputs['categories'] = json_encode($category_array_data);
 
@@ -287,11 +295,11 @@ class StyleController extends Controller
 
 //            -------------------------- fetching the style image and decoding array --------------------------
 
-            if ($request->hasFile('upload_image')) {
-                $inputs['upload_image'] = $request->file('upload_image')->store('images');
-            } else {
-                $inputs['upload_image'] = $style->upload_image;
-            }
+//            if ($request->hasFile('upload_image')) {
+//                $inputs['upload_image'] = $request->file('upload_image')->store('images');
+//            } else {
+//                $inputs['upload_image'] = $style->upload_image;
+//            }
 
             $inputs['categories'] = json_encode($category_array_data);
 
