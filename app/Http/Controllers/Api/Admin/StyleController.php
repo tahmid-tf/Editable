@@ -30,6 +30,10 @@ class StyleController extends Controller
             $styles = Style::paginate($perPage)->toArray();
         }
 
+        $base_style_count = Style::where('additional_style','no')->count() ?? 0;
+        $additional_style_count = Style::where('additional_style','yes')->count() ?? 0;
+        $total_style_count = Style::count() ?? 0;
+
         foreach ($styles['data'] as &$style) {
             // Decode the categories JSON string to array
             $categoryIds = json_decode($style['categories'], true);
@@ -45,6 +49,9 @@ class StyleController extends Controller
         }
 
         return response()->json([
+            'base_style_count' => $base_style_count,
+            'additional_style_count' => $additional_style_count,
+            'total_style_count' => $total_style_count,
             'data' => $styles
         ]);
     }
