@@ -18,11 +18,19 @@ class StyleController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $styles = Style::all()->toArray(); // Fetch all styles and convert to array
+        $name = $request->input('name'); // Get the search parameter from the request
+        $perPage = 10; // Default pagination value
 
-        foreach ($styles as &$style) {
+        // Fetch styles based on search parameter if it exists, otherwise fetch all styles
+        if ($name) {
+            $styles = Style::where('style_name', 'like', '%' . $name . '%')->paginate($perPage)->toArray();
+        } else {
+            $styles = Style::paginate($perPage)->toArray();
+        }
+
+        foreach ($styles['data'] as &$style) {
             // Decode the categories JSON string to array
             $categoryIds = json_decode($style['categories'], true);
 

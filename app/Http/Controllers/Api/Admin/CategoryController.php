@@ -19,10 +19,18 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $categories = Category::orderBy('id', 'desc')->paginate(10);
+        $name = $request->input('name');
+
+        $query = Category::query();
+
+        if ($name) {
+            $query->where('category_name', 'like', '%' . $name . '%');
+        }
+
+        $categories = $query->paginate(10);
 
         return response()->json([
             'status' => Response::HTTP_OK,
