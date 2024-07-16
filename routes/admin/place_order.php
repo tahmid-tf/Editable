@@ -28,10 +28,16 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Order creation and dynamically sorting [ Stage 3 ] ---------------------------
 
-    Route::get('order_list', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class,'tested_search_with_paginate'])->name('admin.order_list');
-    Route::post('order_store', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class,'store'])->name('admin.order_store');
+    Route::get('order_list', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class, 'tested_search_with_paginate'])->name('admin.order_list');
+    Route::post('order_store', [\App\Http\Controllers\Api\Admin\Order\AdminOrderController::class, 'store'])->name('admin.order_store');
 
     // --------------------------- Order creation and dynamically sorting [ Stage 3 ] ---------------------------
+
+    // --------------------------- Single order Information ---------------------------
+
+    Route::get('order_info/{id}', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'view'])->name('admin.order_info');
+
+    // --------------------------- Single order Information ---------------------------
 
 
 });

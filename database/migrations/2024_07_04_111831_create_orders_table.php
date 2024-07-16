@@ -39,15 +39,15 @@ class CreateOrdersTable extends Migration
 
             $table->json('styles_array');
             $table->integer('number_of_images_provided');
-            $table->enum('culling', ['yes', 'no'])->nullable();
+            $table->enum('culling', ['yes', 'no'])->nullable()->default('no');
             $table->string('images_culled_down_to')->nullable();
             $table->string('select_image_culling_type')->nullable();
 
-            $table->enum('skin_retouching', ['yes', 'no'])->nullable();
+            $table->enum('skin_retouching', ['yes', 'no'])->nullable()->default('no');
             $table->string('skin_retouching_type')->nullable();
 
-            $table->enum('additional_info', ['yes', 'no'])->nullable();
-            $table->string('preview_edits')->nullable();
+            $table->enum('additional_info', ['yes', 'no'])->nullable()->default('no');
+            $table->string('preview_edits')->nullable()->default('no');
 
 
 //            Users Info
