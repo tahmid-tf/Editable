@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { IoClose } from 'react-icons/io5';
 import { Modal } from '@mui/material';
 import { useGetAllCategoriesQuery } from '../../categories/CategoriesApi';
-import { useCreateStyleMutation, useUploadImageMutation } from '../AdminStylePageApi';
+import { useCreateStyleMutation, useUpdateStyleMutation, useUploadImageMutation } from '../AdminStylePageApi';
+import { imageUrlCompleter } from 'src/app/appUtils/appUtils';
+import clsx from 'clsx';
 
 const validationSchema = Yup.object().shape({
 	style_name: Yup.string().required('Required'),
 	description: Yup.string().required('Required'),
-	upload_image: Yup.mixed().required('Required'),
-	categories: Yup.array().of(Yup.string()).required('Required'),
+	isEdit: Yup.boolean(),
+	upload_image: Yup.mixed().test('uploadImageRequired', 'Required', function (value) {
+		if (this.parent.isEdit === false) {
+			return value !== undefined;
+		}
+		return true;
+	}),
+	categories: Yup.array().required('Required'),
 	additional_style: Yup.string().required('Required')
 });
 
-const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
-	const [imagePreview, setImagePreview] = useState(null);
+const CreateStylesForm = ({ openModal, handleCloseModal, successAlert, editedRowData }) => {
+	const [imagePreview, setImagePreview] = useState({ imageUrl: '', isImageKey: false });
 	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 10000000 });
 	const [createStyle] = useCreateStyleMutation();
+	const [updateStyle] = useUpdateStyleMutation();
 	const [uploadImage] = useUploadImageMutation();
 
 	const handleImageChange = (event, setFieldValue) => {
 		const file = event.target.files[0];
 		console.log(event.target.files);
 		if (file) {
-			setImagePreview(URL.createObjectURL(file));
+			setImagePreview({ imageUrl: URL.createObjectURL(file), isImageKey: false });
 			setFieldValue('upload_image', file);
 		}
 	};
@@ -42,11 +51,19 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 			);
 		}
 	};
+	useEffect(() => {
+		editedRowData !== null && editedRowData?.upload_image
+			? setImagePreview({ imageUrl: editedRowData?.upload_image, isImageKey: true })
+			: '';
+	}, [editedRowData]);
 
 	return (
 		<Modal
 			open={openModal}
-			onClose={handleCloseModal}
+			onClose={() => {
+				handleCloseModal();
+				setImagePreview({ imageUrl: '', isImageKey: false });
+			}}
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"
 			className="flex justify-center items-center"
@@ -55,14 +72,15 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 				<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto">
 					<Formik
 						initialValues={{
-							style_name: '',
-							description: '',
+							style_name: editedRowData?.style_name || '',
+							description: editedRowData?.style_name || '',
 							upload_image: '',
-							categories: [],
-							additional_style: '',
-							culling: 'no',
-							skin_retouch: 'no',
-							preview_edits: 'no'
+							categories: editedRowData?.categories ? JSON.parse(editedRowData?.categories) : [],
+							additional_style: editedRowData?.additional_style || '',
+							culling: editedRowData?.culling || 'no',
+							skin_retouch: editedRowData?.skin_retouch || 'no',
+							preview_edits: editedRowData?.preview_edits || 'no',
+							isEdit: editedRowData !== null
 						}}
 						validationSchema={validationSchema}
 						onSubmit={async (values) => {
@@ -70,18 +88,29 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 							const image = new FormData();
 							image.append('upload_image', values.upload_image);
 
-							const imageResponse = await uploadImage(image);
+							const imageResponse = values.upload_image ? await uploadImage(image) : null;
 
-							if (imageResponse.data) {
-								console.log(imageResponse.data);
-								const response = await createStyle({
-									...values,
-									upload_image: imageResponse?.data?.upload_image
-								});
-								if (response.data) {
-									successAlert();
-									handleCloseModal();
-								}
+							const response =
+								editedRowData === null && imageResponse?.data
+									? await createStyle({
+											...values,
+											upload_image: imageResponse?.data?.upload_image
+										})
+									: editedRowData !== null
+										? await updateStyle({
+												body: {
+													...values,
+													upload_image: values.upload_image
+														? imageResponse?.data?.upload_image
+														: editedRowData?.upload_image
+												},
+												id: editedRowData?.id
+											})
+										: null;
+							if (response.data) {
+								successAlert();
+								handleCloseModal();
+								setImagePreview({ imageUrl: '', isImageKey: false });
 							}
 						}}
 						className="rounded-xl"
@@ -91,7 +120,12 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 								<Form className="space-y-4">
 									<div className="flex items-center justify-between">
 										<p className="text-2xl font-bold text-[#868686]">Create Style</p>
-										<button onClick={handleCloseModal}>
+										<button
+											onClick={() => {
+												handleCloseModal();
+												setImagePreview({ imageUrl: '', isImageKey: false });
+											}}
+										>
 											<IoClose size={24} />
 										</button>
 									</div>
@@ -146,10 +180,15 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 										<div className="mt-10">
 											<button
 												type="button"
-												className="w-full h-[38px] py-2 px-4 text-white rounded-md bg-[#E4E4E4] hover:bg-[#c5c5c5a2]"
+												className={clsx(
+													'w-full h-[38px] py-2 px-4 rounded-md ',
+													imagePreview?.imageUrl !== ''
+														? 'bg-[#146ef5ef] hover:bg-[#0066ff] text-white'
+														: 'bg-[#E4E4E4] hover:bg-[#c5c5c5a2] text-[#8B8B8B]'
+												)}
 												onClick={() => document.getElementById('fileInput').click()}
 											>
-												<span className="text-[#8B8B8B]">File Upload</span>
+												File Upload
 											</button>
 											<input
 												id="fileInput"
@@ -167,14 +206,20 @@ const CreateStylesForm = ({ openModal, handleCloseModal, successAlert }) => {
 										/>
 									</div>
 
-									{imagePreview && (
+									{imagePreview.imageUrl !== '' ? (
 										<div className="mt-10">
 											<img
-												src={imagePreview}
+												src={
+													imagePreview?.isImageKey
+														? imageUrlCompleter(imagePreview.imageUrl)
+														: imagePreview.imageUrl
+												}
 												alt="Selected"
 												className="w-[140px] object-cover rounded-md"
 											/>
 										</div>
+									) : (
+										<></>
 									)}
 
 									<div className="form-group">

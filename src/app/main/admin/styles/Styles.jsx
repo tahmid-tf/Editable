@@ -5,7 +5,7 @@ import CustomPagination from 'app/shared-components/data-table/CustomPagination'
 import CustomRowAction from 'app/shared-components/data-table/CustomRowAction';
 import CustomTableHeader from 'app/shared-components/data-table/CustomTableHeader';
 import DataTable from 'app/shared-components/data-table/DataTable';
-import { useGetAllStylesQuery } from './AdminStylePageApi';
+import { useDeleteStyleMutation, useGetAllStylesQuery } from './AdminStylePageApi';
 import FuseLoading from '@fuse/core/FuseLoading';
 import CreateStylesForm from './Table/CreateStylesForm';
 
@@ -20,6 +20,8 @@ const Styles = () => {
 	const [search, setSearch] = useState('');
 
 	const { data, isLoading } = useGetAllStylesQuery({});
+	const [deleteStyle] = useDeleteStyleMutation();
+
 	console.log(data);
 	const deleteAlert = () => {
 		setIsDelete(true);
@@ -52,15 +54,18 @@ const Styles = () => {
 	};
 
 	const handleDeleteClick = async ({ original }) => {
-		// const response = await deleteCategory(original?.id);
-		// console.log({ response });
+		const response = await deleteStyle(original?.id);
+		console.log({ response });
 	};
 	const handleEditClick = ({ original }) => {
 		setEditedRowData(original);
 		setOpenModal(true);
 	};
 	const handleOpenModal = () => setOpenModal(true);
-	const handleCloseModal = () => setOpenModal(false);
+	const handleCloseModal = () => {
+		setOpenModal(false);
+		setEditedRowData(null);
+	};
 
 	const column = useMemo(
 		() => [
@@ -79,7 +84,7 @@ const Styles = () => {
 			{
 				id: 'additional_style',
 				accessorKey: 'additional_style',
-				header: 'Name',
+				header: 'Additional Style',
 				Cell: ({ row }) => `${row?.original?.additional_style}`,
 				muiTableHeadCellProps: {
 					align: 'center'
@@ -108,9 +113,16 @@ const Styles = () => {
 			{
 				id: 'additional_edits',
 				accessorKey: 'category_details',
-				header: 'Categories',
+				header: 'Additional Edits',
 				Cell: ({ row }) => {
-					return `${row?.original?.culling === 'yes' ? 'Culling, ' : ''}${row?.original?.skin_retouch === 'yes' ? 'Skin Retouch, ' : ''}${row?.original?.preview_edits === 'yes' ? 'Preview Edits' : ''}`;
+					const additionalEdits = [
+						row?.original?.culling === 'yes' ? 'Culling' : '',
+						row?.original?.skin_retouch === 'yes' ? 'Skin Retouch' : '',
+						row?.original?.preview_edits === 'yes' ? 'Preview Edits' : ''
+					]
+						.filter((value) => value?.length)
+						.join(', ');
+					return additionalEdits;
 				},
 				muiTableHeadCellProps: {
 					align: 'center'
@@ -203,15 +215,15 @@ const Styles = () => {
 						>
 							<div className="mb-[2em] mt-[1em] flex gap-[3em] text-[16px] leading-5">
 								<p>
-									Total Styles: <span className="font-bold">{data?.data?.total}</span>
+									Total Styles: <span className="font-bold">{data?.total_style_count}</span>
 								</p>
 								<p>|</p>
 								<p>
-									Base: <span className="font-bold">{data?.data?.total}</span>
+									Base: <span className="font-bold">{data?.base_style_count}</span>
 								</p>
 								<p>|</p>
 								<p>
-									Additional Styles: <span className="font-bold">{data?.data?.total}</span>
+									Additional Styles: <span className="font-bold">{data?.additional_style_count}</span>
 								</p>
 							</div>
 						</CustomTableHeader>
@@ -236,6 +248,7 @@ const Styles = () => {
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
 				successAlert={successAlert}
+				editedRowData={editedRowData}
 			/>
 		</div>
 	);

@@ -27,7 +27,7 @@ const AdminStylePageApi = apiService.enhanceEndpoints({ addTagTypes }).injectEnd
 		}),
 		deleteStyle: builder.mutation({
 			query: (id) => ({
-				url: `admin/category/delete/${id}`,
+				url: `admin/style/${id}/delete`,
 				method: 'DELETE'
 			}),
 			invalidatesTags: ['allStyles']
