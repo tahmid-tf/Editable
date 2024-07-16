@@ -47,7 +47,8 @@ const OrderTableHeader = ({
 	showAllColumns,
 	setShowAllColumns,
 	onOrderSubmit,
-	setPage
+	setPage,
+	setAllStyleData
 }) => {
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [openDate, setOpenDate] = useState(false);
@@ -357,6 +358,7 @@ const OrderTableHeader = ({
 					<GeneralinfoForm
 						onClose={handleNewOrderClose}
 						onOrderSubmit={onOrderSubmit}
+						setAllStyleData={setAllStyleData}
 						// successAlert={successAlert}
 					/>
 				</div>

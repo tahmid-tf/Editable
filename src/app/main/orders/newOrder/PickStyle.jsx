@@ -14,32 +14,7 @@ import { useAppSelector } from 'app/store/hooks';
 import { selectOrderState } from '../orderSlice';
 import { getMaxThreshold } from 'src/app/appUtils/appUtils';
 import dayjs from 'dayjs';
-const styleData = [
-	{
-		id: 1,
-		style_name: 'Classic Film Tones',
-		description: 'Light & Airy Tone, Slightly Faded Whites & Blacks, Desaturated Grains',
-		upload_image: ''
-	},
-	{
-		id: 2,
-		style_name: 'Dark & Moody Vibes',
-		description: 'Dark & Moody Vibes,Light & Airy Tone,Slightly Faded Whites & Blacks,Desaturated Grains"',
-		upload_image: ''
-	},
-	{
-		id: 3,
-		style_name: 'Bright and Airy Freshness',
-		description: 'Light & Airy Tone, Slightly Faded Whites & Blacks, Desaturated Grains',
-		upload_image: ''
-	},
-	{
-		id: 4,
-		style_name: 'Basic Color and Contrast Correction',
-		description: 'Light & Airy Tone, Slightly Faded Whites & Blacks, Desaturated Grains',
-		upload_image: ''
-	}
-];
+
 // Validation Schema
 const validationSchema = Yup.object({
 	selectedStyle: Yup.string().required('A style is required'),
@@ -85,7 +60,7 @@ const initialValues = {
 	imageSelectionMethodSkinRetouching: '',
 	maxThreshold: 0
 };
-const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
+const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
 	const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] = useState(false);
 	const [orderCalcValue, setOrderCalcValue] = useState({});
@@ -97,6 +72,8 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 
 	const orderState = useAppSelector(selectOrderState);
 
+	const styleData = allStyleData?.filter((data) => data?.additional_style === 'no');
+	const additionalData = allStyleData?.filter((data) => data?.additional_style === 'yes');
 	const handleCullingChange = (e, setFieldValue) => {
 		const isChecked = e.target.checked;
 		setFieldValue('additionalEdits.culling', isChecked);
@@ -297,18 +274,41 @@ const PickStyle = ({ onPickStyleSubmit, successAlert }) => {
 											</p>
 										</div>
 										<div>
-											<Field
-												name="additionalStyle"
-												type="checkbox"
-												value="Monochrome Melodies"
-												as={StyleCard}
-												title="Monochrome Melodies"
-												description="Light & Airy Tone, Slightly Faded Whites & Blacks, Desaturated Grains"
-												selectedValue={values.additionalStyle.includes('Monochrome Melodies')}
-												handleChange={(e) =>
-													handleAdditionalStyleClick(e, 3, values, setFieldValue)
-												}
-											/>
+											<Grid
+												container
+												spacing={5}
+											>
+												{additionalData.map((styleInfo, i) => (
+													<Grid
+														key={i}
+														item
+														md={12}
+														lg={6}
+														xl={4}
+													>
+														<Field
+															name="additionalStyle"
+															type="checkbox"
+															value={styleInfo.style_name}
+															as={StyleCard}
+															title={styleInfo.style_name}
+															description={styleInfo.description}
+															id={styleInfo.id}
+															selectedValue={values.additionalStyle.includes(
+																styleInfo.style_name
+															)}
+															handleChange={(e) =>
+																handleAdditionalStyleClick(
+																	e,
+																	styleInfo.id,
+																	values,
+																	setFieldValue
+																)
+															}
+														/>
+													</Grid>
+												))}
+											</Grid>
 										</div>
 									</div>
 									{/* ==================== Additional Edits ==================== */}

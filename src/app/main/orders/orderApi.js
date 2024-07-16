@@ -31,8 +31,15 @@ const orderApi = apiService
 					body
 				}),
 				invalidatesTags: ['orders']
+			}),
+			getStyles: builder.mutation({
+				query: (body) => ({
+					url: 'admin/general_info_and_category',
+					method: 'POST',
+					body
+				})
 			})
 		})
 	});
 
-export const { useGetOrdersDataQuery, useGetValueForOrderCalculationMutation, usePlaceOrderMutation } = orderApi;
+export const { useGetOrdersDataQuery, useGetValueForOrderCalculationMutation, usePlaceOrderMutation, useGetStylesMutation } = orderApi;

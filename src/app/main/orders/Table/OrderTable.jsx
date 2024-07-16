@@ -18,7 +18,7 @@ import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 
-function OrderTable({ onOrderSubmit }) {
+function OrderTable({ onOrderSubmit,setAllStyleData }) {
 	const [inputValue, setInputValue] = useState('');
 
 	// filtering state
@@ -529,6 +529,7 @@ function OrderTable({ onOrderSubmit }) {
 				showAllColumns={showAllColumns}
 				onOrderSubmit={onOrderSubmit}
 				setPage={setCurrentPage}
+				setAllStyleData={setAllStyleData}
 			/>
 			<DataTable
 				isLoading={isLoading}

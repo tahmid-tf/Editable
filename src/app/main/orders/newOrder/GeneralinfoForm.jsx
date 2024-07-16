@@ -4,18 +4,23 @@ import * as Yup from 'yup';
 import { IoClose } from 'react-icons/io5';
 import { useAppDispatch } from 'app/store/hooks';
 import { addOrderGeneralInfo } from '../orderSlice';
+import { useGetAllCategoriesQuery } from '../../admin/categories/CategoriesApi';
+import { useGetStylesMutation } from '../orderApi';
 
 const validationSchema = Yup.object().shape({
 	userEmail: Yup.string().email('Invalid email format').required('Required'),
 	userPhone: Yup.string().required('Required'),
 	orderType: Yup.string().required('Required'),
 	orderName: Yup.string().required('Required'),
-	categoryType: Yup.string().required('Required'),
+	categoryType: Yup.number().required('Required'),
 	paymentStatus: Yup.string().required('Required')
 });
 
-const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
+const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData }) => {
 	const dispatch = useAppDispatch();
+	const { data } = useGetAllCategoriesQuery({});
+	const [getStyles] = useGetStylesMutation();
+	console.log(data?.data?.data);
 	return (
 		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
 			<Formik
@@ -28,20 +33,23 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 					paymentStatus: ''
 				}}
 				validationSchema={validationSchema}
-				onSubmit={(values) => {
+				onSubmit={async (values) => {
 					// successAlert();
 					// onClose();
-					dispatch(
-						addOrderGeneralInfo({
-							email: values?.userEmail,
-							phone: values?.userPhone,
-							order_type: values?.orderType,
-							order_name: values?.orderName,
-							category: values?.categoryType,
-							payment_status: values?.paymentStatus
-						})
-					);
-					onOrderSubmit();
+					const formValue = {
+						email: values?.userEmail,
+						phone: values?.userPhone,
+						order_type: values?.orderType,
+						order_name: values?.orderName,
+						category: parseFloat(values?.categoryType),
+						payment_status: values?.paymentStatus
+					};
+					dispatch(addOrderGeneralInfo(formValue));
+					const response = await getStyles(formValue);
+					if (response.data) {
+						setAllStyleData(response?.data?.data?.style_data);
+						onOrderSubmit();
+					}
 				}}
 				className="rounded-xl"
 			>
@@ -149,9 +157,14 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit }) => {
 								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 							>
 								<option value="">Select Category Type</option>
-								<option value="wedding">Wedding</option>
-								<option value="headshot_portraits">Headshot Portraits</option>
-								<option value="travel_photos">Travel Photos</option>
+								{data?.data?.data?.map((category, i) => (
+									<option
+										key={i}
+										value={category?.id}
+									>
+										{category?.category_name}
+									</option>
+								))}
 							</Field>
 							<ErrorMessage
 								name="categoryType"
