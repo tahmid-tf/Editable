@@ -53,7 +53,7 @@ class StyleController extends Controller
             $style['category_details'] = $categories;
 
             // Convert the upload_image field to asset format
-            $style['upload_image'] = asset('storage/' . $style['upload_image']);
+//            $style['upload_image'] = asset('storage/' . $style['upload_image']);
         }
 
         return response()->json([
@@ -201,7 +201,7 @@ class StyleController extends Controller
         $styleArray['category_details'] = $categories;
 
         // Convert the upload_image field to asset format
-        $styleArray['upload_image'] = asset('storage/' . $styleArray['upload_image']);
+//        $styleArray['upload_image'] = asset('storage/' . $styleArray['upload_image']);
 
         return response()->json([
             'data' => $styleArray
