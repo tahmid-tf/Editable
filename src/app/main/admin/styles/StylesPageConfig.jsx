@@ -6,7 +6,7 @@ const stylePageConfig = {
 	},
 	routes: [
 		{
-			path: 'styles',
+			path: 'admin/styles',
 			element: <Styles />
 		}
 	],

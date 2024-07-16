@@ -49,3 +49,7 @@ export const getMaxThreshold = (thresholdsData, editsData) => {
 	// Leverage spread operator and Math.max for concise maximum calculation
 	return Math.max(...Object.values(relevantThresholds));
 };
+
+export const imageUrlCompleter = (imageKey) => {
+	return `${import.meta.env.VITE_BASE_IMAGE_URL}/${imageKey}`;
+};

@@ -1,4 +1,4 @@
-import Styles from '../styles/Styles';
+
 import Categories from './Categories';
 
 const CategoriesConfig = {
@@ -7,12 +7,8 @@ const CategoriesConfig = {
 	},
 	routes: [
 		{
-			path: 'categories',
+			path: 'admin/categories',
 			element: <Categories />
-		},
-		{
-			path: 'styles',
-			element: <Styles />
 		}
 	],
 	auth: ['admin']
