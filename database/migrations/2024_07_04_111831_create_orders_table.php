@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             $table->enum('order_type', ['standard', 'express', 'custom']);
             $table->string('order_name');
             $table->integer('category_id');
-            $table->enum('payment_status', ['pending', 'successful', 'failed']);
+            $table->enum('payment_status', ['pending', 'successful', 'failed'])->default('pending');
 
             //            sorting from orders table
 

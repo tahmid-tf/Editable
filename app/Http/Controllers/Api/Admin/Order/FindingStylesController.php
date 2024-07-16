@@ -61,10 +61,10 @@ class FindingStylesController extends Controller
             }
 
             // Transform the styles collection
-            $styles = $styles->map(function($style) {
-                $style->upload_image = asset('images/' . $style->upload_image);
-                return $style;
-            });
+//            $styles = $styles->map(function($style) {
+//                $style->upload_image = asset('storage/' . $style->upload_image);
+//                return $style;
+//            });
 
             $inputs['style_data'] = $styles;
 
