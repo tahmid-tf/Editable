@@ -114,7 +114,7 @@ class AdminOrderController extends Controller
                 'preview_edits' => 'nullable|string|max:255',
                 'user_id' => 'nullable|string|max:255',
                 'order_delivery_date' => 'nullable',
-                'preview_edit_status' => 'required|in:no,user_review_pending,accepted,rejected',
+                'preview_edit_status' => 'nullable|in:no,user_review_pending,accepted,rejected',
                 'users_name' => 'nullable',
 
             ]);
