@@ -21,7 +21,7 @@ const Styles = () => {
 	const [rowPerPage, setRowPerPage] = useState(10);
 	const [search, setSearch] = useState('');
 
-	const { data, isLoading } = useGetAllStylesQuery({});
+	const { data, isLoading } = useGetAllStylesQuery({ page, rowPerPage, search });
 	const [deleteStyle, { isLoading: deleteLoading }] = useDeleteStyleMutation();
 
 	console.log(data);
@@ -59,7 +59,7 @@ const Styles = () => {
 		setClickedRowData(original);
 		setOpenConfirmationModal(true);
 	};
-	
+
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteStyle(clickedRowData?.id);
 		if (response.data) {

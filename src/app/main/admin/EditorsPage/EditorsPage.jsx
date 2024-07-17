@@ -154,7 +154,7 @@ const EditorsPage = () => {
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
 				editorInfo={clickedRowData}
-				setClickedRowData={setClickedRowData}
+				setEditorInfo={setClickedRowData}
 			/>
 			<ConfirmationModal
 				openModal={openConfirmationModal}
