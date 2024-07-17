@@ -210,7 +210,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 					order_status: 'pending',
 					styles_array: JSON.stringify([values.selectedMainStyleId, ...values.selectedAdditionalStyleId]),
 					number_of_images_provided: values.imageQuantity,
-					order_id: 'dadadwaad',
 					editors_id: '1',
 					file_uploaded_by_user: values.driveLink,
 					culling: values.additionalEdits.culling ? 'yes' : 'no',
