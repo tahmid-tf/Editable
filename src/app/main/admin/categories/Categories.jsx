@@ -9,21 +9,23 @@ import { useDeleteCategoryMutation, useGetAllCategoriesQuery } from './Categorie
 import FuseLoading from '@fuse/core/FuseLoading';
 import { Modal } from '@mui/material';
 import CreateCategoriesForm from './Table/CreateCategoriesForm';
+import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 
 const Categories = () => {
 	// delete
 	const [isDelete, setIsDelete] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
-	const [editedRowData, setEditedRowData] = useState(null);
+	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+	const [clickedRowData, setClickedRowData] = useState(null);
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
 	const [search, setSearch] = useState('');
 	const { data, isLoading } = useGetAllCategoriesQuery({ search, page, rowPerPage });
-	const [deleteCategory] = useDeleteCategoryMutation();
+	const [deleteCategory, { isLoading: deleteLoading }] = useDeleteCategoryMutation();
 	const handleClose = () => {
 		setOpenModal(false);
-		setEditedRowData(null);
+		setClickedRowData(null);
 	};
 
 	const deleteAlert = () => {
@@ -52,15 +54,26 @@ const Categories = () => {
 	};
 
 	const handleDeleteClick = async ({ original }) => {
-		const response = await deleteCategory(original?.id);
-		console.log({ response });
+		setClickedRowData(original);
+		setOpenConfirmationModal(true);
+	};
+	const handleConfirmDeleteClick = async () => {
+		const response = await deleteCategory(clickedRowData?.id);
+		if (response.data) {
+			setOpenConfirmationModal(false);
+			setClickedRowData(null);
+		}
 	};
 	const handleEditClick = ({ original }) => {
-		setEditedRowData(original);
+		setClickedRowData(original);
 		setOpenModal(true);
 	};
 	const handleOpenModal = () => setOpenModal(true);
-	const handleCloseModal = () => setOpenModal(false);
+	const handleConfirmationModalClose = () => {
+		setOpenConfirmationModal(false);
+		setClickedRowData(null);
+	};
+
 	const column = useMemo(
 		() => [
 			{
@@ -225,8 +238,8 @@ const Categories = () => {
 							handleButtonClick={handleOpenModal}
 							buttonText={'Create Editor'}
 						>
-							<div className='mb-16'>
-								Total Categories: <span className='font-bold'>{data?.data?.total}</span>
+							<div className="mb-16">
+								Total Categories: <span className="font-bold">{data?.data?.total}</span>
 							</div>
 						</CustomTableHeader>
 					)}
@@ -250,7 +263,18 @@ const Categories = () => {
 				openModal={openModal}
 				handleClose={handleClose}
 				successAlert={successAlert}
-				editedRowData={editedRowData}
+				editedRowData={clickedRowData}
+			/>
+			<ConfirmationModal
+				openModal={openConfirmationModal}
+				handleClose={handleConfirmationModalClose}
+				bodyText={'Are you sure you want to permanently delete this category?'}
+				cancelBtnText={'Cancel'}
+				confirmBtnText={'Delete'}
+				topIcon={''}
+				handleCancelClick={handleConfirmationModalClose}
+				handleConfirmClick={handleConfirmDeleteClick}
+				isLoading={deleteLoading}
 			/>
 		</div>
 	);

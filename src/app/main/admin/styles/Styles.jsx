@@ -8,19 +8,21 @@ import DataTable from 'app/shared-components/data-table/DataTable';
 import { useDeleteStyleMutation, useGetAllStylesQuery } from './AdminStylePageApi';
 import FuseLoading from '@fuse/core/FuseLoading';
 import CreateStylesForm from './Table/CreateStylesForm';
+import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 
 const Styles = () => {
 	// delete
 	const [isDelete, setIsDelete] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
-	const [editedRowData, setEditedRowData] = useState(null);
+	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+	const [clickedRowData, setClickedRowData] = useState(null);
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
 	const [search, setSearch] = useState('');
 
 	const { data, isLoading } = useGetAllStylesQuery({});
-	const [deleteStyle] = useDeleteStyleMutation();
+	const [deleteStyle, { isLoading: deleteLoading }] = useDeleteStyleMutation();
 
 	console.log(data);
 	const deleteAlert = () => {
@@ -50,21 +52,36 @@ const Styles = () => {
 
 	const handleClose = () => {
 		setOpenModal(false);
-		setEditedRowData(null);
+		setClickedRowData(null);
 	};
 
 	const handleDeleteClick = async ({ original }) => {
-		const response = await deleteStyle(original?.id);
-		console.log({ response });
+		setClickedRowData(original);
+		setOpenConfirmationModal(true);
 	};
+	
+	const handleConfirmDeleteClick = async () => {
+		const response = await deleteStyle(clickedRowData?.id);
+		if (response.data) {
+			setOpenConfirmationModal(false);
+			setClickedRowData(null);
+		}
+	};
+
 	const handleEditClick = ({ original }) => {
-		setEditedRowData(original);
+		setClickedRowData(original);
 		setOpenModal(true);
 	};
 	const handleOpenModal = () => setOpenModal(true);
+
 	const handleCloseModal = () => {
 		setOpenModal(false);
-		setEditedRowData(null);
+		setClickedRowData(null);
+	};
+
+	const handleConfirmationModalClose = () => {
+		setOpenConfirmationModal(false);
+		setClickedRowData(null);
 	};
 
 	const column = useMemo(
@@ -248,7 +265,18 @@ const Styles = () => {
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
 				successAlert={successAlert}
-				editedRowData={editedRowData}
+				editedRowData={clickedRowData}
+			/>
+			<ConfirmationModal
+				openModal={openConfirmationModal}
+				handleClose={handleConfirmationModalClose}
+				bodyText={'Are you sure you want to permanently delete this category?'}
+				cancelBtnText={'Cancel'}
+				confirmBtnText={'Delete'}
+				topIcon={''}
+				handleCancelClick={handleConfirmationModalClose}
+				handleConfirmClick={handleConfirmDeleteClick}
+				isLoading={deleteLoading}
 			/>
 		</div>
 	);
