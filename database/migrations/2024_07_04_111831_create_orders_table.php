@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
 
             $table->string('users_email');
             $table->string('users_phone');
+            $table->string('users_name')->nullable()->default("Created By Admin");
             $table->enum('order_type', ['standard', 'express', 'custom']);
             $table->string('order_name');
             $table->integer('category_id');
@@ -56,7 +57,6 @@ class CreateOrdersTable extends Migration
 
             $table->timestamp('order_delivery_date')->nullable();
             $table->enum('preview_edit_status', ['no', 'user_review_pending', 'accepted', 'rejected'])->nullable()->default('no');
-            $table->string('users_name')->nullable()->default("Created By Admin");
 
             $table->softDeletes();
             $table->timestamps();
