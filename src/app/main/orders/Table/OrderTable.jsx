@@ -18,7 +18,7 @@ import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 
-function OrderTable({ onOrderSubmit,setAllStyleData }) {
+function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [inputValue, setInputValue] = useState('');
 
 	// filtering state
@@ -80,7 +80,7 @@ function OrderTable({ onOrderSubmit,setAllStyleData }) {
 			id: 'order_date_formatted',
 			accessorKey: 'order_date',
 			header: 'Order Date',
-			Cell: ({ row }) => format(new Date(row?.original?.order_date), 'MMM dd, y'),
+			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -102,7 +102,7 @@ function OrderTable({ onOrderSubmit,setAllStyleData }) {
 			id: 'remaining_days',
 			accessorKey: 'order_date',
 			header: 'Remaining Days',
-			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.order_date)}/07 days</Box>,
+			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>,
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -370,7 +370,7 @@ function OrderTable({ onOrderSubmit,setAllStyleData }) {
 			index: 7,
 			accessorKey: 'delivery_date',
 			header: 'Delivery Date',
-			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.order_date, row?.original?.order_type)}`,
+			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.created_at, row?.original?.order_type)}`,
 			muiTableHeadCellProps: {
 				align: 'center'
 			},

@@ -74,6 +74,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 
 	const styleData = allStyleData?.filter((data) => data?.additional_style === 'no');
 	const additionalData = allStyleData?.filter((data) => data?.additional_style === 'yes');
+	console.log(allStyleData);
 	const handleCullingChange = (e, setFieldValue) => {
 		const isChecked = e.target.checked;
 		setFieldValue('additionalEdits.culling', isChecked);
@@ -254,14 +255,15 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 												<Field
 													name="selectedStyle"
 													type="radio"
-													value={styleInfo.style_name}
+													value={styleInfo?.style_name}
 													as={StyleCard}
-													title={styleInfo.style_name}
-													description={styleInfo.description}
-													id={styleInfo.id}
-													selectedValue={values.selectedStyle === styleInfo.style_name}
+													title={styleInfo?.style_name}
+													description={styleInfo?.description}
+													id={styleInfo?.id}
+													image={styleInfo?.upload_image}
+													selectedValue={values.selectedStyle === styleInfo?.style_name}
 													handleChange={(e) =>
-														handleMainStyleClick(e, styleInfo.id, values, setFieldValue)
+														handleMainStyleClick(e, styleInfo?.id, values, setFieldValue)
 													}
 												/>
 											</Grid>
@@ -294,6 +296,7 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 															title={styleInfo.style_name}
 															description={styleInfo.description}
 															id={styleInfo.id}
+															image={styleInfo?.upload_image}
 															selectedValue={values.additionalStyle.includes(
 																styleInfo.style_name
 															)}
