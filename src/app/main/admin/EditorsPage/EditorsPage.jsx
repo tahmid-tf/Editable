@@ -8,32 +8,45 @@ import CreateEditorModal from './CreateEditorModal';
 import CustomTableHeader from 'app/shared-components/data-table/CustomTableHeader';
 import CustomPagination from 'app/shared-components/data-table/CustomPagination';
 import CustomRowAction from 'app/shared-components/data-table/CustomRowAction';
+import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 
 const EditorsPage = () => {
 	const [openModal, setOpenModal] = useState(false);
-	const [editorInfo, setEditorInfo] = useState(null);
+	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+	const [clickedRowData, setClickedRowData] = useState(null);
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
 	const [search, setSearch] = useState('');
 
 	const { data, isLoading } = useGetAllEditorsQuery({ page, rowPerPage, search });
-	const [deleteEditor] = useDeleteEditorMutation();
-	console.log(data?.data);
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
+	const [deleteEditor, { isLoading: deleteLoading }] = useDeleteEditorMutation();
+
 	const handleDeleteClick = async ({ original }) => {
-		const response = await deleteEditor(original?.id);
-		console.log({ response });
+		setClickedRowData(original);
+		setOpenConfirmationModal(true);
 	};
+
+	const handleConfirmDeleteClick = async () => {
+		const response = await deleteEditor(clickedRowData?.id);
+		if (response.data) {
+			setOpenConfirmationModal(false);
+			setClickedRowData(null);
+		}
+	};
+
 	const handleEditClick = ({ original }) => {
-		setEditorInfo(original);
+		setClickedRowData(original);
 		setOpenModal(true);
 	};
+
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
 
+	const handleConfirmationModalClose = () => {
+		setOpenConfirmationModal(false);
+		setClickedRowData(null);
+	};
 	const column = useMemo(
 		() => [
 			{
@@ -87,7 +100,9 @@ const EditorsPage = () => {
 	return (
 		<div>
 			<div className="bg-white px-[26px] py-[36px]">
-				<Typography sx={{ color: '#868686', fontSize: 20, fontWeight: 700, lineHeight: '20px', marginBottom:3 }}>
+				<Typography
+					sx={{ color: '#868686', fontSize: 20, fontWeight: 700, lineHeight: '20px', marginBottom: 3 }}
+				>
 					Editors
 				</Typography>
 
@@ -138,8 +153,19 @@ const EditorsPage = () => {
 			<CreateEditorModal
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
-				editorInfo={editorInfo}
-				setEditorInfo={setEditorInfo}
+				editorInfo={clickedRowData}
+				setEditorInfo={setClickedRowData}
+			/>
+			<ConfirmationModal
+				openModal={openConfirmationModal}
+				handleClose={handleConfirmationModalClose}
+				bodyText={'Are you sure you want to permanently delete this category?'}
+				cancelBtnText={'Cancel'}
+				confirmBtnText={'Delete'}
+				topIcon={''}
+				handleCancelClick={handleConfirmationModalClose}
+				handleConfirmClick={handleConfirmDeleteClick}
+				isLoading={deleteLoading}
 			/>
 		</div>
 	);

@@ -24,10 +24,7 @@ export const calculateDeliveryDays = (orderDate, orderType, customDay) => {
 		return '';
 	}
 	// Add 7 days to the parsed order date
-	const deliveryDate = parsedOrderDate.add(
-		orderType === 'standard' ? 15 : orderType === 'express' ? 7 : customDay,
-		'day'
-	);
+	const deliveryDate = parsedOrderDate.add(orderType === 'standard' ? 15 : orderType === 'express' ? 7 : 0, 'day');
 	return deliveryDate.format('MMM D, YYYY');
 };
 

@@ -5,6 +5,7 @@ import OrdersAlerts from './Alerts/OrdersAlerts';
 
 const Orders = () => {
 	const [showOrderTable, setShowOrderTable] = useState(true);
+	const [allStyleData, setAllStyleData] = useState([]);
 
 	const handleOrderTableSubmit = () => {
 		setShowOrderTable(false);
@@ -31,11 +32,15 @@ const Orders = () => {
 			/>
 			<div className="bg-white px-[26px]">
 				{showOrderTable ? (
-					<OrderTable onOrderSubmit={handleOrderTableSubmit} />
+					<OrderTable
+						setAllStyleData={setAllStyleData}
+						onOrderSubmit={handleOrderTableSubmit}
+					/>
 				) : (
 					<PickStyle
 						onPickStyleSubmit={handlePickStyleSubmit}
 						successAlert={successAlert}
+						allStyleData={allStyleData}
 					/>
 				)}
 			</div>

@@ -5,6 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, Radio, Checkbox } from '@mui/material';
 import cardImage from '../../../../../assets/images/pick-a-style/cardimage.png';
+import { imageUrlCompleter } from 'src/app/appUtils/appUtils';
 
 export default function StyleCard({
 	title,
@@ -13,7 +14,8 @@ export default function StyleCard({
 	handleChange,
 	value,
 	type,
-	description
+	description,
+	image
 }) {
 	const Control = type === 'checkbox' ? Checkbox : Radio;
 
@@ -42,7 +44,7 @@ export default function StyleCard({
 				<CardMedia
 					className="px-32 pt-[53px]"
 					component="img"
-					image={cardImage}
+					image={imageUrlCompleter(image)}
 					alt="Style Image"
 				/>
 				<CardContent className="px-32 h-full">
