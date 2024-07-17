@@ -95,8 +95,8 @@ class AdminOrderController extends Controller
                 'order_type' => 'required|in:standard,express,custom',
                 'order_name' => 'required|string|max:255',
                 'category_id' => 'required|integer',
-                'payment_status' => 'required|in:pending,successful,failed',
-                'order_date' => 'nullable|date',
+                'payment_status' => 'nullable|in:pending,successful,failed',
+                'order_date' => 'nullable',
                 'order_id' => 'nullable|string|max:255',
                 'amount' => 'required|string|max:255', // Assuming amount is stored as a string
                 'editors_id' => 'nullable|string|max:255',
@@ -113,6 +113,10 @@ class AdminOrderController extends Controller
                 'additional_info' => 'nullable|in:yes,no',
                 'preview_edits' => 'nullable|string|max:255',
                 'user_id' => 'nullable|string|max:255',
+                'order_delivery_date' => 'nullable',
+                'preview_edit_status' => 'required|in:no,user_review_pending,accepted,rejected',
+                'users_name' => 'nullable',
+
             ]);
 
             if ($validator->fails()) {
@@ -120,6 +124,8 @@ class AdminOrderController extends Controller
             }
 
             $inputs = $validator->validated();
+
+            $inputs['user_id'] = auth()->id() ?? null;
 
 //        ------------------------------------------------- validation block -------------------------------------------------
 

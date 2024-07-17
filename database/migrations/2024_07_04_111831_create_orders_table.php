@@ -27,7 +27,7 @@ class CreateOrdersTable extends Migration
 
             //            sorting from orders table
 
-            $table->date('order_date')->nullable();
+            $table->timestamp('order_date')->nullable();
             $table->string('order_id')->nullable();
             $table->string('amount');
             $table->string('editors_id')->nullable();
@@ -47,15 +47,18 @@ class CreateOrdersTable extends Migration
             $table->string('skin_retouching_type')->nullable();
 
             $table->enum('additional_info', ['yes', 'no'])->nullable()->default('no');
-            $table->string('preview_edits')->nullable()->default('no');
-
+            $table->enum('preview_edits', ['yes', 'no'])->nullable()->default('no');
 
 //            Users Info
-
             $table->string('user_id')->nullable();
 
-            $table->softDeletes();
+            // new added columns, after 17/7/24
 
+            $table->timestamp('order_delivery_date')->nullable();
+            $table->enum('preview_edit_status', ['no', 'user_review_pending', 'accepted', 'rejected'])->nullable()->default('no');
+            $table->string('users_name')->nullable()->default("Created By Admin");
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }
