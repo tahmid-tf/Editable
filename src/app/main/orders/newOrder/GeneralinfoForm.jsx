@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
 
 const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData }) => {
 	const dispatch = useAppDispatch();
-	const { data } = useGetAllCategoriesQuery({});
+	const { data } = useGetAllCategoriesQuery({page:1});
 	const [getStyles] = useGetStylesMutation();
 	console.log(data?.data?.data);
 	return (
