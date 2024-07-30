@@ -6,6 +6,10 @@ import { useAppDispatch } from 'app/store/hooks';
 import { addOrderGeneralInfo } from '../orderSlice';
 import { useGetAllCategoriesQuery } from '../../admin/categories/CategoriesApi';
 import { useGetStylesMutation } from '../orderApi';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { Box, CircularProgress } from '@mui/material';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const validationSchema = Yup.object().shape({
 	userEmail: Yup.string().email('Invalid email format').required('Required'),
@@ -18,8 +22,8 @@ const validationSchema = Yup.object().shape({
 
 const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData }) => {
 	const dispatch = useAppDispatch();
-	const { data } = useGetAllCategoriesQuery({page:1});
-	const [getStyles] = useGetStylesMutation();
+	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 100000000 });
+	const [getStyles, { isLoading }] = useGetStylesMutation();
 	console.log(data?.data?.data);
 	return (
 		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
@@ -48,7 +52,11 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 					const response = await getStyles(formValue);
 					if (response.data) {
 						setAllStyleData(response?.data?.data?.style_data);
+
 						onOrderSubmit();
+					} else {
+						console.log(response.error);
+						dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 					}
 				}}
 				className="rounded-xl"
@@ -200,16 +208,33 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 						<div className="pt-32 pb-24">
 							<button
 								type="submit"
-								disabled={isSubmitting}
+								disabled={isLoading}
 								// onClick={onClose}
-								className="w-full h-[38px] py-2 px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff]"
+								className="w-full h-[38px] py-2 px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] flex justify-center items-center gap-5"
 							>
 								Proceed
+								{isLoading ? (
+									<Box
+										sx={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center'
+										}}
+									>
+										<CircularProgress
+											sx={{ color: 'white' }}
+											size={20}
+										/>
+									</Box>
+								) : (
+									''
+								)}
 							</button>
 						</div>
 					</Form>
 				)}
 			</Formik>
+			<GlobalSnackbar />
 		</div>
 	);
 };

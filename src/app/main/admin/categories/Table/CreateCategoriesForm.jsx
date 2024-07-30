@@ -2,8 +2,12 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { IoClose } from 'react-icons/io5';
-import { Modal } from '@mui/material';
+import { Box, CircularProgress, Modal } from '@mui/material';
 import { useCreateCategoryMutation, useUpdateCategoryMutation } from '../CategoriesApi';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { useAppDispatch } from 'app/store/hooks';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const validationSchema = Yup.object().shape({
 	category_name: Yup.string().required('Required'),
@@ -17,9 +21,10 @@ const validationSchema = Yup.object().shape({
 	preview_edit_threshold: Yup.number().required('Required')
 });
 
-const CreateCategoriesForm = ({ openModal, handleClose, successAlert, editedRowData }) => {
-	const [createCategory] = useCreateCategoryMutation();
-	const [updateCategory] = useUpdateCategoryMutation();
+const CreateCategoriesForm = ({ openModal, handleClose, editedRowData }) => {
+	const [createCategory, { isLoading: createLoading }] = useCreateCategoryMutation();
+	const [updateCategory, { isLoading: updateLoading }] = useUpdateCategoryMutation();
+	const dispatch = useAppDispatch();
 	return (
 		<Modal
 			open={openModal}
@@ -50,8 +55,14 @@ const CreateCategoriesForm = ({ openModal, handleClose, successAlert, editedRowD
 									? await updateCategory({ body: values, id: editedRowData?.id })
 									: await createCategory(values);
 							if (response.data) {
-								successAlert();
+								dispatch(
+									openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message })
+								);
 								handleClose();
+							} else {
+								dispatch(
+									openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data })
+								);
 							}
 						}}
 						className="rounded-xl"
@@ -246,17 +257,34 @@ const CreateCategoriesForm = ({ openModal, handleClose, successAlert, editedRowD
 								<div className="pt-32 pb-24">
 									<button
 										type="submit"
-										disabled={isSubmitting}
+										disabled={createLoading || updateLoading}
 										// onClick={onClose}
-										className="w-full h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff]"
+										className="w-full h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] flex justify-center items-center gap-5"
 									>
 										{editedRowData !== null ? 'Update Category' : 'Create Category'}
+										{createLoading || updateLoading ? (
+											<Box
+												sx={{
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center'
+												}}
+											>
+												<CircularProgress
+													sx={{ color: 'white' }}
+													size={20}
+												/>
+											</Box>
+										) : (
+											''
+										)}
 									</button>
 								</div>
 							</Form>
 						)}
 					</Formik>
 				</div>
+				<GlobalSnackbar />
 			</div>
 		</Modal>
 	);

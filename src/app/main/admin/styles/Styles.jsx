@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import StylesTable from './Table/StylesTable';
-import StylesAlerts from './Alerts/StylesAlerts';
 import CustomPagination from 'app/shared-components/data-table/CustomPagination';
 import CustomRowAction from 'app/shared-components/data-table/CustomRowAction';
 import CustomTableHeader from 'app/shared-components/data-table/CustomTableHeader';
@@ -9,13 +7,16 @@ import { useDeleteStyleMutation, useGetAllStylesQuery } from './AdminStylePageAp
 import FuseLoading from '@fuse/core/FuseLoading';
 import CreateStylesForm from './Table/CreateStylesForm';
 import ConfirmationModal from 'app/shared-components/ConfirmationModal';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { useAppDispatch } from 'app/store/hooks';
 
 const Styles = () => {
-	// delete
-	const [isDelete, setIsDelete] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
 	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 	const [clickedRowData, setClickedRowData] = useState(null);
+
+	const dispatch = useAppDispatch();
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
@@ -23,37 +24,6 @@ const Styles = () => {
 
 	const { data, isLoading } = useGetAllStylesQuery({ page, rowPerPage, search });
 	const [deleteStyle, { isLoading: deleteLoading }] = useDeleteStyleMutation();
-
-	console.log(data);
-	const deleteAlert = () => {
-		setIsDelete(true);
-	};
-	const closeDelete = () => {
-		setIsDelete(false);
-	};
-
-	// Success
-	const [isSuccess, setIsSuccess] = useState(false);
-	const successAlert = () => {
-		setIsSuccess(true);
-	};
-	const closeSuccess = () => {
-		setIsSuccess(false);
-	};
-
-	// Error
-	const [isError, setIsError] = useState(false);
-	const errorAlert = () => {
-		setIsError(true);
-	};
-	const closeError = () => {
-		setIsError(false);
-	};
-
-	const handleClose = () => {
-		setOpenModal(false);
-		setClickedRowData(null);
-	};
 
 	const handleDeleteClick = async ({ original }) => {
 		setClickedRowData(original);
@@ -63,8 +33,11 @@ const Styles = () => {
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteStyle(clickedRowData?.id);
 		if (response.data) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 			setOpenConfirmationModal(false);
 			setClickedRowData(null);
+		} else {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 		}
 	};
 
@@ -185,24 +158,10 @@ const Styles = () => {
 	return (
 		<div>
 			<div className="px-36">
-				<StylesAlerts
-					isDelete={isDelete}
-					closeDelete={closeDelete}
-					isSuccess={isSuccess}
-					closeSuccess={closeSuccess}
-					isError={isError}
-					closeError={closeError}
-				/>
 				<div>
 					<p className="text-[20px] font-bold text-[#868686] py-32">Styles</p>
 				</div>
-				{/* <div className="flex-1"> */}
-				{/* <StylesTable
-          deleteAlert={deleteAlert}
-          successAlert={successAlert}
-          errorAlert={errorAlert}
-        /> */}
-				{/* </div> */}
+
 				<DataTable
 					isLoading={isLoading}
 					data={data?.data?.data}
@@ -264,7 +223,6 @@ const Styles = () => {
 			<CreateStylesForm
 				openModal={openModal}
 				handleCloseModal={handleCloseModal}
-				successAlert={successAlert}
 				editedRowData={clickedRowData}
 			/>
 			<ConfirmationModal

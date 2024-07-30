@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Box, CircularProgress, Grid } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { json, Link } from 'react-router-dom';
@@ -10,10 +10,12 @@ import PriceCard from './StyleCards/PriceCard';
 import NewOrderNav from './NewOrderNav';
 import { useGetValueForOrderCalculationMutation, usePlaceOrderMutation } from '../orderApi';
 import clsx from 'clsx';
-import { useAppSelector } from 'app/store/hooks';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { selectOrderState } from '../orderSlice';
 import { getMaxThreshold } from 'src/app/appUtils/appUtils';
 import dayjs from 'dayjs';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -60,15 +62,16 @@ const initialValues = {
 	imageSelectionMethodSkinRetouching: '',
 	maxThreshold: 0
 };
-const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
+const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
 	const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] = useState(false);
 	const [orderCalcValue, setOrderCalcValue] = useState({});
 	const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
+	const dispatch = useAppDispatch();
 
 	const [getValueForOrderCalculation, { data }] = useGetValueForOrderCalculationMutation();
 
-	const [placeOrder] = usePlaceOrderMutation();
+	const [placeOrder, { isLoading }] = usePlaceOrderMutation();
 
 	const orderState = useAppSelector(selectOrderState);
 
@@ -197,8 +200,6 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 			initialValues={initialValues}
 			validationSchema={validationSchema}
 			onSubmit={async (values) => {
-				// onPickStyleSubmit();
-				// successAlert();
 				const body = {
 					users_email: orderState.email,
 					users_phone: orderState.phone,
@@ -222,8 +223,12 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 				};
 
 				const response = await placeOrder(body);
+
 				if (response.data) {
+					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 					onPickStyleSubmit();
+				} else {
+					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 				}
 			}}
 		>
@@ -731,9 +736,25 @@ const PickStyle = ({ onPickStyleSubmit, successAlert, allStyleData }) => {
 									<div className="pt-32 pb-24">
 										<button
 											type="submit"
-											className="w-[332px] h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] font-[20px]"
+											className="w-[332px] h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] font-[20px] flex justify-center items-center gap-5"
 										>
 											Place Order
+											{isLoading ? (
+												<Box
+													sx={{
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent: 'center'
+													}}
+												>
+													<CircularProgress
+														sx={{ color: 'white' }}
+														size={20}
+													/>
+												</Box>
+											) : (
+												''
+											)}
 										</button>
 									</div>
 									{errors.selectedStyle && touched.selectedStyle ? (

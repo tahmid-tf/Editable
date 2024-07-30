@@ -1,10 +1,14 @@
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Modal, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useCreateNewEditorMutation, useUpdateEditorMutation } from './EditorsApi';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _ from 'lodash';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { useAppDispatch } from 'app/store/hooks';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const style = {
 	position: 'absolute',
@@ -25,8 +29,9 @@ const schema = z.object({
 	name: z.string('Name Should be String').nonempty('Name is Required')
 });
 const CreateEditorModal = ({ openModal, handleCloseModal, editorInfo, setEditorInfo }) => {
-	const [createNewEditor] = useCreateNewEditorMutation();
-	const [updateEditor] = useUpdateEditorMutation();
+	const [createNewEditor, { isLoading: createLoading }] = useCreateNewEditorMutation();
+	const [updateEditor, { isLoading: updateLoading }] = useUpdateEditorMutation();
+	const dispatch = useAppDispatch();
 	const { control, formState, handleSubmit, reset, setValue } = useForm({
 		mode: 'onChange',
 		defaultValues,
@@ -40,10 +45,15 @@ const CreateEditorModal = ({ openModal, handleCloseModal, editorInfo, setEditorI
 			editorInfo !== null
 				? await updateEditor({ updatedValue: { editor_name: formData.name }, id: editorInfo?.id })
 				: await createNewEditor({ editor_name: formData.name });
+
+		console.log(response.error);
 		if (response.data) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 			reset(defaultValues);
 			setEditorInfo(null);
 			handleCloseModal();
+		} else {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.message }));
 		}
 	};
 
@@ -51,73 +61,98 @@ const CreateEditorModal = ({ openModal, handleCloseModal, editorInfo, setEditorI
 		editorInfo !== null ? setValue('name', editorInfo?.editor_name) : null;
 	}, [editorInfo]);
 	return (
-		<Modal
-			open={openModal}
-			onClose={handleCloseModal}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
-		>
-			<Box sx={style}>
-				<Typography
-					color={'gray'}
-					fontSize={20}
-					fontWeight={700}
-				>
-					Create Editor
-				</Typography>
-				<form
-					onSubmit={handleSubmit(handleCreateName)}
-					className="my-[3em] flex flex-col gap-[1em]"
+		<Box>
+			<Modal
+				open={openModal}
+				onClose={handleCloseModal}
+				aria-labelledby="modal-modal-title"
+				aria-describedby="modal-modal-description"
+			>
+				<>
+					<Box sx={style}>
+						<Typography
+							color={'gray'}
+							fontSize={20}
+							fontWeight={700}
+						>
+							Create Editor
+						</Typography>
+						<form
+							onSubmit={handleSubmit(handleCreateName)}
+							className="my-[3em] flex flex-col gap-[1em]"
 
-					// sx={{ my: 5, display: 'flex', flexDirection: 'column', gap: 2 }}
-				>
-					<Typography
-						color={'black'}
-						fontSize={'14px'}
-						fontWeight={500}
-					>
-						Name
-					</Typography>
-					<Controller
-						name="name"
-						control={control}
-						render={({ field }) => (
-							<TextField
-								{...field}
+							// sx={{ my: 5, display: 'flex', flexDirection: 'column', gap: 2 }}
+						>
+							<Typography
+								color={'black'}
+								fontSize={'14px'}
+								fontWeight={500}
+							>
+								Name
+							</Typography>
+							<Controller
 								name="name"
-								sx={{ width: '100%' }}
-								placeholder="Ex: Jack Monas"
-								error={!!errors.name}
-								helperText={errors?.name?.message}
-								variant="outlined"
-								required
-								fullWidth
+								control={control}
+								render={({ field }) => (
+									<TextField
+										{...field}
+										name="name"
+										sx={{ width: '100%' }}
+										placeholder="Ex: Jack Monas"
+										error={!!errors.name}
+										helperText={errors?.name?.message}
+										variant="outlined"
+										required
+										fullWidth
+									/>
+								)}
 							/>
-						)}
-					/>
-					<Button
-						variant="contained"
-						size="large"
-						sx={{
-							width: '100%',
-							height: '48px',
-							borderRadius: '4px',
-							backgroundColor: '#146ef5ef',
-							color: 'white',
-							':hover': {
-								backgroundColor: '#0066ff',
-								color: 'white'
-							},
-							whiteSpace: 'nowrap'
-						}}
-						disabled={_.isEmpty(dirtyFields) || !isValid}
-						type="submit"
-					>
-						Create Editor
-					</Button>
-				</form>
-			</Box>
-		</Modal>
+							<Button
+								variant="contained"
+								size="large"
+								sx={{
+									width: '100%',
+									height: '48px',
+									borderRadius: '4px',
+									backgroundColor: '#146ef5ef',
+									color: 'white',
+									':hover': {
+										backgroundColor: '#0066ff',
+										color: 'white'
+									},
+									whiteSpace: 'nowrap',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									gap: 2
+								}}
+								disabled={_.isEmpty(dirtyFields) || !isValid || createLoading || updateLoading}
+								type="submit"
+							>
+								{editorInfo !== null ? 'Update Editor' : 'Create Editor'}
+								{createLoading || updateLoading ? (
+									<Box
+										sx={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center'
+										}}
+									>
+										<CircularProgress
+											sx={{ color: 'white' }}
+											size={20}
+										/>
+									</Box>
+								) : (
+									''
+								)}
+							</Button>
+						</form>
+					</Box>
+					<GlobalSnackbar />
+				</>
+			</Modal>
+		</Box>
 	);
 };
 
