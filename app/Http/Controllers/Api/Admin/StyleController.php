@@ -127,22 +127,22 @@ class StyleController extends Controller
             }
 
             // Find categories by the given IDs
-//            $categories = Category::whereIn('id', $category_array_data)->get();
+            $categories = Category::whereIn('id', $category_array_data)->get();
 
 
             // Extract the IDs of the found categories
-//            $foundCategoryIds = $categories->pluck('id')->toArray();
+            $foundCategoryIds = $categories->pluck('id')->toArray();
 
             // Determine the missing IDs
-//            $missingIds = array_diff($category_array_data, $foundCategoryIds);
+            $missingIds = array_diff($category_array_data, $foundCategoryIds);
 
             // Check if there are any missing IDs
-//            if (!empty($missingIds)) {
-//                return response()->json([
-//                    'message' => 'Some categories were not found',
-//                    'missing_ids' => $missingIds
-//                ], 404);
-//            }
+            if (!empty($missingIds)) {
+                return response()->json([
+                    'message' => 'Some categories were not found',
+                    'missing_ids' => $missingIds
+                ], 404);
+            }
 
 //            -------------------------- validating categories based on array data --------------------------
 
@@ -280,21 +280,21 @@ class StyleController extends Controller
             }
 
             // Find categories by the given IDs
-//            $categories = Category::whereIn('id', $category_array_data)->get();
+            $categories = Category::whereIn('id', $category_array_data)->get();
 
             // Extract the IDs of the found categories
-//            $foundCategoryIds = $categories->pluck('id')->toArray();
+            $foundCategoryIds = $categories->pluck('id')->toArray();
 
             // Determine the missing IDs
-//            $missingIds = array_diff($category_array_data, $foundCategoryIds);
+            $missingIds = array_diff($category_array_data, $foundCategoryIds);
 
             // Check if there are any missing IDs
-//            if (!empty($missingIds)) {
-//                return response()->json([
-//                    'message' => 'Some categories were not found',
-//                    'missing_ids' => $missingIds
-//                ], 404);
-//            }
+            if (!empty($missingIds)) {
+                return response()->json([
+                    'message' => 'Some categories were not found',
+                    'missing_ids' => $missingIds
+                ], 404);
+            }
 
 //            -------------------------- validating categories based on array data --------------------------
 
