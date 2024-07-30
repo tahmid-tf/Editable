@@ -19,6 +19,8 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+
     public function index(Request $request)
     {
 
@@ -30,7 +32,8 @@ class CategoryController extends Controller
             $query->where('category_name', 'like', '%' . $name . '%');
         }
 
-        $categories = $query->paginate(10);
+        $paginate = request('paginate', 10);
+        $categories = $query->paginate($paginate);
 
         return response()->json([
             'status' => Response::HTTP_OK,
