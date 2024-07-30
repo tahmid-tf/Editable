@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin\TableSearch;
 
+use App\Exports\TransactionsDataExport;
 use App\Http\Controllers\Controller;
 use App\Models\Api\Admin\Order;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TableSearchController extends Controller
 {
@@ -21,7 +23,6 @@ class TableSearchController extends Controller
             'order_status' => request('order_status'),
             'payment_status' => request('payment_status'),
             'start_date' => request('start_date'),
-//            'paginate' => request('paginate'),
             'end_date' => request('end_date'),
         ];
 
@@ -75,7 +76,15 @@ class TableSearchController extends Controller
 
     public function transactions_data_export(Request $request)
     {
+        $searchParams = [
+            'email' => $request->input('email'),
+            'order_status' => $request->input('order_status'),
+            'payment_status' => $request->input('payment_status'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+        ];
 
+        return Excel::download(new TransactionsDataExport($searchParams), 'transactions.xlsx');
     }
 
 
