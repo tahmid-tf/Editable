@@ -15,7 +15,8 @@ class StyleController extends Controller
 {
 
 
-    public function file_string_output(Request $request){
+    public function file_string_output(Request $request)
+    {
         $inputs['upload_image'] = $request->file('upload_image')->store('images');
         return response()->json($inputs);
     }
@@ -38,9 +39,15 @@ class StyleController extends Controller
             $styles = Style::paginate($perPage)->toArray();
         }
 
-        $base_style_count = Style::where('additional_style','no')->count() ?? 0;
-        $additional_style_count = Style::where('additional_style','yes')->count() ?? 0;
+//        ---------------------------- base , additional and other styles count ----------------------------
+
+        $base_style_count = Style::where('additional_style', 'no')->count() ?? 0;
+        $additional_style_count = Style::where('additional_style', 'yes')->count() ?? 0;
         $total_style_count = Style::count() ?? 0;
+
+//        ---------------------------- base , additional and other styles count ----------------------------
+
+//        ---------------------------- showing associated categories with the styles ----------------------------
 
         foreach ($styles['data'] as &$style) {
             // Decode the categories JSON string to array
@@ -51,10 +58,10 @@ class StyleController extends Controller
 
             // Append category details to the style
             $style['category_details'] = $categories;
-
-            // Convert the upload_image field to asset format
-//            $style['upload_image'] = asset('storage/' . $style['upload_image']);
         }
+
+//        ---------------------------- showing associated categories with the styles ----------------------------
+
 
         return response()->json([
             'base_style_count' => $base_style_count,
@@ -120,22 +127,22 @@ class StyleController extends Controller
             }
 
             // Find categories by the given IDs
-            $categories = Category::whereIn('id', $category_array_data)->get();
+//            $categories = Category::whereIn('id', $category_array_data)->get();
 
 
             // Extract the IDs of the found categories
-            $foundCategoryIds = $categories->pluck('id')->toArray();
+//            $foundCategoryIds = $categories->pluck('id')->toArray();
 
             // Determine the missing IDs
-            $missingIds = array_diff($category_array_data, $foundCategoryIds);
+//            $missingIds = array_diff($category_array_data, $foundCategoryIds);
 
             // Check if there are any missing IDs
-            if (!empty($missingIds)) {
-                return response()->json([
-                    'message' => 'Some categories were not found',
-                    'missing_ids' => $missingIds
-                ], 404);
-            }
+//            if (!empty($missingIds)) {
+//                return response()->json([
+//                    'message' => 'Some categories were not found',
+//                    'missing_ids' => $missingIds
+//                ], 404);
+//            }
 
 //            -------------------------- validating categories based on array data --------------------------
 
@@ -260,7 +267,7 @@ class StyleController extends Controller
 //        ------------------------------------------------- validation block -------------------------------------------------
 
 
-//            -------------------------- fetching the style image and decoding array --------------------------
+//            -------------------------- validating categories based on array data --------------------------
 
             // Assuming 'categories' is an array of IDs from the input
             $category_array_data = $inputs['categories'];
@@ -274,7 +281,6 @@ class StyleController extends Controller
 
             // Find categories by the given IDs
             $categories = Category::whereIn('id', $category_array_data)->get();
-
 
             // Extract the IDs of the found categories
             $foundCategoryIds = $categories->pluck('id')->toArray();
@@ -295,11 +301,6 @@ class StyleController extends Controller
 
 //            -------------------------- fetching the style image and decoding array --------------------------
 
-//            if ($request->hasFile('upload_image')) {
-//                $inputs['upload_image'] = $request->file('upload_image')->store('images');
-//            } else {
-//                $inputs['upload_image'] = $style->upload_image;
-//            }
 
             $inputs['categories'] = json_encode($category_array_data);
 
