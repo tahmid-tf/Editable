@@ -59,13 +59,17 @@ class TableSearchController extends Controller
 
         // Count values based on the paginated results
         $paginatedOrders = $orders->getCollection();
-        $successful_transactions = Order::where('payment_status', 'successful')->sum('amount') ?? 0;
-        $total_transactions = Order::sum('amount') ?? 0;
+
+
+        $total_transactions = Order::count();
+        $successful_transactions = Order::where('payment_status', 'successful')->count();
+        $total_successful_amount = Order::where('payment_status', 'successful')->sum('amount') ?? 0;
 
 
         return response()->json([
-            'successful_transactions' => $successful_transactions,
             'total_transactions' => $total_transactions,
+            'successful_transactions' => $successful_transactions,
+            'total_successful_transaction_amount' => $total_successful_amount,
             'data' => $data,
         ]);
     }
