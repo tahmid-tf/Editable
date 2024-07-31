@@ -1,6 +1,5 @@
 import FuseLayout from '@fuse/core/FuseLayout';
 import FuseTheme from '@fuse/core/FuseTheme';
-import { SnackbarProvider } from 'notistack';
 import rtlPlugin from 'stylis-plugin-rtl';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
@@ -17,6 +16,7 @@ import '@fontsource/roboto'; // Imports Roboto with default weight (400)
 // To import specific weights and styles:
 import '@fontsource/roboto/300.css'; // Import Roboto with weight 300
 import '@fontsource/roboto/400-italic.css'; // Import Roboto with weight 400 and italic style
+import GlobalSnackbar from './shared-components/GlobalSnackbar/GlobalSnackbar';
 // fonts
 
 // import axios from 'axios';
@@ -59,18 +59,8 @@ function App() {
 					direction={langDirection}
 				>
 					<AuthenticationProvider>
-						<SnackbarProvider
-							maxSnack={5}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'right'
-							}}
-							classes={{
-								containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99'
-							}}
-						>
-							<FuseLayout layouts={themeLayouts} />
-						</SnackbarProvider>
+						<GlobalSnackbar />
+						<FuseLayout layouts={themeLayouts} />
 					</AuthenticationProvider>
 				</FuseTheme>
 			</CacheProvider>

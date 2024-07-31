@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import CategoriesTable from './Table/CategoriesTable';
-import CategoriesAlert from './Alerts/CategoriesAlert';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import CustomTableHeader from 'app/shared-components/data-table/CustomTableHeader';
 import CustomRowAction from 'app/shared-components/data-table/CustomRowAction';
@@ -10,6 +8,9 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { Modal } from '@mui/material';
 import CreateCategoriesForm from './Table/CreateCategoriesForm';
 import ConfirmationModal from 'app/shared-components/ConfirmationModal';
+import { useAppDispatch } from 'app/store/hooks';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 
 const Categories = () => {
 	// delete
@@ -17,6 +18,7 @@ const Categories = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 	const [clickedRowData, setClickedRowData] = useState(null);
+	const dispatch = useAppDispatch();
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
@@ -27,30 +29,8 @@ const Categories = () => {
 		setOpenModal(false);
 		setClickedRowData(null);
 	};
-
-	const deleteAlert = () => {
-		setIsDelete(true);
-	};
 	const closeDelete = () => {
 		setIsDelete(false);
-	};
-
-	// Success
-	const [isSuccess, setIsSuccess] = useState(false);
-	const successAlert = () => {
-		setIsSuccess(true);
-	};
-	const closeSuccess = () => {
-		setIsSuccess(false);
-	};
-
-	// Error
-	const [isError, setIsError] = useState(false);
-	const errorAlert = () => {
-		setIsError(true);
-	};
-	const closeError = () => {
-		setIsError(false);
 	};
 
 	const handleDeleteClick = async ({ original }) => {
@@ -60,8 +40,11 @@ const Categories = () => {
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteCategory(clickedRowData?.id);
 		if (response.data) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 			setOpenConfirmationModal(false);
 			setClickedRowData(null);
+		} else {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 		}
 	};
 	const handleEditClick = ({ original }) => {
@@ -193,24 +176,9 @@ const Categories = () => {
 	return (
 		<div>
 			<div className="px-36">
-				<CategoriesAlert
-					isDelete={isDelete}
-					closeDelete={closeDelete}
-					isSuccess={isSuccess}
-					closeSuccess={closeSuccess}
-					isError={isError}
-					closeError={closeError}
-				/>
 				<div>
 					<p className="text-[20px] font-bold text-[#868686] py-36">Categories</p>
 				</div>
-				{/* <div className="flex-1">
-					<CategoriesTable
-						deleteAlert={deleteAlert}
-						successAlert={successAlert}
-						errorAlert={errorAlert}
-					/>
-				</div> */}
 				<DataTable
 					isLoading={isLoading}
 					data={data?.data?.data}
@@ -236,7 +204,7 @@ const Categories = () => {
 							setPage={setPage}
 							setSearch={setSearch}
 							handleButtonClick={handleOpenModal}
-							buttonText={'Create Editor'}
+							buttonText={'Create Category'}
 						>
 							<div className="mb-16">
 								Total Categories: <span className="font-bold">{data?.data?.total}</span>
@@ -262,7 +230,6 @@ const Categories = () => {
 			<CreateCategoriesForm
 				openModal={openModal}
 				handleClose={handleClose}
-				successAlert={successAlert}
 				editedRowData={clickedRowData}
 			/>
 			<ConfirmationModal

@@ -9,11 +9,16 @@ import CustomTableHeader from 'app/shared-components/data-table/CustomTableHeade
 import CustomPagination from 'app/shared-components/data-table/CustomPagination';
 import CustomRowAction from 'app/shared-components/data-table/CustomRowAction';
 import ConfirmationModal from 'app/shared-components/ConfirmationModal';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { useAppDispatch } from 'app/store/hooks';
 
 const EditorsPage = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 	const [clickedRowData, setClickedRowData] = useState(null);
+
+	const dispatch = useAppDispatch();
 
 	const [page, setPage] = useState(1);
 	const [rowPerPage, setRowPerPage] = useState(10);
@@ -30,8 +35,11 @@ const EditorsPage = () => {
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteEditor(clickedRowData?.id);
 		if (response.data) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 			setOpenConfirmationModal(false);
 			setClickedRowData(null);
+		} else {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 		}
 	};
 

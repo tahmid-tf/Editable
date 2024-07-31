@@ -99,3 +99,9 @@ export const datePickerShortcutsItems = [
 	},
 	{ label: 'Reset', getValue: () => [null, null] }
 ];
+
+export const SnackbarTypeEnum = {
+	SUCCESS: 'success',
+	ERROR: 'error',
+	WARNING: 'waring'
+};
