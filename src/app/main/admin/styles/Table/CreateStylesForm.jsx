@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5';
 import { Box, CircularProgress, Modal } from '@mui/material';
 import { useGetAllCategoriesQuery } from '../../categories/CategoriesApi';
 import { useCreateStyleMutation, useUpdateStyleMutation, useUploadImageMutation } from '../AdminStylePageApi';
-import { imageUrlCompleter } from 'src/app/appUtils/appUtils';
+import { getExistingId, imageUrlCompleter } from 'src/app/appUtils/appUtils';
 import clsx from 'clsx';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
@@ -27,8 +27,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateStylesForm = ({ openModal, handleCloseModal, editedRowData }) => {
+	
 	const [imagePreview, setImagePreview] = useState({ imageUrl: '', isImageKey: false });
 	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 10000000 });
+
 
 	const [createStyle, { isLoading: createLoading }] = useCreateStyleMutation();
 	const [updateStyle, { isLoading: updateLoading }] = useUpdateStyleMutation();
@@ -83,7 +85,9 @@ const CreateStylesForm = ({ openModal, handleCloseModal, editedRowData }) => {
 								style_name: editedRowData?.style_name || '',
 								description: editedRowData?.style_name || '',
 								upload_image: '',
-								categories: editedRowData?.categories ? JSON.parse(editedRowData?.categories) : [],
+								categories: editedRowData?.categories
+									? getExistingId(JSON.parse(editedRowData?.categories), data?.data?.data)
+									: [],
 								additional_style: editedRowData?.additional_style || '',
 								culling: editedRowData?.culling || 'no',
 								skin_retouch: editedRowData?.skin_retouch || 'no',
