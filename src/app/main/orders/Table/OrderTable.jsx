@@ -155,7 +155,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => (
 				<Typography
 					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						'inline-flex items-center px-10 py-2 rounded-full ',
 						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 					)}
 				>
@@ -163,7 +163,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						value={row?.original?.editor?.editor_name ? row?.original?.editor?.editor_name : ''}
 						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center tracking-wide ',
+							'inline-flex items-center w-full',
 							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
 						defaultChecked={''}
@@ -243,7 +243,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => (
 				<Typography
 					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						'inline-flex items-center px-10 py-2 rounded-full w-full ',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 							'bg-[#FFCC00] text-black',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -258,7 +258,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						value={row?.original?.order_status ? row?.original?.order_status : ''}
 						onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center tracking-wide ',
+							'inline-flex items-center !w-full ',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 								'bg-[#FFCC00] text-black',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -545,6 +545,12 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				enableTopToolbar={false}
 				enablePagination={false}
 				enableBottomToolbar={false}
+				enableColumnResizing={true}
+				// defaultColumn={
+				// 	{
+				// 		maxSize: 125
+				// 	} //default size is usually 180
+				// }
 				muiTableBodyProps={{
 					sx: {
 						//stripe the rows, make odd rows a darker color
