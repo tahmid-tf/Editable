@@ -56,3 +56,17 @@ export const getExistingId = (idArray, dataArray) => {
 	const filteredArray = idArray.filter((id) => existingIds.has(id));
 	return filteredArray;
 };
+
+export const getStyleAndAdditionalStyleName = (styleData) => {
+	if (!styleData?.length) {
+		return { mainStyle: 'N/A', additionalStyle: 'N/A' };
+	} else {
+		const mainStyle = styleData?.find((style) => style?.additional_style === 'no');
+		const additional_style = styleData
+			?.filter((style) => style?.additional_style === 'yes')
+			?.map((style) => style?.style_name)
+			?.join(', ');
+
+		return { mainStyle: mainStyle?.style_name || 'N/A', additionalStyle: additional_style || 'N/A' };
+	}
+};

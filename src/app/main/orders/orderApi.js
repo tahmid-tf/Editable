@@ -38,8 +38,17 @@ const orderApi = apiService
 					method: 'POST',
 					body
 				})
+			}),
+			getOrderDetails: builder.query({
+				query: (id) => `admin/order_info/${id}`
 			})
 		})
 	});
 
-export const { useGetOrdersDataQuery, useGetValueForOrderCalculationMutation, usePlaceOrderMutation, useGetStylesMutation } = orderApi;
+export const {
+	useGetOrdersDataQuery,
+	useGetValueForOrderCalculationMutation,
+	usePlaceOrderMutation,
+	useGetStylesMutation,
+	useGetOrderDetailsQuery
+} = orderApi;

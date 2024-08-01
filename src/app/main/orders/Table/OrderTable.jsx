@@ -17,9 +17,12 @@ import OrderTableHeader from './OrderTableHeader';
 import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
+import OrderDetailsModal from './OrderDetailsModal';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [inputValue, setInputValue] = useState('');
+
+	const [selectedId, setSelectedId] = useState('');
 
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
@@ -33,6 +36,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [endDate, setEndDate] = useState('');
 
 	const [showAllColumns, setShowAllColumns] = useState(false);
+
+	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
+
 	// fetch table data
 	const { data, isLoading } = useGetOrdersDataQuery({
 		orderStatusValue,
@@ -44,7 +50,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		page: currentPage,
 		rowPerPage
 	});
-	console.log(data);
 
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
@@ -58,8 +63,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	};
 
 	// Function to handle LuEye icon click
-	const handleLuEyeClick = () => {
-		console.log('LuEye clicked');
+	const handleLuEyeClick = (id) => {
+		setSelectedId(id);
+		setOrderDetailsOpen(true);
 	};
 
 	// Function to handle FiEdit icon click
@@ -67,14 +73,14 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		console.log('FiEdit clicked');
 	};
 
-	//
-	//
+	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
 
 	// page navigation
 
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
+
 	const initialColumns = [
 		{
 			id: 'order_date_formatted',
@@ -546,11 +552,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				enablePagination={false}
 				enableBottomToolbar={false}
 				enableColumnResizing={true}
-				// defaultColumn={
-				// 	{
-				// 		maxSize: 125
-				// 	} //default size is usually 180
-				// }
+				defaultColumn={
+					{
+						maxSize: 125
+					} //default size is usually 180
+				}
 				muiTableBodyProps={{
 					sx: {
 						//stripe the rows, make odd rows a darker color
@@ -559,11 +565,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						}
 					}
 				}}
-				renderRowActions={() => (
+				renderRowActions={({ row }) => (
 					<div className="flex gap-5">
 						<button
 							type="button"
-							onClick={handleLuEyeClick}
+							onClick={() => handleLuEyeClick(row?.original?.id)}
 						>
 							<LuEye size={20} />
 						</button>
@@ -620,6 +626,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					</Select>
 				</div>
 			</div>
+			<OrderDetailsModal
+				orderDetailsOpen={orderDetailsOpen}
+				handleOrderDetailsClose={handleOrderDetailsClose}
+				selectedId={selectedId}
+			/>
 		</div>
 	);
 }
