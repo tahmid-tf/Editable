@@ -8,7 +8,7 @@ use App\Models\Api\Admin\Order;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
-class TableSearchController extends Controller
+class TransactionSearchController extends Controller
 {
 
 // -------------------------- Transaction list from admin side --------------------------
