@@ -17,9 +17,12 @@ import OrderTableHeader from './OrderTableHeader';
 import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
+import OrderDetailsModal from './OrderDetailsModal';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [inputValue, setInputValue] = useState('');
+
+	const [selectedId, setSelectedId] = useState('');
 
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
@@ -33,6 +36,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [endDate, setEndDate] = useState('');
 
 	const [showAllColumns, setShowAllColumns] = useState(false);
+
+	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
+
 	// fetch table data
 	const { data, isLoading } = useGetOrdersDataQuery({
 		orderStatusValue,
@@ -44,7 +50,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		page: currentPage,
 		rowPerPage
 	});
-	console.log(data);
 
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
@@ -58,8 +63,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	};
 
 	// Function to handle LuEye icon click
-	const handleLuEyeClick = () => {
-		console.log('LuEye clicked');
+	const handleLuEyeClick = (id) => {
+		setSelectedId(id);
+		setOrderDetailsOpen(true);
 	};
 
 	// Function to handle FiEdit icon click
@@ -67,14 +73,14 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		console.log('FiEdit clicked');
 	};
 
-	//
-	//
+	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
 
 	// page navigation
 
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
+
 	const initialColumns = [
 		{
 			id: 'order_date_formatted',
@@ -155,7 +161,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => (
 				<Typography
 					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						'inline-flex items-center px-10 py-2 rounded-full ',
 						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 					)}
 				>
@@ -163,7 +169,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						value={row?.original?.editor?.editor_name ? row?.original?.editor?.editor_name : ''}
 						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center tracking-wide ',
+							'inline-flex items-center w-full',
 							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
 						defaultChecked={''}
@@ -243,7 +249,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => (
 				<Typography
 					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full tracking-wide ',
+						'inline-flex items-center px-10 py-2 rounded-full w-full ',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 							'bg-[#FFCC00] text-black',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -258,7 +264,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						value={row?.original?.order_status ? row?.original?.order_status : ''}
 						onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center tracking-wide ',
+							'inline-flex items-center !w-full ',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 								'bg-[#FFCC00] text-black',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -545,6 +551,12 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				enableTopToolbar={false}
 				enablePagination={false}
 				enableBottomToolbar={false}
+				enableColumnResizing={true}
+				defaultColumn={
+					{
+						maxSize: 125
+					} //default size is usually 180
+				}
 				muiTableBodyProps={{
 					sx: {
 						//stripe the rows, make odd rows a darker color
@@ -553,11 +565,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						}
 					}
 				}}
-				renderRowActions={() => (
+				renderRowActions={({ row }) => (
 					<div className="flex gap-5">
 						<button
 							type="button"
-							onClick={handleLuEyeClick}
+							onClick={() => handleLuEyeClick(row?.original?.id)}
 						>
 							<LuEye size={20} />
 						</button>
@@ -614,6 +626,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					</Select>
 				</div>
 			</div>
+			<OrderDetailsModal
+				orderDetailsOpen={orderDetailsOpen}
+				handleOrderDetailsClose={handleOrderDetailsClose}
+				selectedId={selectedId}
+			/>
 		</div>
 	);
 }
