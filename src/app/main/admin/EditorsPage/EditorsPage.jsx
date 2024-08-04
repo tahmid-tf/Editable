@@ -35,7 +35,7 @@ const EditorsPage = () => {
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteEditor(clickedRowData?.id);
 		if (response.data) {
-			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.DELETE, message: response?.data?.message }));
 			setOpenConfirmationModal(false);
 			setClickedRowData(null);
 		} else {

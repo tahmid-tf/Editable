@@ -103,5 +103,6 @@ export const datePickerShortcutsItems = [
 export const SnackbarTypeEnum = {
 	SUCCESS: 'success',
 	ERROR: 'error',
-	WARNING: 'waring'
+	WARNING: 'waring',
+	DELETE: 'delete'
 };
