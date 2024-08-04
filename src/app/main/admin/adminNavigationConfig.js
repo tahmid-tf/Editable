@@ -22,6 +22,13 @@ const adminNavigationConfig = [
 				url: 'admin/styles'
 			},
 			{
+				id: 'transactions',
+				title: 'Transactions',
+				translate: 'Transactions',
+				type: 'item',
+				url: 'admin/transactions'
+			},
+			{
 				id: 'all-editors',
 				title: 'Editors',
 				type: 'item',
