@@ -29,16 +29,18 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 //    ----------------------------------- Users list and total orders from admin side API -----------------------------------
 
+//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
+
+    Route::get('users_info/{email}', [UserTableDataController::class, 'single_user_data']);
+
+//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
+
 //    ----------------------------------- Users list export from admin side API -----------------------------------
 
     Route::get('users_data_export', [UserTableDataController::class, 'ordered_users_data_export']);
 
 //    ----------------------------------- Users list export from admin side API -----------------------------------
 
-//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
-
-
-//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
 
 
 });

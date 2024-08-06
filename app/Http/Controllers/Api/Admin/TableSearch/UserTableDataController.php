@@ -89,5 +89,73 @@ class UserTableDataController extends Controller
 
 //    ----------------------------------- Users list export from admin side API -----------------------------------
 
+//    ----------------------------------- Users list and total orders from admin side API -----------------------------------
+
+    public function single_user_data($email){
+
+//        Search params
+
+        $query = Order::query();
+
+        $searchParams = [
+            'order_id' => request('order_id'),
+            'order_status' => request('order_status'),
+            'payment_status' => request('payment_status'),
+            'start_date' => request('start_date'),
+            'end_date' => request('end_date'),
+        ];
+
+        $query->where('users_email', $email);
+
+        if ($searchParams['order_id']) {
+            $query->where('id', $searchParams['order_id']);
+        }
+
+        if ($searchParams['order_status']) {
+            $query->where('order_status', $searchParams['order_status']);
+        }
+
+        if ($searchParams['payment_status']) {
+            $query->where('payment_status', $searchParams['payment_status']);
+        }
+
+        if ($searchParams['start_date']) {
+            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
+            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+        }
+
+        $paginate = request('paginate', 10);
+        $orders = $query->orderBy('created_at', 'desc')->paginate($paginate);
+
+        // Count values based on the paginated results
+        $paginatedOrders = $orders->getCollection();
+        $total_orders_count = $paginatedOrders->count();
+        $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
+
+        $total_spend = $paginatedOrders->whereIn('order_status', ['pending','successful'])->sum('amount') ?? 0;
+
+        $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
+        $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
+        $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
+
+
+        return response()->json([
+            'users_email' => $email,
+            'users_name' => User::where('email', $email)->first()->name ?? "Created by Admin",
+            'total_spend' => $total_spend,
+            'total_orders_count' => $total_orders_count,
+            'pending_orders_count' => $pending_orders_count,
+            'cancelled_orders_count' => $cancelled_orders_count,
+            'completed_orders_count' => $completed_orders_count,
+            'preview_orders_count' => $preview_orders_count,
+            'data' => $orders,
+
+        ]);
+
+    }
+
+//    ----------------------------------- Users list and total orders from admin side API -----------------------------------
+
+
 
 }
