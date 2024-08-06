@@ -4,8 +4,8 @@ use App\Http\Controllers\Api\Admin\TableSearch\TransactionSearchController;
 use App\Http\Controllers\Api\Admin\TableSearch\UserTableDataController;
 use Illuminate\Support\Facades\Route;
 
-//Route::get('transaction_export_test', [TransactionSearchController::class, 'transactions_data_export']);
-Route::get('users_data_export', [UserTableDataController::class, 'ordered_users_data_export']);
+Route::get('transaction_export_test', [TransactionSearchController::class, 'transactions_data_export']);
+//Route::get('users_data_export', [UserTableDataController::class, 'ordered_users_data_export']);
 
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
@@ -31,8 +31,14 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 //    ----------------------------------- Users list export from admin side API -----------------------------------
 
+    Route::get('users_data_export', [UserTableDataController::class, 'ordered_users_data_export']);
 
 //    ----------------------------------- Users list export from admin side API -----------------------------------
+
+//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
+
+
+//    ----------------------------------- Single Users list and total orders from admin sided API -----------------------------------
 
 
 });
