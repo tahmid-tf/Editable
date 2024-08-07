@@ -1,19 +1,38 @@
-import { Box, Grid, Modal, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Modal, Tooltip, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useGetOrderDetailsQuery } from '../orderApi';
-import { calculateDeliveryDays, getStyleAndAdditionalStyleName } from 'src/app/appUtils/appUtils';
+import { calculateDeliveryDays, getOrdinal, getStyleAndAdditionalStyleName } from 'src/app/appUtils/appUtils';
 import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import dayjs from 'dayjs';
+import PreviewEditReviewMessageCard from './PreviewEditReviewMessageCard';
+
+const previewEditsMessage = [
+	{
+		name: 'Jon Doe',
+		message: 'The pictures are too gloomy. I am looking for more of vibrant theme.',
+		date: new Date()
+	},
+	{
+		name: 'Jon Doe',
+		message:
+			'I think they are still too gloomy. Can you make them brighter? I am more into a summer vacation vibe rather than European gothic vibe.',
+		date: new Date()
+	}
+];
+
 const style = {
 	position: 'absolute',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
 	width: 500,
+	maxHeight: '90%',
 	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: '40px',
-	borderRadius: 2
+	borderRadius: 2,
+	overflow: 'scroll'
 };
 
 const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClose }) => {
@@ -41,9 +60,8 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 		}
 	}, [openCopyTooltip]);
 
-	const copiedContent = `Order Type: ${data?.data?.order_type},\nDelivery Date: ${calculateDeliveryDays(data?.data?.created_at, data?.data?.order_type)}\nCategory: ${data?.data?.category_name}\nTotal Image: ${data?.data?.number_of_images_provided}\nStyle: ${getStyleAndAdditionalStyleName(data?.data?.styles_data)?.mainStyle}\nAdditional Style: ${getStyleAndAdditionalStyleName(data?.data?.styles_data)?.additionalStyle}\nCulling: ${data?.data?.culling}\nCulled To: ${data?.data?.images_culled_down_to || 0}\nCulling Mark: ${data?.data?.select_image_culling_type}\nSkin Retouch: ${data?.data?.skin_retouching}\nSkin Retouch Mark: ${data?.data?.skin_retouching_type}\nPreview Edits: ${data?.data?.preview_edits}`;
+	const copiedContent = `Order ID: ${data?.data?.id}\nOrder Type: ${data?.data?.order_type},\nDelivery Date: ${calculateDeliveryDays(data?.data?.created_at, data?.data?.order_type)}\nCategory: ${data?.data?.category_name}\nTotal Image: ${data?.data?.number_of_images_provided}\nStyle: ${getStyleAndAdditionalStyleName(data?.data?.styles_data)?.mainStyle}\nAdditional Style: ${getStyleAndAdditionalStyleName(data?.data?.styles_data)?.additionalStyle}\nCulling: ${data?.data?.culling}\nCulled To: ${data?.data?.images_culled_down_to || 0}\nCulling Mark: ${data?.data?.select_image_culling_type}\nSkin Retouch: ${data?.data?.skin_retouching}\nSkin Retouch Mark: ${data?.data?.skin_retouching_type}\nPreview Edits: ${data?.data?.preview_edits}`;
 
-    
 	return (
 		<Modal
 			open={orderDetailsOpen}
@@ -297,6 +315,57 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 						{data?.data?.preview_edits}
 					</Grid>
 				</Grid>
+				<Box sx={{ borderTop: '2px dashed #EDEDED', borderBottom: '2px dashed #EDEDED', mt: 2 }}>
+					<Typography
+						sx={{
+							fontSize: '24px',
+							fontWeight: 700,
+							lineHeight: '24px',
+							textAlign: 'center',
+							my: 5,
+							color: '#474747'
+						}}
+					>
+						Preview Edit
+					</Typography>
+					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+						<Typography
+							sx={{
+								fontSize: '22px',
+								fontWeight: 400,
+								lineHeight: '20px',
+								color: '#707070'
+							}}
+						>
+							Status
+						</Typography>
+						<Typography
+							sx={{
+								fontSize: '22px',
+								fontWeight: 500,
+								lineHeight: '20px',
+								color: '#CB1717'
+							}}
+						>
+							Rejected
+						</Typography>
+					</Box>
+				</Box>
+				<Box
+					sx={{
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 2,
+						mt: 2
+					}}
+				>
+					{previewEditsMessage.map((info, i) => (
+						<PreviewEditReviewMessageCard
+							messageInfo={info}
+							index={i}
+						/>
+					))}
+				</Box>
 			</Box>
 		</Modal>
 	);
