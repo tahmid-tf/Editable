@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useGetAllTransactionsQuery, useLazyExportTransactionReportQuery } from './TransactionsApi';
+import { useGetAllTransactionsQuery } from './TransactionsApi';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { MenuItem, Pagination, Select } from '@mui/material';
 import DataTable from 'app/shared-components/data-table/DataTable';
@@ -26,7 +26,6 @@ const Transactions = () => {
 		startDate,
 		endDate
 	});
-	const [triggerExportCSV] = useLazyExportTransactionReportQuery();
 	const columns = [
 		{
 			id: 'date_formatted',
@@ -181,7 +180,6 @@ const Transactions = () => {
 							page={currentPage}
 							setPage={setCurrentPage}
 							rowPerPage={rowPerPage}
-							triggerExportCSV={triggerExportCSV}
 						/>
 					)}
 				/>

@@ -1,5 +1,6 @@
 import { Typography, Box } from '@mui/material';
 import TableFilterComponent from 'app/shared-components/data-table/TableFilterComponent';
+import jwtAuthConfig from 'src/app/auth/services/jwt/jwtAuthConfig';
 
 const TransactionTableHeader = ({
 	search,
@@ -15,36 +16,36 @@ const TransactionTableHeader = ({
 	totalTransactions,
 	successfulTransactions,
 	totalAmount,
-	setPage,
-	page,
-	rowPerPage,
-	triggerExportCSV
+	setPage
 }) => {
+	const token = localStorage.getItem(jwtAuthConfig.tokenStorageKey);
 	const handleExportCSV = async () => {
 		try {
-			const response = await triggerExportCSV({
-				searchValue: search,
-				paymentStatusValue: paymentStatus,
-				orderStatusValue: orderStatus,
-				startDate,
-				endDate
-			});
+			const response = await fetch(
+				`http://13.234.232.10/api/admin/transaction_export?${search ? `&&email=${search}` : ''}${orderStatus ? `&&order_status=${orderStatus}` : ''}${paymentStatus ? `&&payment_status=${paymentStatus}` : ''}${startDate ? `&&start_date=${startDate}` : ''}${endDate ? `&&end_date=${endDate}` : ''}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+						authorization: `Bearer ${token}`
+					}
+				}
+			);
 
-			// Check if the call was successful
-			if (response.data) {
-				const url = window.URL.createObjectURL(new Blob([response.data]));
+			if (response.ok) {
+				const blob = await response.blob();
+				const url = window.URL.createObjectURL(new Blob([blob]));
 				const link = document.createElement('a');
 				link.href = url;
-				link.setAttribute('download', `${Date.now()}.xlsx`);
+				link.setAttribute('download', 'users_data.xlsx');
 				document.body.appendChild(link);
 				link.click();
-				link.remove();
-				window.URL.revokeObjectURL(url);
+				link.parentNode.removeChild(link);
 			} else {
-				console.error('Error downloading file:', response.error);
+				console.error('Failed to download file:', response.statusText);
 			}
-		} catch (e) {
-			console.error('An unexpected error occurred:', e);
+		} catch (error) {
+			console.error('Error while fetching the file:', error);
 		}
 	};
 	return (
