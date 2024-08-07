@@ -137,7 +137,7 @@ const TableFilterComponent = ({
 							))}
 						</Select>
 					</FormControl>
-					{editor ? (
+					{editor !== undefined ? (
 						<FormControl fullWidth>
 							<InputLabel id="editor-label">Editor</InputLabel>
 							<Select

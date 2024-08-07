@@ -1,26 +1,22 @@
-import * as React from 'react';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { Box, Pagination, Tooltip } from '@mui/material';
-// table
-import Typography from '@mui/material/Typography';
-import { useState, useMemo, useEffect } from 'react';
-import format from 'date-fns/format';
-import clsx from 'clsx';
+import { useParams } from 'react-router';
+import { useGetUserDetailsQuery } from '../UsersPageApi';
 import FuseLoading from '@fuse/core/FuseLoading';
+import OrderTableHeader from 'src/app/main/orders/Table/OrderTableHeader';
+import DataTable from 'app/shared-components/data-table/DataTable';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
-import DataTable from 'app/shared-components/data-table/DataTable';
-import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
-import { useGetOrdersDataQuery } from '../orderApi';
-import OrderTableHeader from './OrderTableHeader';
+import { Box, MenuItem, Pagination, Select, Tooltip, Typography } from '@mui/material';
+import OrderDetailsModal from 'src/app/main/orders/Table/OrderDetailsModal';
+import { useEffect, useMemo, useState } from 'react';
+import clsx from 'clsx';
 import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
+import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { AiFillInfoCircle } from 'react-icons/ai';
-import dayjs from 'dayjs';
-import OrderDetailsModal from './OrderDetailsModal';
+import { format } from 'date-fns';
+import UserInfoCardContainer from './UserInfoCardContainer';
 
-function OrderTable({ onOrderSubmit, setAllStyleData }) {
-
+const UserDetailsPage = () => {
+	const { email } = useParams();
 	const [selectedId, setSelectedId] = useState('');
 
 	// filtering state
@@ -37,20 +33,21 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [showAllColumns, setShowAllColumns] = useState(false);
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
-
-	// fetch table data
-	const { data, isLoading } = useGetOrdersDataQuery({
-		orderStatusValue,
-		paymentStatusValue,
-		editorValue,
-		searchValue,
-		startDate,
-		endDate,
-		page: currentPage,
-		rowPerPage
-	});
-
-	// order status values
+	const { data, isLoading } = useGetUserDetailsQuery(
+		{
+			orderStatusValue,
+			paymentStatusValue,
+			editorValue,
+			email,
+			rowPerPage,
+			page: currentPage,
+			startDate,
+			endDate,
+			orderId: searchValue
+		},
+		{ skip: !email }
+	);
+	console.log(email, isLoading);
 	const [orderStatusValues, setOrderStatusValues] = useState({});
 	// console.log("osv", orderStatusValues);
 
@@ -498,6 +495,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			setColumns(initialColumns);
 		}
 	};
+	console.log(data);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));
@@ -507,131 +505,139 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	if (isLoading) {
 		return <FuseLoading />;
-	}
-
-	return (
-		<div className="">
+	} else {
+		return (
 			<div>
-				<p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
-			</div>
-
-			<OrderTableHeader
-				orderStatus={orderStatusValue}
-				paymentStatus={paymentStatusValue}
-				search={searchValue}
-				editor={editorValue}
-				setOrderStatus={setOrderStatusValue}
-				setPaymentStatus={setPaymentStatusValue}
-				setEditor={setEditorValue}
-				setSearch={setSearchValue}
-				setStartDate={setStartDate}
-				setEndDate={setEndDate}
-				totalOrder={data?.total_orders_count}
-				completeOrder={data?.completed_orders_count}
-				pendingOrder={data?.pending_orders_count}
-				handleAllColumns={handleAllColumns}
-				setShowAllColumns={setShowAllColumns}
-				showAllColumns={showAllColumns}
-				onOrderSubmit={onOrderSubmit}
-				setPage={setCurrentPage}
-				setAllStyleData={setAllStyleData}
-			/>
-			<DataTable
-				isLoading={isLoading}
-				data={data?.data?.data}
-				state={{
-					columnOrder
-				}}
-				columns={memoizedColumns}
-				enableColumnActions={false}
-				enableGrouping={false}
-				enableColumnDragging={false}
-				enableRowSelection={false}
-				enableTopToolbar={false}
-				enablePagination={false}
-				enableBottomToolbar={false}
-				enableColumnResizing={true}
-				defaultColumn={
-					{
-						maxSize: 125
-					} //default size is usually 180
-				}
-				muiTableBodyProps={{
-					sx: {
-						//stripe the rows, make odd rows a darker color
-						'& tr:hover > td:after': {
-							backgroundColor: 'transparent !important'
-						}
-					}
-				}}
-				renderRowActions={({ row }) => (
-					<div className="flex gap-5">
-						<button
-							type="button"
-							onClick={() => handleLuEyeClick(row?.original?.id)}
-						>
-							<LuEye size={20} />
-						</button>
-						<button
-							type="button"
-							onClick={handleFiEditClick}
-						>
-							<FiEdit size={18} />
-						</button>
+				<div className="px-[26px]">
+					<div>
+						<p className="text-[20px] font-bold text-[#868686] py-36">User Details</p>
 					</div>
-				)}
-			/>
-
-			<div className="py-36">
-				<div className="flex justify-center items-center">
-					<Pagination
-						count={data?.data?.last_page}
-						page={currentPage}
-						onChange={handleChangePage}
-						variant="text"
-						shape="rounded"
-						sx={{
-							'& .MuiPaginationItem-root': {
-								// color: '#0066ff',
-								'&.Mui-selected': {
-									backgroundColor: '#0066ff',
-									color: 'white'
-								},
-								'&.Mui-selected:hover': {
-									bgcolor: '#0066ff'
-								},
-								'& button:hover': {
-									backgroundColor: 'rgba(0, 102, 255, 0.1)'
+					<UserInfoCardContainer
+						email={data?.users_email}
+						name={data?.users_name}
+						phone={data?.users_phone}
+						totalOrders={data?.total_orders_count}
+						totalSpend={data?.total_spend}
+					/>
+					<OrderTableHeader
+						orderStatus={orderStatusValue}
+						paymentStatus={paymentStatusValue}
+						search={searchValue}
+						editor={editorValue}
+						setOrderStatus={setOrderStatusValue}
+						setPaymentStatus={setPaymentStatusValue}
+						setEditor={setEditorValue}
+						setSearch={setSearchValue}
+						setStartDate={setStartDate}
+						setEndDate={setEndDate}
+						totalOrder={data?.total_orders_count}
+						completeOrder={data?.completed_orders_count}
+						pendingOrder={data?.pending_orders_count}
+						handleAllColumns={handleAllColumns}
+						setShowAllColumns={setShowAllColumns}
+						showAllColumns={showAllColumns}
+						onOrderSubmit={() => {}}
+						setPage={setCurrentPage}
+						// setAllStyleData={setAllStyleData}
+					/>
+					<DataTable
+						isLoading={isLoading}
+						data={data?.data?.data}
+						state={{
+							columnOrder
+						}}
+						columns={memoizedColumns}
+						enableColumnActions={false}
+						enableGrouping={false}
+						enableColumnDragging={false}
+						enableRowSelection={false}
+						enableTopToolbar={false}
+						enablePagination={false}
+						enableBottomToolbar={false}
+						enableColumnResizing={true}
+						defaultColumn={
+							{
+								maxSize: 125
+							} //default size is usually 180
+						}
+						muiTableBodyProps={{
+							sx: {
+								//stripe the rows, make odd rows a darker color
+								'& tr:hover > td:after': {
+									backgroundColor: 'transparent !important'
 								}
 							}
 						}}
+						renderRowActions={({ row }) => (
+							<div className="flex gap-5">
+								<button
+									type="button"
+									onClick={() => handleLuEyeClick(row?.original?.id)}
+								>
+									<LuEye size={20} />
+								</button>
+								<button
+									type="button"
+									onClick={handleFiEditClick}
+								>
+									<FiEdit size={18} />
+								</button>
+							</div>
+						)}
 					/>
-					<Select
-						sx={{
-							width: 70,
-							height: 5,
-							pt: '5px'
-						}}
-						variant="outlined"
-						value={rowPerPage}
-						onChange={(e) => {
-							setRowPerPage(e.target.value);
-							setPage(1);
-						}}
-					>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={20}>20</MenuItem>
-						<MenuItem value={30}>30</MenuItem>
-					</Select>
+
+					<div className="py-36">
+						<div className="flex justify-center items-center">
+							<Pagination
+								count={data?.data?.last_page}
+								page={currentPage}
+								onChange={handleChangePage}
+								variant="text"
+								shape="rounded"
+								sx={{
+									'& .MuiPaginationItem-root': {
+										// color: '#0066ff',
+										'&.Mui-selected': {
+											backgroundColor: '#0066ff',
+											color: 'white'
+										},
+										'&.Mui-selected:hover': {
+											bgcolor: '#0066ff'
+										},
+										'& button:hover': {
+											backgroundColor: 'rgba(0, 102, 255, 0.1)'
+										}
+									}
+								}}
+							/>
+							<Select
+								sx={{
+									width: 70,
+									height: 5,
+									pt: '5px'
+								}}
+								variant="outlined"
+								value={rowPerPage}
+								onChange={(e) => {
+									setRowPerPage(e.target.value);
+									setPage(1);
+								}}
+							>
+								<MenuItem value={10}>10</MenuItem>
+								<MenuItem value={20}>20</MenuItem>
+								<MenuItem value={30}>30</MenuItem>
+							</Select>
+						</div>
+					</div>
+					<OrderDetailsModal
+						orderDetailsOpen={orderDetailsOpen}
+						handleOrderDetailsClose={handleOrderDetailsClose}
+						selectedId={selectedId}
+					/>
 				</div>
 			</div>
-			<OrderDetailsModal
-				orderDetailsOpen={orderDetailsOpen}
-				handleOrderDetailsClose={handleOrderDetailsClose}
-				selectedId={selectedId}
-			/>
-		</div>
-	);
-}
+		);
+	}
+};
 
-export default OrderTable;
+export default UserDetailsPage;

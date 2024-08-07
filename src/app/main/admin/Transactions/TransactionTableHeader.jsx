@@ -1,5 +1,6 @@
 import { Typography, Box } from '@mui/material';
 import TableFilterComponent from 'app/shared-components/data-table/TableFilterComponent';
+import { exportCSV } from 'src/app/appUtils/apiUtils';
 import jwtAuthConfig from 'src/app/auth/services/jwt/jwtAuthConfig';
 
 const TransactionTableHeader = ({
@@ -19,35 +20,7 @@ const TransactionTableHeader = ({
 	setPage
 }) => {
 	const token = localStorage.getItem(jwtAuthConfig.tokenStorageKey);
-	const handleExportCSV = async () => {
-		try {
-			const response = await fetch(
-				`http://13.234.232.10/api/admin/transaction_export?${search ? `&&email=${search}` : ''}${orderStatus ? `&&order_status=${orderStatus}` : ''}${paymentStatus ? `&&payment_status=${paymentStatus}` : ''}${startDate ? `&&start_date=${startDate}` : ''}${endDate ? `&&end_date=${endDate}` : ''}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-						authorization: `Bearer ${token}`
-					}
-				}
-			);
 
-			if (response.ok) {
-				const blob = await response.blob();
-				const url = window.URL.createObjectURL(new Blob([blob]));
-				const link = document.createElement('a');
-				link.href = url;
-				link.setAttribute('download', 'users_data.xlsx');
-				document.body.appendChild(link);
-				link.click();
-				link.parentNode.removeChild(link);
-			} else {
-				console.error('Failed to download file:', response.statusText);
-			}
-		} catch (error) {
-			console.error('Error while fetching the file:', error);
-		}
-	};
 	return (
 		<Box py={2}>
 			<TableFilterComponent
@@ -60,7 +33,19 @@ const TransactionTableHeader = ({
 				setStartDate={setStartDate}
 				setEndDate={setEndDate}
 				setPage={setPage}
-				handleActionButtonClick={handleExportCSV}
+				handleActionButtonClick={() =>
+					exportCSV(
+						'admin/transaction_export',
+						{
+							email: search,
+							order_status: orderStatus,
+							payment_status: paymentStatus,
+							start_date: startDate,
+							end_date: endDate
+						},
+						'transaction_data'
+					)
+				}
 				actionBtnText={'Export CSV'}
 			/>
 

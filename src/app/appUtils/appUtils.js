@@ -76,3 +76,33 @@ export const getOrdinal = (n) => {
 	const v = n % 100;
 	return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
+export const buildQueryString = (queryObj) => {
+	// Initialize an array to hold individual query parameters
+	const queryParams = [];
+
+	// Iterate over the keys in the queryObj
+	for (const key in queryObj) {
+		if (queryObj.hasOwnProperty(key)) {
+			const value = queryObj[key];
+			// If the value exists, add the parameter to the queryParams array
+			if (value !== undefined && value !== null) {
+				queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+			}
+		}
+	}
+
+	// Join the parameters with '&&' and prepend a '?' to form the query string
+	return queryParams.length > 0 ? `?${queryParams.join('&&')}` : '';
+};
+export const formatNumber = (num) => {
+	if (num >= 1_000_000_000) {
+		return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+	}
+	if (num >= 1_000_000) {
+		return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+	}
+	if (num >= 1_000) {
+		return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+	}
+	return num.toString();
+};
