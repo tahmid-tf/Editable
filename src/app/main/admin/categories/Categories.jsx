@@ -40,7 +40,7 @@ const Categories = () => {
 	const handleConfirmDeleteClick = async () => {
 		const response = await deleteCategory(clickedRowData?.id);
 		if (response.data) {
-			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.DELETE, message: response?.data?.message }));
 			setOpenConfirmationModal(false);
 			setClickedRowData(null);
 		} else {
