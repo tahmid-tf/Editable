@@ -122,10 +122,6 @@ class UserTableDataController extends Controller
             $query->where('payment_status', $searchParams['payment_status']);
         }
 
-//        if ($searchParams['start_date']) {
-//            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
-//            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
-//        }
 
 //        ---------------------------- between start data and end date modification ----------------------------
 
@@ -161,9 +157,11 @@ class UserTableDataController extends Controller
         $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
         $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
 
+        $users_phone_no = User::where('email', $email)->first()->phone ?? Order::where('users_email', $email)->first()->users_phone ?? null;
 
         return response()->json([
             'users_email' => $email,
+            'users_phone_no' => $users_phone_no,
             'users_name' => User::where('email', $email)->first()->name ?? "Created by Admin",
             'total_spend' => $total_spend,
             'total_orders_count' => $total_orders_count,
