@@ -239,7 +239,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 							<NewOrderNav />
 						</div>
 						<div className="flex">
-							<div className="">
+							<div className="w-full">
 								<div>
 									<p className="text-[32px] font-bold text-[#868686] pb-36">Pick a style</p>
 								</div>
@@ -385,6 +385,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														name="imageQuantity"
 														placeholder=""
 														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														min="0"
 													/>
 													<ErrorMessage
 														name="imageQuantity"
@@ -412,6 +413,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														name="cullDownTotalImages"
 														placeholder=""
 														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														min="0"
 													/>
 													<ErrorMessage
 														name="cullDownTotalImages"
@@ -518,6 +520,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													name="imageQuantity"
 													placeholder=""
 													className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+													min="0"
 												/>
 												<ErrorMessage
 													name="imageQuantity"
@@ -669,6 +672,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													name="imageQuantity"
 													placeholder=""
 													className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+													min="0"
 												/>
 												<ErrorMessage
 													name="imageQuantity"
