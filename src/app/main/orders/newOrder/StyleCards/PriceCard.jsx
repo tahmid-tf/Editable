@@ -9,9 +9,7 @@ import { useAppDispatch } from 'app/store/hooks';
 import { addOrderAmount } from '../../orderSlice';
 import { useEffect } from 'react';
 
-export default function PriceCard({ priceInfo, formValue }) {
-	// const [isChecked, setIsChecked] = useState(true);
-	const [isChecked, setIsChecked] = useState(false);
+export default function PriceCard({ priceInfo, formValue, orderType, setOrderType, categoryName }) {
 	const dispatch = useAppDispatch();
 
 	const mainStylePrice = useCallback(() => {
@@ -46,18 +44,13 @@ export default function PriceCard({ priceInfo, formValue }) {
 	}, [amount]);
 
 	const totalPrice = useCallback(() => {
-		const calculatedValue = isChecked ? amount + expressDeliveryAmount() : amount;
+		const calculatedValue = orderType === 'express' ? amount + expressDeliveryAmount() : amount;
 		dispatch(addOrderAmount(calculatedValue ? calculatedValue : 0));
 		return calculatedValue ? calculatedValue : 0;
-	}, [amount, isChecked]);
+	}, [amount, orderType]);
 
-	
 	const handleCheckboxChange = () => {
-		setIsChecked(!isChecked); // Toggle the isChecked state
-
-		if (isChecked) {
-			console.log('call a function to change order type expressed to Standerd');
-		}
+		setOrderType(orderType === 'standard' ? 'express' : 'standard');
 	};
 	return (
 		<Card
@@ -99,7 +92,7 @@ export default function PriceCard({ priceInfo, formValue }) {
 								paddingBottom: '8px'
 							}}
 						>
-							<p className="text-[20px] text-[#474747]">Basic Charge (Wedding Category)</p>
+							<p className="text-[20px] text-[#474747]">Basic Charge ({categoryName})</p>
 						</div>
 						{/* sub total */}
 						<div
@@ -167,7 +160,7 @@ export default function PriceCard({ priceInfo, formValue }) {
 									<Checkbox
 										size="small"
 										color="primary"
-										checked={isChecked}
+										checked={orderType === 'express'}
 										onChange={handleCheckboxChange}
 									/>
 									<p className="text-[18px] text-[#707070]">Express Delivery</p>
