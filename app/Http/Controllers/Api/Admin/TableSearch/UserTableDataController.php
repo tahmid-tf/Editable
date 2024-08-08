@@ -7,6 +7,7 @@ use App\Exports\UsersDataExport;
 use App\Http\Controllers\Controller;
 use App\Models\Api\Admin\Order;
 use App\Models\Api\Admin\Style;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,7 +28,8 @@ class UserTableDataController extends Controller
             $query->where('users_email', 'like', '%' . $email . '%');
         }
 
-        $users = $query->paginate(10);
+        $paginate = request('paginate', 10);
+        $users = $query->paginate($paginate);
 
         $data = $users->toArray();
 
@@ -63,8 +65,8 @@ class UserTableDataController extends Controller
 
 //  ------------------------------------------------------------- Total numbers of base style and additional style count -----------------------------------------------------------------------
 
-        $base_style_count = Style::where('additional_style','no')->count() ?? 0;
-        $additional_style_count = Style::where('additional_style','yes')->count() ?? 0;
+        $base_style_count = Style::where('additional_style', 'no')->count() ?? 0;
+        $additional_style_count = Style::where('additional_style', 'yes')->count() ?? 0;
 
 //  ------------------------------------------------------------- Total numbers of base style and additional style count -----------------------------------------------------------------------
 
@@ -91,7 +93,8 @@ class UserTableDataController extends Controller
 
 //    ----------------------------------- Users list and total orders from admin side API -----------------------------------
 
-    public function single_user_data($email){
+    public function single_user_data($email)
+    {
 
 //        Search params
 
@@ -119,10 +122,30 @@ class UserTableDataController extends Controller
             $query->where('payment_status', $searchParams['payment_status']);
         }
 
+//        if ($searchParams['start_date']) {
+//            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
+//            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+//        }
+
+//        ---------------------------- between start data and end date modification ----------------------------
+
+//        if ($searchParams['start_date']) {
+//            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
+//            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+//        }
+
         if ($searchParams['start_date']) {
-            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
-            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+            // Convert start_date and end_date to just the date part
+            $startDate = Carbon::parse($searchParams['start_date'])->toDateString();
+            $endDate = $searchParams['end_date'] ? Carbon::parse($searchParams['end_date'])->toDateString() : $startDate;
+
+            // Add a day's worth of seconds to end_date to make sure we include the whole end_date
+            $endDate = Carbon::parse($endDate)->endOfDay();
+
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
+
+//        ---------------------------- between start data and end date modification ----------------------------
 
         $paginate = request('paginate', 10);
         $orders = $query->orderBy('created_at', 'desc')->paginate($paginate);
@@ -132,7 +155,7 @@ class UserTableDataController extends Controller
         $total_orders_count = $paginatedOrders->count();
         $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
 
-        $total_spend = $paginatedOrders->whereIn('order_status', ['pending','successful'])->sum('amount') ?? 0;
+        $total_spend = $paginatedOrders->whereIn('order_status', ['pending', 'successful'])->sum('amount') ?? 0;
 
         $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
         $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
@@ -155,7 +178,6 @@ class UserTableDataController extends Controller
     }
 
 //    ----------------------------------- Users list and total orders from admin side API -----------------------------------
-
 
 
 }

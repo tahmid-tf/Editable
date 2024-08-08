@@ -39,6 +39,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Single order Information ---------------------------
 
+    // --------------------------- Assign editors to order table ---------------------------
+
+
+
+    // --------------------------- Assign editors to order table ---------------------------
+
 
 });
 

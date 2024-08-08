@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin\TableSearch;
 use App\Exports\TransactionsDataExport;
 use App\Http\Controllers\Controller;
 use App\Models\Api\Admin\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -38,10 +39,26 @@ class TransactionSearchController extends Controller
             $query->where('payment_status', $searchParams['payment_status']);
         }
 
+
+//        ---------------------------- between start data and end date modification ----------------------------
+
+//        if ($searchParams['start_date']) {
+//            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
+//            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+//        }
+
         if ($searchParams['start_date']) {
-            $end_date = $searchParams['end_date'] ?: $searchParams['start_date'];
-            $query->whereBetween('created_at', [$searchParams['start_date'], $end_date]);
+            // Convert start_date and end_date to just the date part
+            $startDate = Carbon::parse($searchParams['start_date'])->toDateString();
+            $endDate = $searchParams['end_date'] ? Carbon::parse($searchParams['end_date'])->toDateString() : $startDate;
+
+            // Add a day's worth of seconds to end_date to make sure we include the whole end_date
+            $endDate = Carbon::parse($endDate)->endOfDay();
+
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         }
+
+//        ---------------------------- between start data and end date modification ----------------------------
 
         $paginate = request('paginate', 10);
         $orders = $query->select('id', 'users_email', 'order_status', 'payment_status', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);

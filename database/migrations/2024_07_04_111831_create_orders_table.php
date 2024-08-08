@@ -24,7 +24,7 @@ class CreateOrdersTable extends Migration
             $table->enum('order_type', ['standard', 'express', 'custom']);
             $table->string('order_name');
             $table->integer('category_id');
-            $table->enum('payment_status', ['pending', 'successful', 'failed'])->default('pending');
+            $table->enum('payment_status', ['pending', 'successful', 'failed'])->default('pending ');
 
             //            sorting from orders table
 
@@ -56,7 +56,7 @@ class CreateOrdersTable extends Migration
             // new added columns, after 17/7/24
 
             $table->timestamp('order_delivery_date')->nullable();
-            $table->enum('preview_edit_status', ['no', 'user_review_pending', 'accepted', 'rejected'])->nullable()->default('no');
+            $table->enum('preview_edit_status', ['no', 'user_review_pending', 'accepted', 'rejected','pending'])->nullable()->default('no');
 
             $table->softDeletes();
             $table->timestamps();
