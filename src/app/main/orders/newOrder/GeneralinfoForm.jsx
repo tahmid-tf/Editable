@@ -16,7 +16,7 @@ const validationSchema = Yup.object().shape({
 	userPhone: Yup.string().required('Required'),
 	orderType: Yup.string().required('Required'),
 	orderName: Yup.string().required('Required'),
-	categoryType: Yup.number().required('Required'),
+	category_id: Yup.number().required('Required'),
 	paymentStatus: Yup.string().required('Required')
 });
 
@@ -33,7 +33,8 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 					userPhone: '+44 7848 107162',
 					orderType: '',
 					orderName: '',
-					categoryType: '',
+					category_id: '',
+					category_name: '',
 					paymentStatus: ''
 				}}
 				validationSchema={validationSchema}
@@ -45,10 +46,10 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 						phone: values?.userPhone,
 						order_type: values?.orderType,
 						order_name: values?.orderName,
-						category: parseFloat(values?.categoryType),
+						category: parseFloat(values?.category_id),
 						payment_status: values?.paymentStatus
 					};
-					dispatch(addOrderGeneralInfo(formValue));
+					dispatch(addOrderGeneralInfo({ ...formValue, category_name: values?.category_name }));
 					const response = await getStyles(formValue);
 					if (response.data) {
 						setAllStyleData(response?.data?.data?.style_data);
@@ -61,7 +62,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 				}}
 				className="rounded-xl"
 			>
-				{({ isSubmitting }) => (
+				{({ isSubmitting, setFieldValue }) => (
 					<Form className="space-y-4 ">
 						<div className="flex items-center justify-between">
 							<p className="text-2xl font-bold text-[#868686]">General Info</p>
@@ -154,15 +155,23 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 
 						<div className="form-group">
 							<label
-								htmlFor="categoryType"
+								htmlFor="category_id"
 								className="block text-md font-semibold text-black mt-16"
 							>
 								Select a Category
 							</label>
 							<Field
 								as="select" // Change Field to select for dropdown
-								name="categoryType"
+								name="category_id"
 								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+								onChange={(event) => {
+									const selectedIndex = event.target.options.selectedIndex;
+									const selectedCategoryId = event.target.value;
+									const selectedCategoryName = event.target.options[selectedIndex].text;
+									console.log(selectedCategoryId, selectedCategoryName);
+									setFieldValue('category_id', selectedCategoryId);
+									setFieldValue('category_name', selectedCategoryName);
+								}}
 							>
 								<option value="">Select Category Type</option>
 								{data?.data?.data?.map((category, i) => (
@@ -175,7 +184,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 								))}
 							</Field>
 							<ErrorMessage
-								name="categoryType"
+								name="category_id"
 								component="div"
 								className="text-red-500 text-xs mt-1"
 							/>

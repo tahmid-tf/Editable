@@ -7,6 +7,7 @@ const initialState = {
 	order_type: '',
 	order_name: '',
 	category: 0,
+	category_name: '',
 	payment_status: '',
 	amount: 0
 };
@@ -21,6 +22,7 @@ export const orderSlice = createSlice({
 			state.order_name = action.payload.order_name;
 			state.order_type = action.payload.order_type;
 			state.category = action.payload.category;
+			state.category_name = action.payload.category_name;
 			state.payment_status = action.payload.payment_status;
 		},
 		addOrderAmount: (state, action) => {

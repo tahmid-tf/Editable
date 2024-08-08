@@ -24,6 +24,7 @@ export default function StyleCard({
 			className="bg-[#F8F8F8]"
 			sx={{
 				maxWidth: 326,
+				width: '100%',
 				position: 'relative'
 			}}
 			onClick={() => handleChange({ target: { value } })}

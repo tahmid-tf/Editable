@@ -63,17 +63,18 @@ const initialValues = {
 	maxThreshold: 0
 };
 const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
+	const orderState = useAppSelector(selectOrderState);
+	const dispatch = useAppDispatch();
+
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
 	const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] = useState(false);
 	const [orderCalcValue, setOrderCalcValue] = useState({});
 	const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
-	const dispatch = useAppDispatch();
+	const [orderType, setOrderType] = useState(orderState.order_type);
 
 	const [getValueForOrderCalculation, { data }] = useGetValueForOrderCalculationMutation();
 
 	const [placeOrder, { isLoading }] = usePlaceOrderMutation();
-
-	const orderState = useAppSelector(selectOrderState);
 
 	const styleData = allStyleData?.filter((data) => data?.additional_style === 'no');
 	const additionalData = allStyleData?.filter((data) => data?.additional_style === 'yes');
@@ -154,7 +155,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 		setFieldValue('selectedMainStyleId', id);
 		setIsBasicColorSelected(false);
 		await getValueForOrderCalculation({
-			category_id: 1,
+			category_id: orderState.category,
 			styles_array: [id, ...values?.selectedAdditionalStyleId]
 		}).then((calculatedData) => {
 			const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
@@ -171,7 +172,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 			allAdditionalStylesId.delete(additionalStyleId);
 
 			await getValueForOrderCalculation({
-				category_id: 1,
+				category_id: orderState.category,
 				styles_array: [values.selectedMainStyleId, ...Array.from(allAdditionalStylesId)]
 			}).then((calculatedData) => {
 				const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
@@ -183,7 +184,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 			allAdditionalStylesId.add(additionalStyleId);
 
 			await getValueForOrderCalculation({
-				category_id: 1,
+				category_id: orderState.category,
 				styles_array: [values.selectedMainStyleId, ...values?.selectedAdditionalStyleId, additionalStyleId]
 			}).then((calculatedData) => {
 				const maxThreshold = getMaxThreshold(calculatedData?.data, values.additionalEdits);
@@ -203,9 +204,9 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 				const body = {
 					users_email: orderState.email,
 					users_phone: orderState.phone,
-					order_type: orderState.order_type,
+					order_type: orderType,
 					order_name: orderState.order_name,
-					category_id: 1,
+					category_id: orderState.category,
 					payment_status: orderState.payment_status,
 					amount: `${orderState.amount}`,
 					order_status: 'pending',
@@ -239,7 +240,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 							<NewOrderNav />
 						</div>
 						<div className="flex">
-							<div className="">
+							<div className="w-full">
 								<div>
 									<p className="text-[32px] font-bold text-[#868686] pb-36">Pick a style</p>
 								</div>
@@ -385,6 +386,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														name="imageQuantity"
 														placeholder=""
 														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														min="0"
 													/>
 													<ErrorMessage
 														name="imageQuantity"
@@ -412,6 +414,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														name="cullDownTotalImages"
 														placeholder=""
 														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														min="0"
 													/>
 													<ErrorMessage
 														name="cullDownTotalImages"
@@ -518,6 +521,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													name="imageQuantity"
 													placeholder=""
 													className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+													min="0"
 												/>
 												<ErrorMessage
 													name="imageQuantity"
@@ -669,6 +673,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													name="imageQuantity"
 													placeholder=""
 													className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+													min="0"
 												/>
 												<ErrorMessage
 													name="imageQuantity"
@@ -768,6 +773,9 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 								<PriceCard
 									priceInfo={orderCalcValue}
 									formValue={values}
+									orderType={orderType}
+									setOrderType={setOrderType}
+									categoryName={orderState.category_name}
 								/>
 							</div>
 						</div>
