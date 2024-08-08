@@ -515,7 +515,7 @@ const UserDetailsPage = () => {
 					<UserInfoCardContainer
 						email={data?.users_email}
 						name={data?.users_name}
-						phone={data?.users_phone}
+						phone={data?.users_phone_no}
 						totalOrders={data?.total_orders_count}
 						totalSpend={data?.total_spend}
 					/>
