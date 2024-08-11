@@ -36,4 +36,13 @@ class OrderAndEditorController extends Controller
         ], Response::HTTP_OK);
 
     }
+
+
+    public function assign_editor($id)
+    {
+        return \response()->json([
+            'data' => "Working on it! Id: $id",
+        ]);
+    }
+
 }
