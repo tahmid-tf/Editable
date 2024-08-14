@@ -137,7 +137,7 @@ const TableFilterComponent = ({
 							))}
 						</Select>
 					</FormControl>
-					{editor ? (
+					{editor !== undefined ? (
 						<FormControl fullWidth>
 							<InputLabel id="editor-label">Editor</InputLabel>
 							<Select
@@ -264,11 +264,11 @@ const TableFilterComponent = ({
 							value={dateValue}
 							sx={{
 								borderRadius: 4,
-								padding: 2
-								// '& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
-								// 	{
-								// 		display: 'none'
-								// 	}
+								padding: 2,
+								'& > .MuiPickersLayout-contentWrapper > .MuiDateRangeCalendar-root > div:first-of-type':
+									{
+										display: 'none'
+									}
 							}}
 						/>
 					</LocalizationProvider>
