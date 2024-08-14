@@ -31,7 +31,6 @@ class FuseAuthorization extends Component {
 
 	componentDidMount() {
 		const { accessGranted } = this.state;
-
 		if (!accessGranted) {
 			this.redirectRoute();
 		}
@@ -65,9 +64,9 @@ class FuseAuthorization extends Component {
 		const userHasPermission = FuseUtils.hasPermission(route.auth, userRole);
 		const ignoredPaths = ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404'];
 
-		// if (matched && !userHasPermission && !ignoredPaths.includes(pathname)) {
-		// 	setSessionRedirectUrl(pathname);
-		// }
+		if (matched && !userHasPermission && !ignoredPaths.includes(pathname)) {
+			setSessionRedirectUrl(pathname);
+		}
 
 		/**
 		 * If user is member but don't have permission to view the route
@@ -85,7 +84,6 @@ class FuseAuthorization extends Component {
 	redirectRoute() {
 		const { userRole, loginRedirectUrl = '/' } = this.props;
 		const redirectUrl = getSessionRedirectUrl() || loginRedirectUrl;
-		console.log({ redirectUrl });
 
 		/*
         User is guest
