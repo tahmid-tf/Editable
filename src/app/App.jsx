@@ -17,6 +17,8 @@ import '@fontsource/roboto'; // Imports Roboto with default weight (400)
 import '@fontsource/roboto/300.css'; // Import Roboto with weight 300
 import '@fontsource/roboto/400-italic.css'; // Import Roboto with weight 400 and italic style
 import GlobalSnackbar from './shared-components/GlobalSnackbar/GlobalSnackbar';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from './store/store';
 // fonts
 
 // import axios from 'axios';
