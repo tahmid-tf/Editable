@@ -1,4 +1,4 @@
-import UserDetailsPage from './UserDetailsPage/UserDetailsPage';
+import Orders from '../../orders/Orders';
 import UsersPage from './UsersPage';
 
 const UsersPageConfig = {
@@ -15,8 +15,8 @@ const UsersPageConfig = {
 				},
 				{
 					path: 'single-user/:email',
-					element: <UserDetailsPage />
-				},
+					element: <Orders />
+				}
 			]
 		}
 	],

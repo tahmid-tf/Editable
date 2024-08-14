@@ -18,9 +18,12 @@ import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import OrderDetailsModal from './OrderDetailsModal';
+import { useParams } from 'react-router';
+import UserInfoCardContainer from './UserInfoCardContainer';
+import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
-
+	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
 
 	// filtering state
@@ -39,16 +42,31 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
 	// fetch table data
-	const { data, isLoading } = useGetOrdersDataQuery({
-		orderStatusValue,
-		paymentStatusValue,
-		editorValue,
-		searchValue,
-		startDate,
-		endDate,
-		page: currentPage,
-		rowPerPage
-	});
+	const { data, isLoading } = params?.email
+		? useGetUserDetailsQuery(
+				{
+					orderStatusValue,
+					paymentStatusValue,
+					editorValue,
+					email: params?.email,
+					rowPerPage,
+					page: currentPage,
+					startDate,
+					endDate,
+					orderId: searchValue
+				},
+				{ skip: !params?.email }
+			)
+		: useGetOrdersDataQuery({
+				orderStatusValue,
+				paymentStatusValue,
+				editorValue,
+				searchValue,
+				startDate,
+				endDate,
+				page: currentPage,
+				rowPerPage
+			});
 
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
@@ -512,9 +530,21 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	return (
 		<div className="">
 			<div>
-				<p className="text-[20px] font-bold text-[#868686] py-36">Orders</p>
+				<p className="text-[20px] font-bold text-[#868686] py-36">
+					{params?.email ? 'Users Details' : 'Orders'}
+				</p>
 			</div>
-
+			{params?.email ? (
+				<UserInfoCardContainer
+					email={data?.users_email}
+					name={data?.users_name}
+					phone={data?.users_phone_no}
+					totalOrders={data?.total_orders_count}
+					totalSpend={data?.total_spend}
+				/>
+			) : (
+				<></>
+			)}
 			<OrderTableHeader
 				orderStatus={orderStatusValue}
 				paymentStatus={paymentStatusValue}
