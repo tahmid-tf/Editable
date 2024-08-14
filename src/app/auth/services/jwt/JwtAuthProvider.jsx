@@ -245,9 +245,10 @@ function JwtAuthProvider(props) {
 	useEffect(() => {
 		if (user) {
 			setAuthStatus('authenticated');
-		} else {
-			setAuthStatus('unauthenticated');
-		}
+		} 
+		// else {
+		// 	setAuthStatus('unauthenticated');
+		// }
 	}, [user]);
 	const authContextValue = useMemo(
 		() => ({

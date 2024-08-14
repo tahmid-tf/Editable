@@ -11,7 +11,8 @@ import { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import ErrorBoundary from '@fuse/utils/ErrorBoundary';
 import AppContext from './AppContext';
-import store from './store/store';
+import store, { persistor } from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 /**
  * A Higher Order Component that provides the necessary context providers for the app.
@@ -36,7 +37,12 @@ function withAppProviders(Component) {
 					<LocalizationProvider dateAdapter={AdapterDateFns}>
 						<Provider store={store}>
 							<StyledEngineProvider injectFirst>
-								<Component {...props} />
+									<PersistGate
+										loading={null}
+										persistor={persistor}
+									>
+									<Component {...props} />
+								</PersistGate>
 							</StyledEngineProvider>
 						</Provider>
 					</LocalizationProvider>

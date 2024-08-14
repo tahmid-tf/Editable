@@ -3,12 +3,24 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import apiService from 'app/store/apiService';
 import { rootReducer } from './lazyLoadedSlices';
 import { dynamicMiddleware } from './middleware';
+import storage from 'redux-persist/lib/storage';
+import { persistStore } from 'redux-persist';
+import persistReducer from 'redux-persist/es/persistReducer';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 const middlewares = [apiService.middleware, dynamicMiddleware];
+const persistConfig = {
+	key: 'root',
+	storage,
+	stateReconciler: autoMergeLevel2,
+	whitelist: ['user']
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const makeStore = (preloadedState) => {
 	const store = configureStore({
-		reducer: rootReducer,
-		middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middlewares),
+		reducer: persistedReducer,
+		middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(middlewares),
 		preloadedState
 	});
 	// configure listeners using the provided defaults
@@ -17,5 +29,6 @@ export const makeStore = (preloadedState) => {
 	return store;
 };
 export const store = makeStore();
+export const persistor = persistStore(store);
 export const createAppSelector = createSelector.withTypes();
 export default store;
