@@ -190,7 +190,7 @@ const TableFilterComponent = ({
 								}
 							}}
 							focused={false}
-							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : ''}`}
+							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : `${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')}` : ''}`}`}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment

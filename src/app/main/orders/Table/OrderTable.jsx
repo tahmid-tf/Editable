@@ -14,17 +14,21 @@ import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
-import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
+import { editorOptions, orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useParams } from 'react-router';
 import UserInfoCardContainer from './UserInfoCardContainer';
 import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
+import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
+import { useAppDispatch } from 'app/store/hooks';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
+	const dispatch = useAppDispatch();
 
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
@@ -41,6 +45,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
+	const [assignEditor] = useAssignEditorMutation();
+	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
+	// console.log(editorData.data.data);
 	// fetch table data
 	const { data, isLoading } = params?.email
 		? useGetUserDetailsQuery(
@@ -67,7 +74,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				page: currentPage,
 				rowPerPage
 			});
-
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
 	// console.log("osv", orderStatusValues);
@@ -91,6 +97,20 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	};
 
 	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
+
+	const handleEditorChange = async (editor_id, order_id) => {
+		try {
+			const res = await assignEditor({ editor_id: parseFloat(editor_id), order_id });
+			if (res.data) {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'New Editor assigned' }));
+			} else {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
+			}
+		} catch (error) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
+		}
+		console.log(editor_id, order_id);
+	};
 
 	// page navigation
 
@@ -175,35 +195,37 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			muiTableBodyCellProps: {
 				align: 'center'
 			},
-			Cell: ({ row }) => (
-				<Typography
-					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full ',
-						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
-					)}
-				>
-					<select
-						value={row?.original?.editor?.editor_name ? row?.original?.editor?.editor_name : ''}
-						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
+			Cell: ({ row }) => {
+				return (
+					<Typography
 						className={clsx(
-							'inline-flex items-center w-full',
+							'inline-flex items-center px-10 py-2 rounded-full ',
 							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
-						defaultChecked={''}
-						defaultValue={''}
 					>
-						{editorOptions?.map((editors, i) => (
-							<option
-								key={i}
-								className="bg-white text-black"
-								value={editors.value}
-							>
-								{editors.name}
-							</option>
-						))}
-					</select>
-				</Typography>
-			)
+						<select
+							className={clsx(
+								'inline-flex items-center w-full',
+								row?.original?.editor?.editor_name
+									? 'bg-[#CBCBCB] text-Black'
+									: 'bg-[#F29339] text-black'
+							)}
+							defaultValue={row?.original?.editor?.editor_name}
+							onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
+						>
+							{editorData?.data?.data?.map((editors, i) => (
+								<option
+									key={i}
+									className="bg-white text-black"
+									value={editors?.id}
+								>
+									{editors?.editor_name}
+								</option>
+							))}
+						</select>
+					</Typography>
+				);
+			}
 			// accessorFn: (row) => `${row?.editor?.editor_name}`
 		},
 		{
@@ -488,7 +510,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [columns, setColumns] = useState(initialColumns);
 
-	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading]);
+	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading, editorLoading, editorData]);
 	const initialColumnOrder = [
 		'order_date_formatted',
 		'id',
@@ -516,6 +538,14 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			setColumns(initialColumns);
 		}
 	};
+
+	useEffect(() => {
+		if (editorData?.data?.data && !showAllColumns) {
+			setColumns(initialColumns);
+		} else if (editorData?.data?.data && showAllColumns) {
+			setColumns([...initialColumns, ...additionalColumns]);
+		}
+	}, [editorData?.data?.data]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));

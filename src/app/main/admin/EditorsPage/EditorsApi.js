@@ -1,4 +1,5 @@
 import apiService from 'app/store/apiService';
+import { assignIn } from 'lodash';
 
 const addTagTypes = ['allEditors'];
 const EditorsApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
@@ -33,8 +34,21 @@ const EditorsApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints(
 				method: 'DELETE'
 			}),
 			invalidatesTags: ['allEditors']
+		}),
+		assignEditor: builder.mutation({
+			query: (body) => ({
+				url: 'admin/assign_editor',
+				method: 'POST',
+				body
+			}),
+			invalidatesTags: ['orders']
 		})
 	})
 });
-export const { useGetAllEditorsQuery, useCreateNewEditorMutation, useUpdateEditorMutation, useDeleteEditorMutation } =
-	EditorsApi;
+export const {
+	useGetAllEditorsQuery,
+	useCreateNewEditorMutation,
+	useUpdateEditorMutation,
+	useDeleteEditorMutation,
+	useAssignEditorMutation
+} = EditorsApi;
