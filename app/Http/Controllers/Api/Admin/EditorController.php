@@ -27,7 +27,8 @@ class EditorController extends Controller
             $query->where('editor_name', 'like', '%' . $name . '%');
         }
 
-        $editors = $query->paginate(10);
+        $paginate = request('paginate',10);
+        $editors = $query->paginate($paginate);
 
         $data = $editors->toArray();
 
