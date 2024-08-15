@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Assign editors to order table ---------------------------
 
-    Route::get('assign_editor', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'assign_editor']);
+    Route::post('assign_editor', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'assign_editor']);
 
     // --------------------------- Assign editors to order table ---------------------------
 
