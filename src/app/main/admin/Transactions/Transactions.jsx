@@ -147,13 +147,9 @@ const Transactions = () => {
 					enableTopToolbar={true}
 					enablePagination={false}
 					enableBottomToolbar={false}
-					enableColumnResizing={true}
+					enableColumnResizing={false}
 					enableRowActions={false}
-					defaultColumn={
-						{
-							maxSize: 150
-						} //default size is usually 180
-					}
+					
 					muiTableBodyProps={{
 						sx: {
 							//stripe the rows, make odd rows a darker color

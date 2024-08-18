@@ -24,12 +24,14 @@ import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
 import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
 import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useRef } from 'react';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
 	const dispatch = useAppDispatch();
-
+	const ref = useRef();
+	const [columnWidth, setColumnWidth] = useState();
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
 	const [paymentStatusValue, setPaymentStatusValue] = useState('');
@@ -122,7 +124,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		{
 			id: 'order_date_formatted',
 			accessorKey: 'order_date',
-			header: 'Order Date',
+			header: 'Date',
 			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
 			muiTableHeadCellProps: {
 				align: 'center'
@@ -133,7 +135,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		},
 		{
 			accessorKey: 'id',
-			header: 'Order ID',
+			header: 'ID',
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -210,7 +212,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 									? 'bg-[#CBCBCB] text-Black'
 									: 'bg-[#F29339] text-black'
 							)}
-							defaultValue={row?.original?.editor?.editor_name}
+							defaultValue={row?.original?.editor?.id}
 							onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
 						>
 							{editorData?.data?.data?.map((editors, i) => (
@@ -552,144 +554,174 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			setRowPerPage(Number(data?.data?.per_page));
 		}
 	}, [data]);
+	useEffect(() => {
+		console.log('hi', ref?.current);
 
-	if (isLoading) {
-		return <FuseLoading />;
-	}
+		// Function to calculate and set the column width
+		const updateColumnWidth = () => {
+			if (ref.current) {
+				setColumnWidth((ref.current.clientWidth - 78) / 8);
+			}
+		};
+
+		// Update column width when the component mounts
+		updateColumnWidth();
+
+		// Add event listener for window resize
+		window.addEventListener('resize', updateColumnWidth);
+
+		// Cleanup event listener on component unmount
+		return () => {
+			window.removeEventListener('resize', updateColumnWidth);
+		};
+	}, [ref?.current, editorData?.data?.data]);
+	console.log({ columnWidth });
 
 	return (
-		<div className="">
-			<div>
-				<p className="text-[20px] font-bold text-[#868686] py-36">
-					{params?.email ? 'Users Details' : 'Orders'}
-				</p>
-			</div>
-			{params?.email ? (
-				<UserInfoCardContainer
-					email={data?.users_email}
-					name={data?.users_name}
-					phone={data?.users_phone_no}
-					totalOrders={data?.total_orders_count}
-					totalSpend={data?.total_spend}
-				/>
+		<div
+			className=""
+			ref={ref}
+		>
+			{isLoading ? (
+				<FuseLoading />
 			) : (
-				<></>
-			)}
-			<OrderTableHeader
-				orderStatus={orderStatusValue}
-				paymentStatus={paymentStatusValue}
-				search={searchValue}
-				editor={editorValue}
-				setOrderStatus={setOrderStatusValue}
-				setPaymentStatus={setPaymentStatusValue}
-				setEditor={setEditorValue}
-				setSearch={setSearchValue}
-				setStartDate={setStartDate}
-				setEndDate={setEndDate}
-				totalOrder={data?.total_orders_count}
-				completeOrder={data?.completed_orders_count}
-				pendingOrder={data?.pending_orders_count}
-				handleAllColumns={handleAllColumns}
-				setShowAllColumns={setShowAllColumns}
-				showAllColumns={showAllColumns}
-				onOrderSubmit={onOrderSubmit}
-				setPage={setCurrentPage}
-				setAllStyleData={setAllStyleData}
-			/>
-			<DataTable
-				isLoading={isLoading}
-				data={data?.data?.data}
-				state={{
-					columnOrder
-				}}
-				columns={memoizedColumns}
-				enableColumnActions={false}
-				enableGrouping={false}
-				enableColumnDragging={false}
-				enableRowSelection={false}
-				enableTopToolbar={false}
-				enablePagination={false}
-				enableBottomToolbar={false}
-				enableColumnResizing={true}
-				defaultColumn={
-					{
-						maxSize: 125
-					} //default size is usually 180
-				}
-				muiTableBodyProps={{
-					sx: {
-						//stripe the rows, make odd rows a darker color
-						'& tr:hover > td:after': {
-							backgroundColor: 'transparent !important'
-						}
-					}
-				}}
-				renderRowActions={({ row }) => (
-					<div className="flex gap-5">
-						<button
-							type="button"
-							onClick={() => handleLuEyeClick(row?.original?.id)}
-						>
-							<LuEye size={20} />
-						</button>
-						<button
-							type="button"
-							onClick={handleFiEditClick}
-						>
-							<FiEdit size={18} />
-						</button>
+				<>
+					<div>
+						<p className="text-[20px] font-bold text-[#868686] py-36">
+							{params?.email ? 'Users Details' : 'Orders'}
+						</p>
 					</div>
-				)}
-			/>
-
-			<div className="py-36">
-				<div className="flex justify-center items-center">
-					<Pagination
-						count={data?.data?.last_page}
-						page={currentPage}
-						onChange={handleChangePage}
-						variant="text"
-						shape="rounded"
-						sx={{
-							'& .MuiPaginationItem-root': {
-								// color: '#0066ff',
-								'&.Mui-selected': {
-									backgroundColor: '#0066ff',
-									color: 'white'
-								},
-								'&.Mui-selected:hover': {
-									bgcolor: '#0066ff'
-								},
-								'& button:hover': {
-									backgroundColor: 'rgba(0, 102, 255, 0.1)'
-								}
-							}
-						}}
+					{params?.email ? (
+						<UserInfoCardContainer
+							email={data?.users_email}
+							name={data?.users_name}
+							phone={data?.users_phone_no}
+							totalOrders={data?.total_orders_count}
+							totalSpend={data?.total_spend}
+						/>
+					) : (
+						<></>
+					)}
+					<OrderTableHeader
+						orderStatus={orderStatusValue}
+						paymentStatus={paymentStatusValue}
+						search={searchValue}
+						editor={editorValue}
+						setOrderStatus={setOrderStatusValue}
+						setPaymentStatus={setPaymentStatusValue}
+						setEditor={setEditorValue}
+						setSearch={setSearchValue}
+						setStartDate={setStartDate}
+						setEndDate={setEndDate}
+						totalOrder={data?.total_orders_count}
+						completeOrder={data?.completed_orders_count}
+						pendingOrder={data?.pending_orders_count}
+						handleAllColumns={handleAllColumns}
+						setShowAllColumns={setShowAllColumns}
+						showAllColumns={showAllColumns}
+						onOrderSubmit={onOrderSubmit}
+						setPage={setCurrentPage}
+						setAllStyleData={setAllStyleData}
 					/>
-					<Select
-						sx={{
-							width: 70,
-							height: 5,
-							pt: '5px'
-						}}
-						variant="outlined"
-						value={rowPerPage}
-						onChange={(e) => {
-							setRowPerPage(e.target.value);
-							setPage(1);
-						}}
-					>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={20}>20</MenuItem>
-						<MenuItem value={30}>30</MenuItem>
-					</Select>
-				</div>
-			</div>
-			<OrderDetailsModal
-				orderDetailsOpen={orderDetailsOpen}
-				handleOrderDetailsClose={handleOrderDetailsClose}
-				selectedId={selectedId}
-			/>
+					<div>
+						<DataTable
+							isLoading={isLoading}
+							data={data?.data?.data}
+							state={{
+								columnOrder
+							}}
+							columns={memoizedColumns}
+							enableColumnActions={false}
+							enableGrouping={false}
+							enableColumnDragging={false}
+							enableRowSelection={false}
+							enableTopToolbar={false}
+							enablePagination={false}
+							enableBottomToolbar={false}
+							enableColumnResizing={true}
+							defaultColumn={
+								{
+									maxSize: showAllColumns ? 400 : columnWidth,
+									size: showAllColumns ? 200 : columnWidth
+								} //default size is usually 180
+							}
+							muiTableBodyProps={{
+								sx: {
+									//stripe the rows, make odd rows a darker color
+									'& tr:hover > td:after': {
+										backgroundColor: 'transparent !important'
+									}
+								}
+							}}
+							renderRowActions={({ row }) => (
+								<div className="flex gap-5">
+									<button
+										type="button"
+										onClick={() => handleLuEyeClick(row?.original?.id)}
+									>
+										<LuEye size={20} />
+									</button>
+									<button
+										type="button"
+										onClick={handleFiEditClick}
+									>
+										<FiEdit size={18} />
+									</button>
+								</div>
+							)}
+						/>
+					</div>
+
+					<div className="py-36">
+						<div className="flex justify-center items-center">
+							<Pagination
+								count={data?.data?.last_page}
+								page={currentPage}
+								onChange={handleChangePage}
+								variant="text"
+								shape="rounded"
+								sx={{
+									'& .MuiPaginationItem-root': {
+										// color: '#0066ff',
+										'&.Mui-selected': {
+											backgroundColor: '#0066ff',
+											color: 'white'
+										},
+										'&.Mui-selected:hover': {
+											bgcolor: '#0066ff'
+										},
+										'& button:hover': {
+											backgroundColor: 'rgba(0, 102, 255, 0.1)'
+										}
+									}
+								}}
+							/>
+							<Select
+								sx={{
+									width: 70,
+									height: 5,
+									pt: '5px'
+								}}
+								variant="outlined"
+								value={rowPerPage}
+								onChange={(e) => {
+									setRowPerPage(e.target.value);
+									setPage(1);
+								}}
+							>
+								<MenuItem value={10}>10</MenuItem>
+								<MenuItem value={20}>20</MenuItem>
+								<MenuItem value={30}>30</MenuItem>
+							</Select>
+						</div>
+					</div>
+					<OrderDetailsModal
+						orderDetailsOpen={orderDetailsOpen}
+						handleOrderDetailsClose={handleOrderDetailsClose}
+						selectedId={selectedId}
+					/>
+				</>
+			)}
 		</div>
 	);
 }
