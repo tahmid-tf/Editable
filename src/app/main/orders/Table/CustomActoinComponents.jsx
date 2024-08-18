@@ -6,8 +6,9 @@ const CustomActionComponent = (props) => {
 	const { className, setDateValue, dateValue, setOpenDate, setStartDate, setEndDate, setPage } = props;
 
 	const handleApplyClick = () => {
-		setStartDate(dateValue[0] ? dayjs(dateValue[0]).format() : '');
-		setEndDate(dateValue[1] ? dayjs(dateValue[1]).format() : '');
+		console.log(dateValue);
+		setStartDate(dateValue[0] ? new Date(dateValue[0]).toISOString() : '');
+		setEndDate(dateValue[1] !== null ? new Date(dateValue[1]).toISOString() : '');
 		setOpenDate(false);
 		setPage(1);
 	};
@@ -35,7 +36,7 @@ const CustomActionComponent = (props) => {
 				<Box>-</Box>
 				<DateField
 					onChange={(value) => setDateValue([dateValue[0], value])}
-					value={dateValue[1]}
+					value={dateValue[1] !== null ? dateValue[1] : dateValue[0]}
 					format="LL"
 					sx={{
 						width: '10em',

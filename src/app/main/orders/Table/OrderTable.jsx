@@ -14,18 +14,24 @@ import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
-import { editorOptions, orderStatusOptions } from 'src/app/appUtils/constant';
+import { editorOptions, orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useParams } from 'react-router';
 import UserInfoCardContainer from './UserInfoCardContainer';
 import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
+import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
+import { useAppDispatch } from 'app/store/hooks';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useRef } from 'react';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
-
+	const dispatch = useAppDispatch();
+	const ref = useRef();
+	const [columnWidth, setColumnWidth] = useState();
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
 	const [paymentStatusValue, setPaymentStatusValue] = useState('');
@@ -41,6 +47,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
+	const [assignEditor] = useAssignEditorMutation();
+	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
+	// console.log(editorData.data.data);
 	// fetch table data
 	const { data, isLoading } = params?.email
 		? useGetUserDetailsQuery(
@@ -67,7 +76,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				page: currentPage,
 				rowPerPage
 			});
-
 	// order status values
 	const [orderStatusValues, setOrderStatusValues] = useState({});
 	// console.log("osv", orderStatusValues);
@@ -92,6 +100,20 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
 
+	const handleEditorChange = async (editor_id, order_id) => {
+		try {
+			const res = await assignEditor({ editor_id: parseFloat(editor_id), order_id });
+			if (res.data) {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'New Editor assigned' }));
+			} else {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
+			}
+		} catch (error) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
+		}
+		console.log(editor_id, order_id);
+	};
+
 	// page navigation
 
 	const handleChangePage = (event, newPage) => {
@@ -102,7 +124,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		{
 			id: 'order_date_formatted',
 			accessorKey: 'order_date',
-			header: 'Order Date',
+			header: 'Date',
 			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
 			muiTableHeadCellProps: {
 				align: 'center'
@@ -113,7 +135,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		},
 		{
 			accessorKey: 'id',
-			header: 'Order ID',
+			header: 'ID',
 			muiTableHeadCellProps: {
 				align: 'center'
 			},
@@ -175,35 +197,37 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			muiTableBodyCellProps: {
 				align: 'center'
 			},
-			Cell: ({ row }) => (
-				<Typography
-					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full ',
-						row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
-					)}
-				>
-					<select
-						value={row?.original?.editor?.editor_name ? row?.original?.editor?.editor_name : ''}
-						// onChange={(event) => handleOrderStatusChanges(row.id, event)}
+			Cell: ({ row }) => {
+				return (
+					<Typography
 						className={clsx(
-							'inline-flex items-center w-full',
+							'inline-flex items-center px-10 py-2 rounded-full ',
 							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
-						defaultChecked={''}
-						defaultValue={''}
 					>
-						{editorOptions?.map((editors, i) => (
-							<option
-								key={i}
-								className="bg-white text-black"
-								value={editors.value}
-							>
-								{editors.name}
-							</option>
-						))}
-					</select>
-				</Typography>
-			)
+						<select
+							className={clsx(
+								'inline-flex items-center w-full',
+								row?.original?.editor?.editor_name
+									? 'bg-[#CBCBCB] text-Black'
+									: 'bg-[#F29339] text-black'
+							)}
+							defaultValue={row?.original?.editor?.id}
+							onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
+						>
+							{editorData?.data?.data?.map((editors, i) => (
+								<option
+									key={i}
+									className="bg-white text-black"
+									value={editors?.id}
+								>
+									{editors?.editor_name}
+								</option>
+							))}
+						</select>
+					</Typography>
+				);
+			}
 			// accessorFn: (row) => `${row?.editor?.editor_name}`
 		},
 		{
@@ -488,7 +512,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [columns, setColumns] = useState(initialColumns);
 
-	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading]);
+	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading, editorLoading, editorData]);
 	const initialColumnOrder = [
 		'order_date_formatted',
 		'id',
@@ -516,150 +540,188 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			setColumns(initialColumns);
 		}
 	};
+
+	useEffect(() => {
+		if (editorData?.data?.data && !showAllColumns) {
+			setColumns(initialColumns);
+		} else if (editorData?.data?.data && showAllColumns) {
+			setColumns([...initialColumns, ...additionalColumns]);
+		}
+	}, [editorData?.data?.data]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));
 			setRowPerPage(Number(data?.data?.per_page));
 		}
 	}, [data]);
+	useEffect(() => {
+		console.log('hi', ref?.current);
 
-	if (isLoading) {
-		return <FuseLoading />;
-	}
+		// Function to calculate and set the column width
+		const updateColumnWidth = () => {
+			if (ref.current) {
+				setColumnWidth((ref.current.clientWidth - 78) / 8);
+			}
+		};
+
+		// Update column width when the component mounts
+		updateColumnWidth();
+
+		// Add event listener for window resize
+		window.addEventListener('resize', updateColumnWidth);
+
+		// Cleanup event listener on component unmount
+		return () => {
+			window.removeEventListener('resize', updateColumnWidth);
+		};
+	}, [ref?.current, editorData?.data?.data]);
+	console.log({ columnWidth });
 
 	return (
-		<div className="">
-			<div>
-				<p className="text-[20px] font-bold text-[#868686] py-36">
-					{params?.email ? 'Users Details' : 'Orders'}
-				</p>
-			</div>
-			{params?.email ? (
-				<UserInfoCardContainer
-					email={data?.users_email}
-					name={data?.users_name}
-					phone={data?.users_phone_no}
-					totalOrders={data?.total_orders_count}
-					totalSpend={data?.total_spend}
-				/>
+		<div
+			className=""
+			ref={ref}
+		>
+			{isLoading ? (
+				<FuseLoading />
 			) : (
-				<></>
-			)}
-			<OrderTableHeader
-				orderStatus={orderStatusValue}
-				paymentStatus={paymentStatusValue}
-				search={searchValue}
-				editor={editorValue}
-				setOrderStatus={setOrderStatusValue}
-				setPaymentStatus={setPaymentStatusValue}
-				setEditor={setEditorValue}
-				setSearch={setSearchValue}
-				setStartDate={setStartDate}
-				setEndDate={setEndDate}
-				totalOrder={data?.total_orders_count}
-				completeOrder={data?.completed_orders_count}
-				pendingOrder={data?.pending_orders_count}
-				handleAllColumns={handleAllColumns}
-				setShowAllColumns={setShowAllColumns}
-				showAllColumns={showAllColumns}
-				onOrderSubmit={onOrderSubmit}
-				setPage={setCurrentPage}
-				setAllStyleData={setAllStyleData}
-			/>
-			<DataTable
-				isLoading={isLoading}
-				data={data?.data?.data}
-				state={{
-					columnOrder
-				}}
-				columns={memoizedColumns}
-				enableColumnActions={false}
-				enableGrouping={false}
-				enableColumnDragging={false}
-				enableRowSelection={false}
-				enableTopToolbar={false}
-				enablePagination={false}
-				enableBottomToolbar={false}
-				enableColumnResizing={true}
-				defaultColumn={
-					{
-						maxSize: 125
-					} //default size is usually 180
-				}
-				muiTableBodyProps={{
-					sx: {
-						//stripe the rows, make odd rows a darker color
-						'& tr:hover > td:after': {
-							backgroundColor: 'transparent !important'
-						}
-					}
-				}}
-				renderRowActions={({ row }) => (
-					<div className="flex gap-5">
-						<button
-							type="button"
-							onClick={() => handleLuEyeClick(row?.original?.id)}
-						>
-							<LuEye size={20} />
-						</button>
-						<button
-							type="button"
-							onClick={handleFiEditClick}
-						>
-							<FiEdit size={18} />
-						</button>
+				<>
+					<div>
+						<p className="text-[20px] font-bold text-[#868686] py-36">
+							{params?.email ? 'Users Details' : 'Orders'}
+						</p>
 					</div>
-				)}
-			/>
-
-			<div className="py-36">
-				<div className="flex justify-center items-center">
-					<Pagination
-						count={data?.data?.last_page}
-						page={currentPage}
-						onChange={handleChangePage}
-						variant="text"
-						shape="rounded"
-						sx={{
-							'& .MuiPaginationItem-root': {
-								// color: '#0066ff',
-								'&.Mui-selected': {
-									backgroundColor: '#0066ff',
-									color: 'white'
-								},
-								'&.Mui-selected:hover': {
-									bgcolor: '#0066ff'
-								},
-								'& button:hover': {
-									backgroundColor: 'rgba(0, 102, 255, 0.1)'
-								}
-							}
-						}}
+					{params?.email ? (
+						<UserInfoCardContainer
+							email={data?.users_email}
+							name={data?.users_name}
+							phone={data?.users_phone_no}
+							totalOrders={data?.total_orders_count}
+							totalSpend={data?.total_spend}
+						/>
+					) : (
+						<></>
+					)}
+					<OrderTableHeader
+						orderStatus={orderStatusValue}
+						paymentStatus={paymentStatusValue}
+						search={searchValue}
+						editor={editorValue}
+						setOrderStatus={setOrderStatusValue}
+						setPaymentStatus={setPaymentStatusValue}
+						setEditor={setEditorValue}
+						setSearch={setSearchValue}
+						setStartDate={setStartDate}
+						setEndDate={setEndDate}
+						totalOrder={data?.total_orders_count}
+						completeOrder={data?.completed_orders_count}
+						pendingOrder={data?.pending_orders_count}
+						handleAllColumns={handleAllColumns}
+						setShowAllColumns={setShowAllColumns}
+						showAllColumns={showAllColumns}
+						onOrderSubmit={onOrderSubmit}
+						setPage={setCurrentPage}
+						setAllStyleData={setAllStyleData}
 					/>
-					<Select
-						sx={{
-							width: 70,
-							height: 5,
-							pt: '5px'
-						}}
-						variant="outlined"
-						value={rowPerPage}
-						onChange={(e) => {
-							setRowPerPage(e.target.value);
-							setPage(1);
-						}}
-					>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={20}>20</MenuItem>
-						<MenuItem value={30}>30</MenuItem>
-					</Select>
-				</div>
-			</div>
-			<OrderDetailsModal
-				orderDetailsOpen={orderDetailsOpen}
-				handleOrderDetailsClose={handleOrderDetailsClose}
-				selectedId={selectedId}
-			/>
+					<div>
+						<DataTable
+							isLoading={isLoading}
+							data={data?.data?.data}
+							state={{
+								columnOrder
+							}}
+							columns={memoizedColumns}
+							enableColumnActions={false}
+							enableGrouping={false}
+							enableColumnDragging={false}
+							enableRowSelection={false}
+							enableTopToolbar={false}
+							enablePagination={false}
+							enableBottomToolbar={false}
+							enableColumnResizing={true}
+							defaultColumn={
+								{
+									maxSize: showAllColumns ? 400 : columnWidth,
+									size: showAllColumns ? 200 : columnWidth
+								} //default size is usually 180
+							}
+							muiTableBodyProps={{
+								sx: {
+									//stripe the rows, make odd rows a darker color
+									'& tr:hover > td:after': {
+										backgroundColor: 'transparent !important'
+									}
+								}
+							}}
+							renderRowActions={({ row }) => (
+								<div className="flex gap-5">
+									<button
+										type="button"
+										onClick={() => handleLuEyeClick(row?.original?.id)}
+									>
+										<LuEye size={20} />
+									</button>
+									<button
+										type="button"
+										onClick={handleFiEditClick}
+									>
+										<FiEdit size={18} />
+									</button>
+								</div>
+							)}
+						/>
+					</div>
+
+					<div className="py-36">
+						<div className="flex justify-center items-center">
+							<Pagination
+								count={data?.data?.last_page}
+								page={currentPage}
+								onChange={handleChangePage}
+								variant="text"
+								shape="rounded"
+								sx={{
+									'& .MuiPaginationItem-root': {
+										// color: '#0066ff',
+										'&.Mui-selected': {
+											backgroundColor: '#0066ff',
+											color: 'white'
+										},
+										'&.Mui-selected:hover': {
+											bgcolor: '#0066ff'
+										},
+										'& button:hover': {
+											backgroundColor: 'rgba(0, 102, 255, 0.1)'
+										}
+									}
+								}}
+							/>
+							<Select
+								sx={{
+									width: 70,
+									height: 5,
+									pt: '5px'
+								}}
+								variant="outlined"
+								value={rowPerPage}
+								onChange={(e) => {
+									setRowPerPage(e.target.value);
+									setPage(1);
+								}}
+							>
+								<MenuItem value={10}>10</MenuItem>
+								<MenuItem value={20}>20</MenuItem>
+								<MenuItem value={30}>30</MenuItem>
+							</Select>
+						</div>
+					</div>
+					<OrderDetailsModal
+						orderDetailsOpen={orderDetailsOpen}
+						handleOrderDetailsClose={handleOrderDetailsClose}
+						selectedId={selectedId}
+					/>
+				</>
+			)}
 		</div>
 	);
 }

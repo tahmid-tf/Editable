@@ -76,6 +76,7 @@ const TableFilterComponent = ({
 					display={'flex'}
 					gap={2}
 					alignItems={'center'}
+					justifyContent={'center'}
 				>
 					<FormControl fullWidth>
 						<InputLabel id="order-status-label">Order Status</InputLabel>
@@ -190,7 +191,7 @@ const TableFilterComponent = ({
 								}
 							}}
 							focused={false}
-							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : ''}`}
+							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : `${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')}` : ''}`}`}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment
@@ -213,7 +214,7 @@ const TableFilterComponent = ({
 							variant="contained"
 							size="large"
 							sx={{
-								width: '6em',
+								width: '100%',
 								height: '48px',
 								borderRadius: '4px',
 								backgroundColor: '#146ef5ef',
