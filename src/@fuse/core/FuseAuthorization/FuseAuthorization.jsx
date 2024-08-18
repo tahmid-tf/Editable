@@ -52,6 +52,8 @@ class FuseAuthorization extends Component {
 	static getDerivedStateFromProps(props, state) {
 		const { location, userRole } = props;
 		const { pathname } = location;
+		console.log(state.routes);
+
 		const matchedRoutes = matchRoutes(state.routes, pathname);
 		const matched = matchedRoutes ? matchedRoutes[0] : false;
 		const isGuest = isUserGuest(userRole);
@@ -65,7 +67,9 @@ class FuseAuthorization extends Component {
 		const ignoredPaths = ['/', '/callback', '/sign-in', '/sign-out', '/logout', '/404'];
 
 		if (matched && !userHasPermission && !ignoredPaths.includes(pathname)) {
-			setSessionRedirectUrl(pathname);
+			const logout = JSON.parse(window.sessionStorage.getItem('logout'));
+
+			setSessionRedirectUrl(logout ? '/' : pathname);
 		}
 
 		/**
@@ -99,6 +103,7 @@ class FuseAuthorization extends Component {
             */
 			setTimeout(() => history.push(redirectUrl), 0);
 			resetSessionRedirectUrl();
+			window.sessionStorage.removeItem('logout');
 		}
 	}
 

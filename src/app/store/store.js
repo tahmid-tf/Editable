@@ -1,7 +1,7 @@
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import apiService from 'app/store/apiService';
-import { rootReducer } from './lazyLoadedSlices';
+import { appReducer } from './lazyLoadedSlices';
 import { dynamicMiddleware } from './middleware';
 import storage from 'redux-persist/lib/storage';
 import { persistStore } from 'redux-persist';
@@ -16,7 +16,7 @@ const persistConfig = {
 	whitelist: ['user']
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, appReducer);
 export const makeStore = (preloadedState) => {
 	const store = configureStore({
 		reducer: persistedReducer,

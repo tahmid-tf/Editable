@@ -582,7 +582,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			className=""
 			ref={ref}
 		>
-			{isLoading ? (
+			{isLoading || editorLoading ? (
 				<FuseLoading />
 			) : (
 				<>
@@ -623,54 +623,58 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						setPage={setCurrentPage}
 						setAllStyleData={setAllStyleData}
 					/>
-					<div>
-						<DataTable
-							isLoading={isLoading}
-							data={data?.data?.data}
-							state={{
-								columnOrder
-							}}
-							columns={memoizedColumns}
-							enableColumnActions={false}
-							enableGrouping={false}
-							enableColumnDragging={false}
-							enableRowSelection={false}
-							enableTopToolbar={false}
-							enablePagination={false}
-							enableBottomToolbar={false}
-							enableColumnResizing={true}
-							defaultColumn={
-								{
-									maxSize: showAllColumns ? 400 : columnWidth,
-									size: showAllColumns ? 200 : columnWidth
-								} //default size is usually 180
-							}
-							muiTableBodyProps={{
-								sx: {
-									//stripe the rows, make odd rows a darker color
-									'& tr:hover > td:after': {
-										backgroundColor: 'transparent !important'
-									}
+					{data?.data?.data?.length ? (
+						<div>
+							<DataTable
+								isLoading={isLoading}
+								data={data?.data?.data}
+								state={{
+									columnOrder
+								}}
+								columns={memoizedColumns}
+								enableColumnActions={false}
+								enableGrouping={false}
+								enableColumnDragging={false}
+								enableRowSelection={false}
+								enableTopToolbar={false}
+								enablePagination={false}
+								enableBottomToolbar={false}
+								enableColumnResizing={true}
+								defaultColumn={
+									{
+										maxSize: showAllColumns ? 400 : columnWidth,
+										size: showAllColumns ? 200 : columnWidth
+									} //default size is usually 180
 								}
-							}}
-							renderRowActions={({ row }) => (
-								<div className="flex gap-5">
-									<button
-										type="button"
-										onClick={() => handleLuEyeClick(row?.original?.id)}
-									>
-										<LuEye size={20} />
-									</button>
-									<button
-										type="button"
-										onClick={handleFiEditClick}
-									>
-										<FiEdit size={18} />
-									</button>
-								</div>
-							)}
-						/>
-					</div>
+								muiTableBodyProps={{
+									sx: {
+										//stripe the rows, make odd rows a darker color
+										'& tr:hover > td:after': {
+											backgroundColor: 'transparent !important'
+										}
+									}
+								}}
+								renderRowActions={({ row }) => (
+									<div className="flex gap-5">
+										<button
+											type="button"
+											onClick={() => handleLuEyeClick(row?.original?.id)}
+										>
+											<LuEye size={20} />
+										</button>
+										<button
+											type="button"
+											onClick={handleFiEditClick}
+										>
+											<FiEdit size={18} />
+										</button>
+									</div>
+								)}
+							/>
+						</div>
+					) : (
+						<></>
+					)}
 
 					<div className="py-36">
 						<div className="flex justify-center items-center">
