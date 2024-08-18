@@ -19,3 +19,12 @@ export const rootReducer = combineSlices(
 		[apiService.reducerPath]: apiService.reducer
 	}
 ).withLazyLoadedSlices();
+export const appReducer = (state, action) => {
+	if (action.type === 'logout') {
+		state.apiService = {};
+		
+		return rootReducer(state, action);
+	} else {
+		return rootReducer(state, action);
+	}
+};

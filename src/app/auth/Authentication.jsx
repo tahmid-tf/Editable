@@ -64,7 +64,9 @@ function Authentication(props) {
 	 */
 	const handleSignOut = useCallback(() => {
 		dispatch(resetUser());
+		dispatch({ type: 'logout' });
 		resetAuthProvider();
+		window.sessionStorage.setItem('logout', true);
 	}, []);
 	/**
 	 * Handle Sign In on load
