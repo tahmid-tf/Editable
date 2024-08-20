@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\GeneralSettingsController;
 
-Route::middleware(['auth:sanctum','user'])->prefix('user')->group(function () {
+Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
 
-    Route::get('test_user', function (){
+    Route::get('test_user', function () {
         return response()->json([
             'response' => 'this is an user account'
         ]);
@@ -18,6 +18,11 @@ Route::middleware(['auth:sanctum','user'])->prefix('user')->group(function () {
 
 //    -------------------------------------- General Settings - Change Password --------------------------------------
 
+//    -------------------------------------- User order lists --------------------------------------
+
+
+
+//    -------------------------------------- User order lists --------------------------------------
 
 
 });

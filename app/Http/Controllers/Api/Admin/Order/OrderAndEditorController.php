@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OrderAndEditorController extends Controller
 {
+
+    // --------------------------- Single order Information ---------------------------
+
+
     public function view($id)
     {
         $order = Order::find($id);
@@ -40,8 +44,10 @@ class OrderAndEditorController extends Controller
 
     }
 
-    // --------------------------- Assign editors to order table ---------------------------
+    // --------------------------- Single order Information ---------------------------
 
+
+    // --------------------------- Assign editors to order table ---------------------------
 
     public function assign_editor(Request $request)
     {
@@ -108,4 +114,103 @@ class OrderAndEditorController extends Controller
 
 
     }
+
+    // --------------------------- Assign editors to order table ---------------------------
+
+    // --------------------------- Order status pending, cancelled status setup routes ---------------------------
+
+    public function set_order_status()
+    {
+        $order_id = request()->input('order_id');
+        $order_status = request()->input('order_status');
+
+//        --------------------- checking validated list ---------------------
+
+        $order = Order::find($order_id);
+
+        if (!$order) {
+            return response()->json([
+                'data' => 'Order data not found',
+                'status' => Response::HTTP_NOT_FOUND,
+            ]);
+        }
+
+        $validated_list = ['pending','cancelled'];
+
+        if (!in_array($order_status, $validated_list)) {
+            return response()->json([
+                'data' => 'Invalid order status request',
+                'status' => Response::HTTP_NOT_FOUND,
+            ]);
+        }
+
+//        --------------------- checking validated list ---------------------
+
+        $order->order_status = $order_status;
+        $order->save();
+
+        return response()->json([
+            'data' => 'Order status successfully updated',
+            'status' => Response::HTTP_OK,
+        ]);
+
+    }
+
+    // --------------------------- Order status pending, cancelled status setup routes ---------------------------
+
+    // --------------------------- Order complete by admin, drive link update ---------------------------
+    public function complete_order()
+    {
+        $order_id = request()->input('order_id');
+        $order_status = request()->input('order_status');
+        $uploaded_drive_link = request()->input('uploaded_drive_link');
+
+//        --------------------- checking validations ---------------------
+
+        $order = Order::find($order_id);
+
+        if (!$order) {
+            return response()->json([
+                'data' => 'Order data not found',
+                'status' => Response::HTTP_NOT_FOUND,
+            ]);
+        }
+
+        $validated_list = ['completed'];
+
+        if (!in_array($order_status, $validated_list)) {
+            return response()->json([
+                'data' => 'Invalid order status request',
+                'status' => Response::HTTP_NOT_FOUND,
+            ]);
+        }
+
+        if (!$uploaded_drive_link) {
+
+            return response()->json([
+                'data' => 'Uploaded drive link value cannot be null',
+                'status' => Response::HTTP_NOT_FOUND,
+            ]);
+        }
+
+//        --------------------- checking validations ---------------------
+
+        $order->order_status = $order_status;
+        $order->file_uploaded_by_user = $uploaded_drive_link;
+        $order->order_delivery_date = now();
+        $order->save();
+
+
+
+        return \response()->json([
+            'data' => 'Order status successfully completed',
+            'status' => Response::HTTP_OK,
+            'order' => $order,
+        ]);
+    }
+
+    // --------------------------- Order complete by admin, drive link update ---------------------------
+
+
+
 }

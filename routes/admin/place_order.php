@@ -45,6 +45,15 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Assign editors to order table ---------------------------
 
+    // --------------------------- Order status pending, complete, cancelled status setup routes ---------------------------
+
+    Route::post('set_order_status', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'set_order_status']);
+
+    // Order complete by admin, drive link update
+    Route::post('complete_order', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'complete_order']);
+
+    // --------------------------- Order status pending, complete, cancelled status setup routes ---------------------------
+
 
 });
 
