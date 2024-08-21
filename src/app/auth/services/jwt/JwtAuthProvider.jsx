@@ -148,6 +148,7 @@ function JwtAuthProvider(props) {
 	const handleRequest = async (url, data, handleSuccess, handleFailure) => {
 		try {
 			const response = await axios.post(url, data);
+			console.log({ response });
 
 			const userData = response?.data?.user;
 			const accessToken = response?.data?.token;
@@ -245,7 +246,7 @@ function JwtAuthProvider(props) {
 	useEffect(() => {
 		if (user) {
 			setAuthStatus('authenticated');
-		} 
+		}
 		// else {
 		// 	setAuthStatus('unauthenticated');
 		// }

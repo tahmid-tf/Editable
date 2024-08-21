@@ -53,11 +53,12 @@ function JwtSignUpForm() {
 	const { isValid, dirtyFields, errors } = formState;
 
 	function onSubmit(formData) {
-		const { displayName, email, password } = formData;
+		const { displayName, email, password, whatsappNumber } = formData;
 		signUp({
-			displayName,
+			name: displayName,
 			password,
-			email
+			email,
+			phone: whatsappNumber
 		})
 			.then(() => {
 				// No need to do anything, registered user data will be set at app/auth/AuthRouteProvider

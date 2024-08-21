@@ -11,8 +11,17 @@ import Categories from '../main/admin/categories/Categories';
 import Styles from '../main/admin/styles/Styles';
 import OrdersConfig from '../main/orders/OrdersConfig';
 import adminConfig from '../main/admin/adminConfig';
+import userConfig from '../main/user/userConfig';
 
-const routeConfigs = [ExampleConfig, SignOutConfig, SignInConfig, SignUpConfig, OrdersConfig, ...adminConfig];
+const routeConfigs = [
+	ExampleConfig,
+	SignOutConfig,
+	SignInConfig,
+	SignUpConfig,
+	OrdersConfig,
+	...adminConfig,
+	...userConfig
+];
 /**
  * The routes of the application.
  */

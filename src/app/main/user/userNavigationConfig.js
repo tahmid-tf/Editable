@@ -4,8 +4,15 @@ const userNavigationConfig = [
 	{
 		id: 'dashboards',
 		type: 'group',
-		translate: 'DASHBOARDS',
-		children: [...commonNavigationItems]
+		children: [
+			...commonNavigationItems,
+			{
+				id: 'general-settings',
+				title: 'General Settings',
+				type: 'item',
+				url: 'user/general-settings'
+			}
+		]
 	}
 ];
 export default userNavigationConfig;
