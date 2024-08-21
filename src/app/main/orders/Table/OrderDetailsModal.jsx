@@ -106,7 +106,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 				</Box>
 				<Grid
 					container
-					sx={{ fontSize: '20px', mt: '20px' }}
+					sx={{ fontSize: '16px', mt: '20px' }}
 					rowGap={2}
 				>
 					<Grid
@@ -331,7 +331,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
 						<Typography
 							sx={{
-								fontSize: '22px',
+								fontSize: '16px',
 								fontWeight: 400,
 								lineHeight: '20px',
 								color: '#707070'
@@ -341,7 +341,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 						</Typography>
 						<Typography
 							sx={{
-								fontSize: '22px',
+								fontSize: '16px',
 								fontWeight: 500,
 								lineHeight: '20px',
 								color: '#CB1717'

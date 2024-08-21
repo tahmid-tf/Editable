@@ -8,7 +8,7 @@ import { getOrdinal } from 'src/app/appUtils/appUtils';
 const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 	const [openCopyTooltip, setOpenCopyTooltip] = useState(false);
 
-	const copiedContent = `Name: ${messageInfo.name} \nMessage: ${messageInfo.message} \nDate: ${dayjs(messageInfo.date).format('DD MMM YYYY')}`;
+	const copiedContent = `${messageInfo.message}`;
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
@@ -93,9 +93,9 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 				>
 					<Typography
 						sx={{
-							fontSize: '18px',
+							fontSize: '16px',
 							fontWeight: 400,
-							lineHeight: '20px',
+							lineHeight: '150%',
 							color: '#2C2C2E'
 						}}
 					>

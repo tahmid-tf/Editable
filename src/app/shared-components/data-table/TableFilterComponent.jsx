@@ -74,7 +74,7 @@ const TableFilterComponent = ({
 				/>
 				<Box
 					display={'flex'}
-					gap={2}
+					gap={1}
 					alignItems={'center'}
 					justifyContent={'center'}
 				>

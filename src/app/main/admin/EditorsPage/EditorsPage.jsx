@@ -62,36 +62,21 @@ const EditorsPage = () => {
 				accessorKey: 'editor_name',
 				header: 'Name',
 				Cell: ({ row }) => `${row?.original?.editor_name}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'completed_orders_count',
 				accessorKey: 'completed_orders_count',
 				header: 'Orders Completed',
 				Cell: ({ row }) => `${row?.original?.completed_orders_count}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'pending_orders_count',
 				accessorKey: 'pending_orders_count',
 				header: 'Orders Pending',
 				Cell: ({ row }) => `${row?.original?.pending_orders_count}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			}
 		],
 		[data]

@@ -106,3 +106,42 @@ export const formatNumber = (num) => {
 	}
 	return num.toString();
 };
+
+export const formatDateAndId = (dateString, id) => {
+	// Create a Date object from the input string
+	const date = new Date(dateString);
+
+	// Extract day, month, and year from the date
+	const day = date.getDate(); // Gets the day of the month (1-31)
+	const month = date.toLocaleString('default', { month: 'short' }).slice(0, 2); // Gets the first two letters of the month (e.g., "Aug")
+	const year = date.getFullYear().toString().slice(-2); // Gets the last two digits of the year (e.g., "24")
+
+	// Format the ID to be at least 3 digits long (e.g., "010")
+	const formattedId = id.toString().padStart(3, '0');
+
+	// Concatenate day, month, year, and ID
+	const result = `${day}${month}${year}${formattedId}`;
+
+	return result;
+};
+export const getStartOfDayISO = (dateString) => {
+	// Parse the date using Day.js
+	const date = dayjs(dateString);
+
+	// Get the start of the day (12:00 AM) for the given date
+	const startOfDay = date.startOf('day');
+
+	// Convert the start of the day to ISO format
+	return startOfDay.toISOString();
+};
+
+export const getEndOfDayISO = (dateString) => {
+	// Parse the date using Day.js
+	const date = dayjs(dateString);
+
+	// Get the end of the day (11:59:59 PM) for the given date
+	const endOfDay = date.endOf('day');
+
+	// Convert the end of the day to ISO format
+	return endOfDay.toISOString();
+};
