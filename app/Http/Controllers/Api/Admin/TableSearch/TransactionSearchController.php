@@ -53,7 +53,7 @@ class TransactionSearchController extends Controller
 //        ---------------------------- between start data and end date modification ----------------------------
 
         $paginate = request('paginate', 10);
-        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
+        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status','amount', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
 
 //        ----------------------- Transaction id and Order id -----------------------
 
