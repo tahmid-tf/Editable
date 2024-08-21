@@ -1,14 +1,15 @@
 import { Box, Button, DialogActions } from '@mui/material';
 import { DateField } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import { getEndOfDayISO, getStartOfDayISO } from 'src/app/appUtils/appUtils';
 
 const CustomActionComponent = (props) => {
 	const { className, setDateValue, dateValue, setOpenDate, setStartDate, setEndDate, setPage } = props;
 
 	const handleApplyClick = () => {
 		console.log(dateValue);
-		setStartDate(dateValue[0] ? new Date(dateValue[0]).toISOString() : '');
-		setEndDate(dateValue[1] !== null ? new Date(dateValue[1]).toISOString() : '');
+		setStartDate(dateValue[0] ? getStartOfDayISO(dateValue[0]) : '');
+		setEndDate(dateValue[1] !== null ? getEndOfDayISO(dateValue[1]) : '');
 		setOpenDate(false);
 		setPage(1);
 	};

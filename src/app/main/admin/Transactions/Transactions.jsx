@@ -32,48 +32,28 @@ const Transactions = () => {
 			accessorKey: 'created_at',
 			header: 'Date',
 			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'transaction_id',
 			accessorKey: 'transaction_id',
 			header: 'Transaction ID',
 			Cell: ({ row }) => `${row?.original?.transaction_id}`,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'order_id',
 			accessorKey: 'order_id',
 			header: 'Order ID',
 			Cell: ({ row }) => `${row?.original?.order_id}`,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'users_email',
 			accessorKey: 'users_email',
 			header: 'Customer Email',
 			Cell: ({ row }) => `${row?.original?.users_email}`,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'order_status',
@@ -84,12 +64,7 @@ const Transactions = () => {
 					<div className="tracking-[0.2px] leading-[20px] font-medium">{row?.original?.order_status}</div>
 				</div>
 			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'payment_status',
@@ -100,24 +75,14 @@ const Transactions = () => {
 					<div className="tracking-[0.2px] leading-[20px] font-medium">{row?.original?.payment_status}</div>
 				</div>
 			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		},
 		{
 			id: 'amount',
 			accessorKey: 'amount',
 			header: 'Amount',
 			Cell: ({ row }) => `${row?.original?.amount}`,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			
 		}
 	];
 

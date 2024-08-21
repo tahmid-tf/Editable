@@ -10,6 +10,7 @@ import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { useAppDispatch } from 'app/store/hooks';
+import { Link } from 'react-router-dom';
 
 const Styles = () => {
 	const [openModal, setOpenModal] = useState(false);
@@ -64,24 +65,14 @@ const Styles = () => {
 				accessorKey: 'style_name',
 				header: 'Name',
 				Cell: ({ row }) => `${row?.original?.style_name}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'additional_style',
 				accessorKey: 'additional_style',
 				header: 'Additional Style',
 				Cell: ({ row }) => `${row?.original?.additional_style}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'category_details',
@@ -92,13 +83,13 @@ const Styles = () => {
 						?.map((category) => category?.category_name)
 						.join(', ');
 					return `${allCategory}`;
-				},
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
 				}
+				// muiTableHeadCellProps: {
+				// 	align: 'le'
+				// },
+				// muiTableBodyCellProps: {
+				// 	align: 'center'
+				// }
 			},
 			{
 				id: 'additional_edits',
@@ -114,39 +105,30 @@ const Styles = () => {
 						.join(', ');
 					return additionalEdits;
 				},
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'upload_image',
 				accessorKey: 'upload_image',
 				header: 'Image',
 				Cell: ({ row }) => (
-					<div className={'inline-flex items-center px-[10px] py-[2px] tracking-wide bg-black text-white'}>
-						<a
-							href={row?.original?.upload_image}
-							// target="_blank"
-							download
-							className="tracking-[0.2px] leading-[20px] font-medium"
-							style={{
-								textDecoration: 'none',
-								color: 'white'
-							}}
-						>
-							Download
-						</a>
-					</div>
+					// <div className={'inline-flex items-center px-[10px] py-[2px] tracking-wide bg-black text-white'}>
+					<Link
+						to={row?.original?.upload_image}
+						className='text-primary'
+						// target="_blank"
+						// download
+						// className="tracking-[0.2px] leading-[20px] font-medium"
+						// style={{
+						// 	textDecoration: 'none',
+						// 	color: 'white'
+						// }}
+					>
+						Download
+					</Link>
+					// </div>
 				),
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			}
 		],
 		[data]

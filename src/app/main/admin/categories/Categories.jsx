@@ -64,108 +64,63 @@ const Categories = () => {
 				accessorKey: 'category_name',
 				header: 'Name',
 				Cell: ({ row }) => `${row?.original?.category_name}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'style_price',
 				accessorKey: 'style_price',
 				header: 'Style Price',
 				Cell: ({ row }) => `${row?.original?.style_price}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'style_threshold',
 				accessorKey: 'style_threshold',
 				header: 'Style Threshold',
 				Cell: ({ row }) => `${row?.original?.style_threshold}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'culling_price',
 				accessorKey: 'culling_price',
 				header: 'Culling Price',
 				Cell: ({ row }) => `${row?.original?.culling_price}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'culling_threshold',
 				accessorKey: 'culling_threshold',
 				header: 'Culling Threshold',
 				Cell: ({ row }) => `${row?.original?.culling_threshold}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'skin_retouch_price',
 				accessorKey: 'skin_retouch_price',
 				header: 'Retouch Price',
 				Cell: ({ row }) => `${row?.original?.skin_retouch_price}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'skin_retouch_threshold',
 				accessorKey: 'skin_retouch_threshold',
 				header: 'Retouch Threshold',
 				Cell: ({ row }) => `${row?.original?.skin_retouch_threshold}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'preview_edit_price',
 				accessorKey: 'preview_edit_price',
 				header: 'Preview Price',
 				Cell: ({ row }) => `${row?.original?.preview_edit_price}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			},
 			{
 				id: 'preview_edit_threshold',
 				accessorKey: 'preview_edit_threshold',
 				header: 'Preview Threshold',
 				Cell: ({ row }) => `${row?.original?.preview_edit_threshold}`,
-				muiTableHeadCellProps: {
-					align: 'center'
-				},
-				muiTableBodyCellProps: {
-					align: 'center'
-				}
+				
 			}
 		],
 		[data]

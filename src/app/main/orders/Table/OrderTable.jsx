@@ -11,7 +11,7 @@ import FuseLoading from '@fuse/core/FuseLoading';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
-import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
+import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
 import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
 import { editorOptions, orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
@@ -25,6 +25,7 @@ import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/Edit
 import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -126,38 +127,39 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'order_date',
 			header: 'Date',
 			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
+			sortingFn: (rowA, rowB, columnId) => {
+				const dateA = new Date(rowA.original.created_at).getTime();
+				const dateB = new Date(rowB.original.created_at).getTime();
+
+				if (dateA < dateB) {
+					return -1;
+				}
+				if (dateA > dateB) {
+					return 1;
+				}
+				return 0;
 			}
 		},
 		{
 			accessorKey: 'id',
 			header: 'ID',
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => formatDateAndId(row.original.created_at, row.original.id),
+
+			size: showAllColumns ? null : 90
 		},
 		{
 			id: 'remaining_days',
 			accessorKey: 'order_date',
-			header: 'Remaining Days',
-			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			header: (
+				<Tooltip title="Remaining Days" placement='top-start'>
+					<span>Remaining Days</span>
+				</Tooltip>
+			),
+			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>
 		},
 		{
 			accessorKey: 'previewstatus',
-			header: 'Preview Edit Status',
+			header: 'Preview',
 			// eslint-disable-next-line react/no-unstable-nested-components
 			Cell: ({ row }) => {
 				// console.log({ row });
@@ -165,7 +167,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				return (
 					<div
 						className={clsx(
-							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
+							'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
 							row?.original?.previewstatus === 'Approved'
 								? 'bg-[#039855] text-white'
 								: row?.original?.previewstatus === 'Rejected'
@@ -175,39 +177,28 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 										: 'bg-[#CBCBCB] text-black'
 						)}
 					>
-						<div className="tracking-[0.2px] leading-[20px] font-medium">
+						<div className="tracking-[0.2px] leading-[20px] text-[12px]">
 							{row?.original?.previewstatus ? row?.original?.previewstatus : 'N/A'}
 						</div>
 					</div>
 				);
-			},
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
 			}
 		},
 		{
 			accessorKey: 'editor',
 			header: 'Editor',
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			},
+
 			Cell: ({ row }) => {
 				return (
 					<Typography
 						className={clsx(
-							'inline-flex items-center px-10 py-2 rounded-full ',
+							'inline-flex items-center px-[8px] py-[2px] rounded-full ',
 							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
 						)}
 					>
 						<select
 							className={clsx(
-								'inline-flex items-center w-full',
+								'inline-flex items-center w-full text-[12px]',
 								row?.original?.editor?.editor_name
 									? 'bg-[#CBCBCB] text-Black'
 									: 'bg-[#F29339] text-black'
@@ -236,61 +227,41 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => (
 				<div
 					className={clsx(
-						'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide',
+						'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
 						row?.original?.payment_status === 'successful' && 'bg-[#039855] text-white',
 						row?.original?.payment_status === 'failed' && 'bg-[#CB1717] text-white',
 						row?.original?.payment_status === 'pending' && 'bg-[#FFCC00] text-black'
 					)}
 				>
-					<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+					<div className="tracking-[0.2px] leading-[20px] text-[12px] capitalize">
 						{row?.original?.payment_status}
 					</div>
 				</div>
 			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			size: 170
 		},
 		{
 			accessorKey: 'files',
 			header: 'Files',
 			Cell: () => (
-				<div
-					className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
+				
+				<Link
+					to={'#'}
+					className="!text-[#0066ff]"
+					
 				>
-					<button
-						type="button"
-						// href={row?.original?.files}
-						// target="_blank"
-						// download
-						className="tracking-[0.2px] leading-[20px] font-medium"
-						style={{
-							textDecoration: 'none',
-							color: 'white'
-						}}
-						disabled
-					>
-						Download
-					</button>
-				</div>
+					Download
+				</Link>
 			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			size:90
 		},
 		{
 			accessorKey: 'order_status',
-			header: 'Order Status',
+			header: 'Status',
 			Cell: ({ row }) => (
 				<Typography
 					className={clsx(
-						'inline-flex items-center px-10 py-2 rounded-full w-full ',
+						'inline-flex items-center px-[8px] py-[2px] rounded-full w-full ',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 							'bg-[#FFCC00] text-black',
 						(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -305,7 +276,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						value={row?.original?.order_status ? row?.original?.order_status : ''}
 						onChange={(event) => handleOrderStatusChanges(row.id, event)}
 						className={clsx(
-							'inline-flex items-center !w-full ',
+							'inline-flex items-center !w-full text-[12px]',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
 								'bg-[#FFCC00] text-black',
 							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
@@ -328,13 +299,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						))}
 					</select>
 				</Typography>
-			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			)
 		}
 	];
 	const additionalColumns = [
@@ -342,13 +307,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			index: 2,
 			accessorKey: 'order_name',
 			header: 'Order Name',
-			Cell: ({ row }) => row?.original?.order_name,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => row?.original?.order_name
 		},
 		{
 			index: 3,
@@ -368,62 +327,31 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						</div>
 					</div>
 				);
-			},
-
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
 			}
 		},
 		{
 			index: 4,
 			accessorKey: 'users_name',
 			header: 'User Name',
-			Cell: ({ row }) => row?.original?.users_name,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => row?.original?.users_name
 		},
 		{
 			index: 5,
 			accessorKey: 'users_email',
 			header: 'User Email',
-			Cell: ({ row }) => row?.original?.users_email,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => row?.original?.users_email
 		},
 		{
 			index: 6,
 			accessorKey: 'users_phone',
 			header: 'User Email',
-			Cell: ({ row }) => row?.original?.users_phone,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => row?.original?.users_phone
 		},
 		{
 			index: 7,
 			accessorKey: 'delivery_date',
 			header: 'Delivery Date',
-			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.created_at, row?.original?.order_type)}`,
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.created_at, row?.original?.order_type)}`
 		},
 		{
 			index: 8,
@@ -469,44 +397,34 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						</button>
 					</Tooltip>
 				</Box>
-			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+			)
 		},
 		{
 			index: 14,
 			accessorKey: 'download',
 			header: 'Download Link',
 			Cell: ({ row }) => (
-				<div
-					className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
+				// <div
+				// 	className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
+				// >
+				<Link
+					to={'#'}
+					className="!text-[#0066ff]"
+					// type="button"
+					// // href={row?.original?.files}
+					// // target="_blank"
+					// // download
+					// className="tracking-[0.2px] leading-[20px] font-medium"
+					// style={{
+					// 	textDecoration: 'none',
+					// 	color: 'white'
+					// }}
+					// disabled
 				>
-					<button
-						type="button"
-						// href={row?.original?.files}
-						// target="_blank"
-						// download
-						className="tracking-[0.2px] leading-[20px] font-medium"
-						style={{
-							textDecoration: 'none',
-							color: 'white'
-						}}
-						disabled
-					>
-						Download
-					</button>
-				</div>
-			),
-			muiTableHeadCellProps: {
-				align: 'center'
-			},
-			muiTableBodyCellProps: {
-				align: 'center'
-			}
+					Download
+				</Link>
+				// </div>
+			)
 		}
 	];
 
@@ -640,9 +558,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 								enablePagination={false}
 								enableBottomToolbar={false}
 								enableColumnResizing={true}
+								layout={'grid'}
 								defaultColumn={
 									{
-										maxSize: showAllColumns ? 400 : columnWidth,
 										size: showAllColumns ? 200 : columnWidth
 									} //default size is usually 180
 								}
