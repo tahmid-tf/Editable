@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import _ from 'lodash';
@@ -35,7 +35,7 @@ const schema = z
 
 const GeneralSettings = () => {
 	const userInfo = useAppSelector(selectUser);
-	const [resentPassword] = useResetPasswordMutation();
+	const [resentPassword,{isLoading}] = useResetPasswordMutation();
 	const dispatch = useAppDispatch();
 	const defaultValues = {
 		displayName: userInfo?.name,
@@ -66,7 +66,6 @@ const GeneralSettings = () => {
 			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.error }));
 		}
 	}
-
 	return (
 		<div>
 			<div className="px-36">
@@ -189,7 +188,7 @@ const GeneralSettings = () => {
 					/>
 
 					<Button
-						className="mt-24 w-full bg-[#146ef5ef] "
+						className="mt-24 w-full bg-[#146ef5ef] flex justify-center items-center gap-5 "
 						color="primary"
 						variant="contained"
 						sx={{
@@ -199,11 +198,26 @@ const GeneralSettings = () => {
 							}
 						}}
 						aria-label="Register"
-						disabled={_.isEmpty(dirtyFields) || !isValid}
 						type="submit"
 						size="large"
 					>
 						Save Changes
+						{isLoading ? (
+							<Box
+								sx={{
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center'
+								}}
+							>
+								<CircularProgress
+									sx={{ color: 'white' }}
+									size={20}
+								/>
+							</Box>
+						) : (
+							''
+						)}
 					</Button>
 				</form>
 			</div>
