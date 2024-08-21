@@ -11,8 +11,6 @@ import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 
 const schema = z
 	.object({
-		displayName: z.string().nonempty('You must enter your name'),
-		email: z.string().email('You must enter a valid email').nonempty('You must enter an email'),
 		oldPassword: z
 			.string()
 			.nonempty('Please enter your password.')
@@ -21,12 +19,8 @@ const schema = z
 			.string()
 			.nonempty('Please enter your password.')
 			.min(8, 'Password is too short - should be 8 chars minimum.'),
-		passwordConfirm: z.string().nonempty('Password confirmation is required'),
-		// add phone number
-		whatsappNumber: z
-			.string()
-			.nonempty('You must enter your phone number')
-			.regex(/^\+?[1-9]\d{1,14}$/, 'You must enter a valid phone number')
+		passwordConfirm: z.string().nonempty('Password confirmation is required')
+		
 	})
 	.refine((data) => data.newPassword === data.passwordConfirm, {
 		message: 'Passwords must match',
@@ -35,7 +29,7 @@ const schema = z
 
 const GeneralSettings = () => {
 	const userInfo = useAppSelector(selectUser);
-	const [resentPassword,{isLoading}] = useResetPasswordMutation();
+	const [resentPassword, { isLoading }] = useResetPasswordMutation();
 	const dispatch = useAppDispatch();
 	const defaultValues = {
 		displayName: userInfo?.name,
