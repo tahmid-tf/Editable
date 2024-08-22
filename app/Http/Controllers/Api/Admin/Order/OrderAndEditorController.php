@@ -132,7 +132,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Order data not found',
                 'status' => Response::HTTP_NOT_FOUND,
-            ]);
+            ],Response::HTTP_NOT_FOUND);
         }
 
         $validated_list = ['pending','cancelled'];
@@ -141,7 +141,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Invalid order status request',
                 'status' => Response::HTTP_NOT_FOUND,
-            ]);
+            ],Response::HTTP_NOT_FOUND);
         }
 
 //        --------------------- checking validated list ---------------------
@@ -152,7 +152,7 @@ class OrderAndEditorController extends Controller
         return response()->json([
             'data' => 'Order status successfully updated',
             'status' => Response::HTTP_OK,
-        ]);
+        ],Response::HTTP_OK);
 
     }
 
@@ -173,7 +173,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Order data not found',
                 'status' => Response::HTTP_NOT_FOUND,
-            ]);
+            ],Response::HTTP_NOT_FOUND);
         }
 
         $validated_list = ['completed'];
@@ -182,7 +182,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Invalid order status request',
                 'status' => Response::HTTP_NOT_FOUND,
-            ]);
+            ],Response::HTTP_NOT_FOUND);
         }
 
         if (!$uploaded_drive_link) {
@@ -190,7 +190,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Uploaded drive link value cannot be null',
                 'status' => Response::HTTP_NOT_FOUND,
-            ]);
+            ],Response::HTTP_NOT_FOUND);
         }
 
 //        --------------------- checking validations ---------------------
@@ -206,7 +206,7 @@ class OrderAndEditorController extends Controller
             'data' => 'Order status successfully completed',
             'status' => Response::HTTP_OK,
             'order' => $order,
-        ]);
+        ],Response::HTTP_OK);
     }
 
     // --------------------------- Order complete by admin, drive link update ---------------------------
