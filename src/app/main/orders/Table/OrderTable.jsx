@@ -151,7 +151,10 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			id: 'remaining_days',
 			accessorKey: 'order_date',
 			header: (
-				<Tooltip title="Remaining Days" placement='top-start'>
+				<Tooltip
+					title="Remaining Days"
+					placement="top-start"
+				>
 					<span>Remaining Days</span>
 				</Tooltip>
 			),
@@ -244,16 +247,14 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'files',
 			header: 'Files',
 			Cell: () => (
-				
 				<Link
 					to={'#'}
 					className="!text-[#0066ff]"
-					
 				>
 					Download
 				</Link>
 			),
-			size:90
+			size: 90
 		},
 		{
 			accessorKey: 'order_status',
@@ -465,7 +466,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		} else if (editorData?.data?.data && showAllColumns) {
 			setColumns([...initialColumns, ...additionalColumns]);
 		}
-	}, [editorData?.data?.data]);
+	}, [editorData?.data?.data, showAllColumns]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));
