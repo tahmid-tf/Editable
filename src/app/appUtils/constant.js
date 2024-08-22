@@ -16,10 +16,6 @@ export const orderStatusOptions = [
 	{
 		name: 'Cancelled',
 		value: 'cancelled'
-	},
-	{
-		name: 'Preview Edit',
-		value: 'preview'
 	}
 ];
 export const paymentStatusOptions = [

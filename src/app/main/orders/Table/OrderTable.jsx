@@ -12,9 +12,9 @@ import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
-import { useGetOrdersDataQuery } from '../orderApi';
+import { useGetOrdersDataQuery, useUpdateOrderStatusMutation } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
-import { editorOptions, orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import OrderDetailsModal from './OrderDetailsModal';
@@ -26,6 +26,7 @@ import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import OrderStatusComponent from './OrderStatusComponent';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -49,6 +50,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
 	const [assignEditor] = useAssignEditorMutation();
+
 	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
 	// console.log(editorData.data.data);
 	// fetch table data
@@ -77,16 +79,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				page: currentPage,
 				rowPerPage
 			});
-	// order status values
-	const [orderStatusValues, setOrderStatusValues] = useState({});
-	// console.log("osv", orderStatusValues);
 
-	const handleOrderStatusChanges = (rowId, event) => {
-		setOrderStatusValues((prevValues) => ({
-			...prevValues,
-			[rowId]: event.target.value
-		}));
-	};
+	// order status values
+	
 
 	// Function to handle LuEye icon click
 	const handleLuEyeClick = (id) => {
@@ -151,7 +146,10 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			id: 'remaining_days',
 			accessorKey: 'order_date',
 			header: (
-				<Tooltip title="Remaining Days" placement='top-start'>
+				<Tooltip
+					title="Remaining Days"
+					placement="top-start"
+				>
 					<span>Remaining Days</span>
 				</Tooltip>
 			),
@@ -244,62 +242,19 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'files',
 			header: 'Files',
 			Cell: () => (
-				
 				<Link
 					to={'#'}
 					className="!text-[#0066ff]"
-					
 				>
 					Download
 				</Link>
 			),
-			size:90
+			size: 90
 		},
 		{
 			accessorKey: 'order_status',
 			header: 'Status',
-			Cell: ({ row }) => (
-				<Typography
-					className={clsx(
-						'inline-flex items-center px-[8px] py-[2px] rounded-full w-full ',
-						(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
-							'bg-[#FFCC00] text-black',
-						(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
-							'bg-[#039855] text-white ',
-						(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
-							'bg-[#CB1717] text-white',
-						(orderStatusValues[row.id] || row?.original?.order_status) === 'preview' &&
-							'bg-[#CBCBCB] text-Black'
-					)}
-				>
-					<select
-						value={row?.original?.order_status ? row?.original?.order_status : ''}
-						onChange={(event) => handleOrderStatusChanges(row.id, event)}
-						className={clsx(
-							'inline-flex items-center !w-full text-[12px]',
-							(orderStatusValues[row.id] || row?.original?.order_status) === 'pending' &&
-								'bg-[#FFCC00] text-black',
-							(orderStatusValues[row.id] || row?.original?.order_status) === 'completed' &&
-								'bg-[#039855] text-white ',
-							(orderStatusValues[row.id] || row?.original?.order_status) === 'cancelled' &&
-								'bg-[#CB1717] text-white',
-							(orderStatusValues[row.id] || row?.original?.order_status) === 'preview' &&
-								'bg-[#CBCBCB] text-Black'
-						)}
-						defaultChecked={row?.original?.order_status}
-					>
-						{orderStatusOptions?.map((orderData, i) => (
-							<option
-								className="bg-white text-black"
-								value={orderData.value}
-								key={i}
-							>
-								{orderData.name}
-							</option>
-						))}
-					</select>
-				</Typography>
-			)
+			Cell: ({ row }) => <OrderStatusComponent row={row} />
 		}
 	];
 	const additionalColumns = [
@@ -465,7 +420,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		} else if (editorData?.data?.data && showAllColumns) {
 			setColumns([...initialColumns, ...additionalColumns]);
 		}
-	}, [editorData?.data?.data]);
+	}, [editorData?.data?.data, showAllColumns]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));

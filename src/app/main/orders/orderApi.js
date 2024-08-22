@@ -41,6 +41,22 @@ const orderApi = apiService
 			}),
 			getOrderDetails: builder.query({
 				query: (id) => `admin/order_info/${id}`
+			}),
+			updateOrderStatus: builder.mutation({
+				query: (body) => ({
+					url: 'admin/set_order_status',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
+			}),
+			completeOrder: builder.mutation({
+				query: (body) => ({
+					url: 'admin/complete_order',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
 			})
 		})
 	});
@@ -50,5 +66,7 @@ export const {
 	useGetValueForOrderCalculationMutation,
 	usePlaceOrderMutation,
 	useGetStylesMutation,
-	useGetOrderDetailsQuery
+	useGetOrderDetailsQuery,
+	useUpdateOrderStatusMutation,
+	useCompleteOrderMutation
 } = orderApi;
