@@ -43,7 +43,7 @@ class FindingStylesController extends Controller
                 return response()->json([
                     "data" => 'Category not found',
                     "status" => 404,
-                ]);
+                ],404);
             } else {
                 $inputs['category_data'] = $category;
             }
@@ -113,7 +113,7 @@ class FindingStylesController extends Controller
                 return response()->json([
                     "data" => 'Category not found',
                     "status" => 404,
-                ]);
+                ],404);
             } else {
                 $inputs['category_data'] = $category;
             }
@@ -142,7 +142,7 @@ class FindingStylesController extends Controller
             return response()->json([
                 "data" => $inputs,
                 "status" => 200,
-            ]);
+            ],200);
 
 
 //        ------------------------------------------------- Finding style based on category -------------------------------------------------
