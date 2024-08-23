@@ -68,7 +68,7 @@ class FindingStylesController extends Controller
             return response()->json([
                 "data" => $inputs,
                 "status" => 200,
-            ]);
+            ],200);
 
 
 //        ------------------------------------------------- Finding style based on category -------------------------------------------------
