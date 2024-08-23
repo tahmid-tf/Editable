@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
 
 //    -------------------------------------- search style by categories [ Stage 1 ] --------------------------------------
 
-//    Route::post('general_info_and_category', [FindingStylesController::class, 'general_info_and_category_from_user']);
+    Route::post('general_info_and_category', [FindingStylesController::class, 'general_info_and_category_from_user']);
 
 //    -------------------------------------- search style by categories [ Stage 1 ] --------------------------------------
 
