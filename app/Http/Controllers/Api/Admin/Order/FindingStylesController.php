@@ -8,6 +8,7 @@ use App\Models\Api\Admin\Style;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Models\Api\Admin\Order;
 
 class FindingStylesController extends Controller
 {
@@ -49,6 +50,7 @@ class FindingStylesController extends Controller
             }
 
 //        ------------------------------------------------- Category block -------------------------------------------------
+
 
 
 //        ------------------------------------------------- Finding style based on category -------------------------------------------------
@@ -119,6 +121,21 @@ class FindingStylesController extends Controller
             }
 
 //        ------------------------------------------------- Category block -------------------------------------------------
+
+//        ------------------------------------------------- If order name already exists with this account -------------------------------------------------
+
+
+            if (Order::where('order_name', $inputs['order_name'])
+                ->where('users_email', auth()->user()->email)
+                ->exists()) {
+
+                return response()->json([
+                    'message' => 'Order with this name already exists.',
+                    'status' => 409,
+                ], 409); // 409 Conflict HTTP status code
+            }
+
+//        ------------------------------------------------- If order name already exists with this account -------------------------------------------------
 
 //        ------------------------------------------------- Finding style based on category -------------------------------------------------
 
