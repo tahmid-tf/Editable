@@ -10,6 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import useJwtAuth from 'src/app/auth/services/jwt/useJwtAuth';
 import { Typography } from '@mui/material';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { useAppDispatch } from 'app/store/hooks';
 // import { Link } from 'react-router-dom';
 /**
  * Form Validation Schema
@@ -44,6 +47,7 @@ const defaultValues = {
 };
 
 function JwtSignUpForm() {
+	const dispatch = useAppDispatch();
 	const { signUp } = useJwtAuth();
 	const { control, formState, handleSubmit, setError } = useForm({
 		mode: 'onChange',
@@ -52,22 +56,23 @@ function JwtSignUpForm() {
 	});
 	const { isValid, dirtyFields, errors } = formState;
 
-	function onSubmit(formData) {
-		const { displayName, email, password, whatsappNumber } = formData;
-		signUp({
-			name: displayName,
-			password,
-			email,
-			phone: whatsappNumber
-		})
-			.then(() => {
-				// No need to do anything, registered user data will be set at app/auth/AuthRouteProvider
-			})
-			.catch((_errors) => {
-				_errors.forEach(({ message, type }) => {
-					setError(type, { type: 'manual', message });
-				});
+	async function onSubmit(formData) {
+		try {
+			const { displayName, email, password, whatsappNumber } = formData;
+			await signUp({
+				name: displayName,
+				password,
+				email,
+				phone: whatsappNumber
 			});
+
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'Sign up successful' }));
+		} catch (error) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: error?.response?.data?.message }));
+			errors.forEach(({ message, type }) => {
+				setError(type, { type: 'manual', message });
+			});
+		}
 	}
 
 	return (

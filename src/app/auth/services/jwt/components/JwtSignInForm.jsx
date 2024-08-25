@@ -8,6 +8,9 @@ import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import useJwtAuth from '../useJwtAuth';
+import { useAppDispatch } from 'app/store/hooks';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 /**
  * Form Validation Schema
  */
@@ -25,6 +28,7 @@ const defaultValues = {
 };
 
 function JwtSignInForm() {
+	const dispatch = useAppDispatch();
 	const { signIn } = useJwtAuth();
 	const { control, formState, handleSubmit, setValue, setError } = useForm({
 		mode: 'onChange',
@@ -40,12 +44,18 @@ function JwtSignInForm() {
 		setValue('password', '12345678', { shouldDirty: true, shouldValidate: true });
 	}, [setValue]);
 
-	function onSubmit(formData) {
+	async function onSubmit(formData) {
 		const { email, password } = formData;
-		signIn({
-			email,
-			password
-		}).catch((error) => {
+		try {
+			await signIn({
+				email,
+				password
+			});
+
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'Login successful' }));
+		} catch (error) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: error?.response?.data?.message }));
+
 			const errorData = error.response.data;
 			errorData.forEach((err) => {
 				setError(err.type, {
@@ -53,7 +63,7 @@ function JwtSignInForm() {
 					message: err.message
 				});
 			});
-		});
+		}
 	}
 
 	return (

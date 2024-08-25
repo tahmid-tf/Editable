@@ -107,7 +107,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		} catch (error) {
 			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
 		}
-		console.log(editor_id, order_id);
 	};
 
 	// page navigation
@@ -428,7 +427,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		}
 	}, [data]);
 	useEffect(() => {
-		console.log('hi', ref?.current);
 
 		// Function to calculate and set the column width
 		const updateColumnWidth = () => {
@@ -448,7 +446,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			window.removeEventListener('resize', updateColumnWidth);
 		};
 	}, [ref?.current, editorData?.data?.data]);
-	console.log({ columnWidth });
 
 	return (
 		<div

@@ -102,3 +102,18 @@ export const SnackbarTypeEnum = {
 	WARNING: 'waring',
 	DELETE: 'delete'
 };
+
+export const orderTypeInfo = [
+	{
+		type: 'standard',
+		title: 'Standard Delivery',
+		subTitles: [
+			{
+				text: 'Estimated Delivery within 15 Days',
+				Icon: ''
+			}
+		],
+		description:
+			'I would like something edited as per Editable style and guidelines. I do not need it to follow my own style. I can choose from their existing presets.'
+	}
+];

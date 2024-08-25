@@ -148,16 +148,15 @@ function JwtAuthProvider(props) {
 	const handleRequest = async (url, data, handleSuccess, handleFailure) => {
 		try {
 			const response = await axios.post(url, data);
-			console.log({ response });
 
 			const userData = response?.data?.user;
 			const accessToken = response?.data?.token;
 			handleSuccess(userData, accessToken);
-			return userData;
+			return Promise.resolve(userData);
 		} catch (error) {
 			const axiosError = error;
 			handleFailure(axiosError);
-			return axiosError;
+			return Promise.reject(axiosError);
 		}
 	};
 	// Refactor signIn function
