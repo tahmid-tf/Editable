@@ -134,7 +134,7 @@ const Transactions = () => {
 							page={currentPage}
 							setPage={setCurrentPage}
 							rowPerPage={rowPerPage}
-						/> 
+						/>
 					)}
 				/>
 
