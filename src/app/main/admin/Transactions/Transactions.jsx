@@ -5,6 +5,7 @@ import { MenuItem, Pagination, Select } from '@mui/material';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import { format } from 'date-fns';
 import TransactionTableHeader from './TransactionTableHeader';
+import { formatDateAndId } from 'src/app/appUtils/appUtils';
 
 const Transactions = () => {
 	// filtering state
@@ -31,29 +32,25 @@ const Transactions = () => {
 			id: 'date_formatted',
 			accessorKey: 'created_at',
 			header: 'Date',
-			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
-			
+			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y')
 		},
 		{
 			id: 'transaction_id',
 			accessorKey: 'transaction_id',
 			header: 'Transaction ID',
-			Cell: ({ row }) => `${row?.original?.transaction_id}`,
-			
+			Cell: ({ row }) => `${row?.original?.transaction_id}`
 		},
 		{
 			id: 'order_id',
 			accessorKey: 'order_id',
 			header: 'Order ID',
-			Cell: ({ row }) => `${row?.original?.order_id}`,
-			
+			Cell: ({ row }) => `${formatDateAndId(row?.original?.created_at, row?.original?.order_id)}`
 		},
 		{
 			id: 'users_email',
 			accessorKey: 'users_email',
 			header: 'Customer Email',
-			Cell: ({ row }) => `${row?.original?.users_email}`,
-			
+			Cell: ({ row }) => `${row?.original?.users_email}`
 		},
 		{
 			id: 'order_status',
@@ -63,8 +60,7 @@ const Transactions = () => {
 				<div className="inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black capitalize">
 					<div className="tracking-[0.2px] leading-[20px] font-medium">{row?.original?.order_status}</div>
 				</div>
-			),
-			
+			)
 		},
 		{
 			id: 'payment_status',
@@ -74,15 +70,13 @@ const Transactions = () => {
 				<div className="inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black capitalize">
 					<div className="tracking-[0.2px] leading-[20px] font-medium">{row?.original?.payment_status}</div>
 				</div>
-			),
-			
+			)
 		},
 		{
 			id: 'amount',
 			accessorKey: 'amount',
 			header: 'Amount',
-			Cell: ({ row }) => `${row?.original?.amount}`,
-			
+			Cell: ({ row }) => `${row?.original?.amount}`
 		}
 	];
 
@@ -114,7 +108,6 @@ const Transactions = () => {
 					enableBottomToolbar={false}
 					enableColumnResizing={false}
 					enableRowActions={false}
-					
 					muiTableBodyProps={{
 						sx: {
 							//stripe the rows, make odd rows a darker color
