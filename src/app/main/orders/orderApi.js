@@ -24,6 +24,9 @@ const orderApi = apiService
 			getValueForOrderCalculation: builder.mutation({
 				query: (body) => ({ url: 'admin/selected_style_with_amount_calculation', method: 'POST', body })
 			}),
+			getValueForOrderCalculationForUser: builder.mutation({
+				query: (body) => ({ url: 'user/selected_style_with_amount_calculation', method: 'POST', body })
+			}),
 			placeOrder: builder.mutation({
 				query: (body) => ({
 					url: 'admin/order_store',
@@ -71,6 +74,7 @@ const orderApi = apiService
 export const {
 	useGetOrdersDataQuery,
 	useGetValueForOrderCalculationMutation,
+	useGetValueForOrderCalculationForUserMutation,
 	usePlaceOrderMutation,
 	useGetStylesMutation,
 	useGetStylesForUserMutation,
