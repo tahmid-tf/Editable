@@ -39,6 +39,13 @@ const orderApi = apiService
 					body
 				})
 			}),
+			getStylesForUser: builder.mutation({
+				query: (body) => ({
+					url: 'user/general_info_and_category',
+					method: 'POST',
+					body
+				})
+			}),
 			getOrderDetails: builder.query({
 				query: (id) => `admin/order_info/${id}`
 			}),
@@ -66,6 +73,7 @@ export const {
 	useGetValueForOrderCalculationMutation,
 	usePlaceOrderMutation,
 	useGetStylesMutation,
+	useGetStylesForUserMutation,
 	useGetOrderDetailsQuery,
 	useUpdateOrderStatusMutation,
 	useCompleteOrderMutation

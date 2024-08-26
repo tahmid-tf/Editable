@@ -8,6 +8,11 @@ const categoryApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints
 				`admin/category?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${search ? `&&name=${search}` : ''}`,
 			providesTags: ['allCategories']
 		}),
+		getAllCategoriesForUser: builder.query({
+			query: ({ search, page, rowPerPage }) =>
+				`user/category?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${search ? `&&name=${search}` : ''}`,
+			providesTags: ['allCategories']
+		}),
 		createCategory: builder.mutation({
 			query: (body) => ({
 				url: 'admin/category_store',
@@ -37,6 +42,7 @@ const categoryApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints
 export const {
 	useCreateCategoryMutation,
 	useGetAllCategoriesQuery,
+	useGetAllCategoriesForUserQuery,
 	useUpdateCategoryMutation,
 	useDeleteCategoryMutation
 } = categoryApi;

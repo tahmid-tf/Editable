@@ -1,6 +1,9 @@
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 
-const UserOrderCard = ({ data }) => {
+const UserOrderCard = ({ data, setOrderType }) => {
+	const handleProceedClick = () => {
+		setOrderType(data?.type);
+	};
 	return (
 		<Card
 			sx={{
@@ -57,6 +60,7 @@ const UserOrderCard = ({ data }) => {
 					}}
 					aria-label="Register"
 					size="large"
+					onClick={handleProceedClick}
 				>
 					Proceed
 				</Button>

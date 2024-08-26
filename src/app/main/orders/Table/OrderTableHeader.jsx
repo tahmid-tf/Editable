@@ -129,6 +129,8 @@ const OrderTableHeader = ({
 				<UserOrderModal
 					handleNewOrderClose={handleNewOrderClose}
 					newUserOrderOpen={newUserOrderOpen}
+					setAllStyleData={setAllStyleData}
+					onOrderSubmit={onOrderSubmit}
 				/>
 			)}
 		</div>
