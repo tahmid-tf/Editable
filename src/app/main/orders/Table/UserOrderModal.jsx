@@ -1,15 +1,15 @@
-import { Modal } from '@mui/material';
+import { Grid, Modal } from '@mui/material';
 import { Box } from '@mui/system';
 import UserOrderCard from './UserOrderCard';
+import { orderTypeInfo } from 'src/app/appUtils/constant';
 const style = {
 	position: 'absolute',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: '90%',
-	height: '90%',
+	width: '90em',
+	// height: '90%',
 	bgcolor: 'background.paper',
-	border: '2px solid #000',
 	boxShadow: 24,
 	p: 4
 };
@@ -23,10 +23,24 @@ const UserOrderModal = ({ newUserOrderOpen, handleNewOrderClose }) => {
 			aria-describedby="modal-modal-description"
 			className="flex justify-center items-center"
 		>
-			<Box style={style} display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
-				<UserOrderCard></UserOrderCard>
-				<UserOrderCard></UserOrderCard>
-				<UserOrderCard></UserOrderCard>
+			<Box style={style}>
+				<Grid
+					spacing={1}
+					container
+				>
+					{orderTypeInfo?.map((data, i) => (
+						<Grid
+							key={i}
+							item
+							xs={4}
+							display={'flex'}
+							justifyContent={'center'}
+							alignItems={'center'}
+						>
+							<UserOrderCard data={data} />
+						</Grid>
+					))}
+				</Grid>
 			</Box>
 		</Modal>
 	);

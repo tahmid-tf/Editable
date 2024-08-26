@@ -1,4 +1,9 @@
 import dayjs from 'dayjs';
+import standard from '../../../public/assets/images/standard.svg';
+import express from '../../../public/assets/images/express.svg';
+import custom from '../../../public/assets/images/custom.svg';
+import calanderIcon from '../../../public/assets/icons/calanderIcon.svg';
+import earningIcon from '../../../public/assets/icons/EarningsIcon.svg';
 
 export const orderStatusOptions = [
 	{
@@ -107,13 +112,45 @@ export const orderTypeInfo = [
 	{
 		type: 'standard',
 		title: 'Standard Delivery',
+		image: standard,
 		subTitles: [
 			{
 				text: 'Estimated Delivery within 15 Days',
-				Icon: ''
+				icon: calanderIcon
 			}
 		],
 		description:
 			'I would like something edited as per Editable style and guidelines. I do not need it to follow my own style. I can choose from their existing presets.'
+	},
+	{
+		type: 'express',
+		title: 'Express',
+		image: express,
+		subTitles: [
+			{
+				text: 'Estimated Delivery within 07 Days',
+				icon: calanderIcon
+			},
+			{
+				text: '30% surplus on Standard Price',
+				icon: earningIcon
+			}
+		],
+		description:
+			'I would like something edited as per Editable style and guidelines. I do not need it to follow my own style. I can choose from their existing presets.'
+	},
+
+	{
+		type: 'custom',
+		title: 'Custom',
+		image: custom,
+		subTitles: [
+			{
+				text: 'Delivery time based on editing needs',
+				icon: calanderIcon
+			}
+		],
+		description:
+			'I am a photographer, or a brand, that has recurring photo editing needs, that I would like completed according to my style.'
 	}
 ];
