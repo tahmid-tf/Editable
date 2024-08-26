@@ -13,10 +13,16 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
         ]);
     });
 
+
+//    ----------------------------------------- categories for users when ordering -----------------------------------------
+
+    Route::get('category', [\App\Http\Controllers\Api\Admin\CategoryController::class,'index']);
+
+//    ----------------------------------------- categories for users when ordering -----------------------------------------
+
 //    -------------------------------------- General Settings - Change Password --------------------------------------
 
     Route::post('change_password', [GeneralSettingsController::class, 'changePassword']);
-
 
 //    -------------------------------------- General Settings - Change Password --------------------------------------
 
@@ -31,6 +37,12 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
     Route::post('general_info_and_category', [FindingStylesController::class, 'general_info_and_category_from_user']);
 
 //    -------------------------------------- search style by categories [ Stage 1 ] --------------------------------------
+
+//    -------------------------------------- storing order with payment gateway --------------------------------------
+
+    Route::post('order_store', [\App\Http\Controllers\Api\User\Order\OrderController::class, 'store']);
+
+//    -------------------------------------- storing order with payment gateway --------------------------------------
 
 
 });

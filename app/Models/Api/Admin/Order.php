@@ -34,4 +34,29 @@ class Order extends Model
 
 //    ------------------------------------------ Calender timestamp calculation -----------------------------------------
 
+//    ------------------------------------------ Order ID creation -----------------------------------------
+
+    public static function order_id_creation()
+    {
+        $day = now()->format('d');
+        $month = strtoupper(now()->format('M')); // Get the first two letters of the month in uppercase
+        $year = now()->format('y'); // Get the last two digits of the year
+
+        // Get the next order ID (assuming you want the next auto-incremented ID)
+
+        $lastOrder = Order::latest('id')->first();
+        $nextId = $lastOrder ? $lastOrder->id + 1 : 1;
+
+        // Pad the order ID to be at least 3 digits
+        $paddedId = str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+        // Combine all components to form the custom order ID
+        $customOrderId = $day . substr($month, 0, 2) . $year . $paddedId;
+
+        return $customOrderId;
+    }
+
+
+//    ------------------------------------------ Order ID creation -----------------------------------------
+
 }
