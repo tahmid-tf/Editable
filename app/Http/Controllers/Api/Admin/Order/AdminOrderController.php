@@ -139,8 +139,8 @@ class AdminOrderController extends Controller
 
 //            ----------------------------- order id creation and initiating order_id -----------------------------
 
-//            $order['order_id'] = Order::order_id_creation();
-//            $order->save();
+            $order['order_id'] = Order::order_id_creation();
+            $order->save();
 
 //            ----------------------------- order id creation and initiating order_id -----------------------------
 

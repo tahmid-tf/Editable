@@ -83,7 +83,7 @@ class OrderController extends Controller
             $inputs['order_status'] = "pending";
 
             //preview edits
-//            $inputs['preview_edits'] = "no";
+            $inputs['preview_edits'] = "no";
             $inputs['preview_edit_status'] = "no";
 
 
