@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\Order\FindingStylesController;
+use App\Http\Controllers\Api\Admin\Order\SelectedStyleWithAmountCalculationController;
 use App\Http\Controllers\Api\User\TableSearch\UserTableDataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\GeneralSettingsController;
@@ -14,11 +15,12 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
     });
 
 
-//    ----------------------------------------- categories for users when ordering -----------------------------------------
+//    ----------------------------------------- categories for users when ordering and selected style with amount calculation -----------------------------------------
 
     Route::get('category', [\App\Http\Controllers\Api\Admin\CategoryController::class,'index']);
+    Route::post('selected_style_with_amount_calculation', [SelectedStyleWithAmountCalculationController::class, 'amount']);
 
-//    ----------------------------------------- categories for users when ordering -----------------------------------------
+//    ----------------------------------------- categories for users when ordering and selected style with amount calculation -----------------------------------------
 
 //    -------------------------------------- General Settings - Change Password --------------------------------------
 

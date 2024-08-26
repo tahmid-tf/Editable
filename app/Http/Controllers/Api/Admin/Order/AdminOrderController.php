@@ -136,6 +136,14 @@ class AdminOrderController extends Controller
 
             $order = Order::create($inputs);
 
+
+//            ----------------------------- order id creation and initiating order_id -----------------------------
+
+//            $order['order_id'] = Order::order_id_creation();
+//            $order->save();
+
+//            ----------------------------- order id creation and initiating order_id -----------------------------
+
             return response()->json([
                 'data' => $order,
                 'message' => 'Order created successfully.',

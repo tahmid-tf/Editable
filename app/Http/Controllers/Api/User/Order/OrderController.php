@@ -59,16 +59,15 @@ class OrderController extends Controller
 
             //        ---------- If order name already exists with this account -----------
 
+            if (Order::where('order_name', $inputs['order_name'])
+                ->where('users_email', auth()->user()->email)
+                ->exists()) {
 
-//            if (Order::where('order_name', $inputs['order_name'])
-//                ->where('users_email', auth()->user()->email)
-//                ->exists()) {
-//
-//                return response()->json([
-//                    'message' => 'Order with this name already exists.',
-//                    'status' => 409,
-//                ], 409); // 409 Conflict HTTP status code
-//            }
+                return response()->json([
+                    'message' => 'Order with this name already exists.',
+                    'status' => 409,
+                ], 409); // 409 Conflict HTTP status code
+            }
 
             //        ---------- If order name already exists with this account -----------
 
@@ -124,12 +123,10 @@ class OrderController extends Controller
 
 //            ----------------------------- order id creation and initiating order_id -----------------------------
 
-//            $order['order_id'] = Order::order_id_creation();;
-//            $order->save();
+            $order['order_id'] = Order::order_id_creation();
+            $order->save();
 
 //            ----------------------------- order id creation and initiating order_id -----------------------------
-
-
 
 
             return response()->json([

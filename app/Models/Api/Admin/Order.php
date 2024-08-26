@@ -45,7 +45,7 @@ class Order extends Model
         // Get the next order ID (assuming you want the next auto-incremented ID)
 
         $lastOrder = Order::latest('id')->first();
-        $nextId = $lastOrder ? $lastOrder->id + 1 : 1;
+        $nextId = $lastOrder ? $lastOrder->id : 1;
 
         // Pad the order ID to be at least 3 digits
         $paddedId = str_pad($nextId, 3, '0', STR_PAD_LEFT);
