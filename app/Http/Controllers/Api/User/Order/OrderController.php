@@ -81,7 +81,9 @@ class OrderController extends Controller
             $inputs['users_name'] = auth()->user()->name;
             $inputs['payment_status'] = "successful";
             $inputs['order_status'] = "pending";
-            $inputs['preview_edits'] = "no";
+
+            //preview edits
+//            $inputs['preview_edits'] = "no";
             $inputs['preview_edit_status'] = "no";
 
 
