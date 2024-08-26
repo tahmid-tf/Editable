@@ -20,7 +20,6 @@ class OrderController extends Controller
 
                 //payment gateway block
                 'amount' => 'required|string',
-
                 'number' => 'required|integer',
                 'exp_month' => 'required|string',
                 'exp_year' => 'required|string',
@@ -31,10 +30,9 @@ class OrderController extends Controller
                 'order_type' => 'required|in:standard,express,custom',
                 'order_name' => 'required|string',
                 'category_id' => 'required|integer',
-//                'order_date' => 'nullable',
-//                'order_id' => 'nullable|string',
 
-                'file_uploaded_by_user' => 'nullable|string',
+
+                'file_uploaded_by_user' => 'required|string',
 
 
                 'styles_array' => 'required|json',
@@ -45,9 +43,7 @@ class OrderController extends Controller
                 'skin_retouching' => 'nullable|in:yes,no',
                 'skin_retouching_type' => 'nullable|string',
                 'additional_info' => 'nullable|in:yes,no',
-                'preview_edits' => 'nullable|string',
-
-                'preview_edit_status' => 'nullable|in:no,user_review_pending,accepted,rejected,pending',
+                'preview_edits' => 'nullable|in:yes,no',
 
             ]);
 
@@ -87,8 +83,6 @@ class OrderController extends Controller
             $inputs['order_status'] = "pending";
             $inputs['preview_edits'] = "no";
             $inputs['preview_edit_status'] = "no";
-
-
 
 
             //storing order info
