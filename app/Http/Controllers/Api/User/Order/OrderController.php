@@ -19,7 +19,7 @@ class OrderController extends Controller
             $validator = Validator::make($request->all(), [
 
                 //payment gateway block
-                'amount' => 'required|string',
+                'amount' => 'required|integer',
                 'number' => 'required|integer',
                 'exp_month' => 'required|string',
                 'exp_year' => 'required|string',
