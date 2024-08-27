@@ -107,7 +107,7 @@ class OrderController extends Controller
 
 
                 $resp1 = $stripe->charges->create([
-                    'amount' => $inputs['amount'],
+                    'amount' => intval($request['amount']) * 100,
                     'currency' => 'usd',
                     'source' => 'tok_visa',
                 ]);
