@@ -70,7 +70,7 @@ class OrderController extends Controller
 
 //        ------------------------------------------------- validation block -------------------------------------------------
 
-//        ----------------------------------------------------------------------------- code block -------------------------------------------------------------------------
+//        -------------------------------------------------------------------------------------- code block ------------------------------------------------------------------------------------------
 
 
             //without preview edits
@@ -82,56 +82,102 @@ class OrderController extends Controller
             $inputs['payment_status'] = "successful";
             $inputs['order_status'] = "pending";
 
-            //preview edits
+            //without preview edits
+
             $inputs['preview_edits'] = "no";
             $inputs['preview_edit_status'] = "no";
 
 
-            //storing order info
+            // stripe payment gateway block
 
-            $order = Order::create([
-                'user_id' => $inputs['user_id'],
-                'users_email' => $inputs['users_email'],
-                'users_phone' => $inputs['users_phone'],
-                'users_name' => $inputs['users_name'],
-                'payment_status' => $inputs['payment_status'],
-                'order_status' => $inputs['order_status'],
-//                'order_id' => $inputs['order_id'],
+            try {
 
-                'amount' => $inputs['amount'],
-                'order_type' => $inputs['order_type'],
-                'order_name' => $inputs['order_name'],
-                'category_id' => $inputs['category_id'],
-                'file_uploaded_by_user' => $inputs['file_uploaded_by_user'] ?? null,
+                $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
-                'styles_array' => $inputs['styles_array'],
-                'number_of_images_provided' => $inputs['number_of_images_provided'],
-                'culling' => $inputs['culling'] ?? null,
-                'images_culled_down_to' => $inputs['images_culled_down_to'] ?? null,
-                'select_image_culling_type' => $inputs['select_image_culling_type'] ?? null,
-                'skin_retouching' => $inputs['skin_retouching'] ?? null,
-                'skin_retouching_type' => $inputs['skin_retouching_type'] ?? null,
-                'additional_info' => $inputs['additional_info'] ?? null,
+//                $res = $stripe->tokens->create([
+//                    'card' => [
+//                        'number' => $inputs['number'],
+//                        'exp_month' => $inputs['exp_month'],
+//                        'exp_year' => $inputs['exp_year'],
+//                        'cvc' => $inputs['cvc'],
+//                    ],
+//                ]);
 
-                'preview_edits' => $inputs['preview_edits'],
-                'preview_edit_status' => $inputs['preview_edit_status'],
-            ]);
-
-//            ----------------------------- order id creation and initiating order_id -----------------------------
-
-            $order['order_id'] = Order::order_id_creation();
-            $order->save();
-
-//            ----------------------------- order id creation and initiating order_id -----------------------------
+                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
 
-            return response()->json([
-                'data' => $order,
-                'message' => 'Order created successfully.',
-                'status' => 200
-            ], 200);
+                $resp1 = $stripe->charges->create([
+                    'amount' => $inputs['amount'],
+                    'currency' => 'usd',
+                    'source' => 'tok_visa',
+                ]);
 
-//        ----------------------------------------------------------------------------- code block -------------------------------------------------------------------------
+
+                if ($resp1->status == "succeeded") {
+
+//            ----------------------------- storing order block if payment is successful -----------------------------
+
+                    $order = Order::create([
+                        'user_id' => $inputs['user_id'],
+                        'users_email' => $inputs['users_email'],
+                        'users_phone' => $inputs['users_phone'],
+                        'users_name' => $inputs['users_name'],
+                        'payment_status' => $inputs['payment_status'],
+                        'order_status' => $inputs['order_status'],
+
+                        'amount' => $inputs['amount'],
+                        'order_type' => $inputs['order_type'],
+                        'order_name' => $inputs['order_name'],
+                        'category_id' => $inputs['category_id'],
+                        'file_uploaded_by_user' => $inputs['file_uploaded_by_user'] ?? null,
+
+                        'styles_array' => $inputs['styles_array'],
+                        'number_of_images_provided' => $inputs['number_of_images_provided'],
+                        'culling' => $inputs['culling'] ?? null,
+                        'images_culled_down_to' => $inputs['images_culled_down_to'] ?? null,
+                        'select_image_culling_type' => $inputs['select_image_culling_type'] ?? null,
+                        'skin_retouching' => $inputs['skin_retouching'] ?? null,
+                        'skin_retouching_type' => $inputs['skin_retouching_type'] ?? null,
+                        'additional_info' => $inputs['additional_info'] ?? null,
+
+                        'preview_edits' => $inputs['preview_edits'],
+                        'preview_edit_status' => $inputs['preview_edit_status'],
+                    ]);
+
+//            ------------- order id creation and initiating order_id ----------------
+
+                    $order['order_id'] = Order::order_id_creation();
+                    $order->save();
+
+//            ------------- order id creation and initiating order_id ----------------
+
+                    return response()->json([
+                        'data' => $order,
+                        'message' => 'Order created successfully.',
+                        'status' => 200
+                    ], 200);
+
+//            ----------------------------- storing order block if payment is successful -----------------------------
+
+
+                } else {
+                    return response()->json([
+                        'response' => $resp1->status, // if failed
+                        'status' => 400, // Bad request or any other appropriate status code
+                        'message' => 'Payment failed. Please try again.', // Custom error message
+                    ], 400);
+                }
+
+
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'response' => 'error',
+                    'message' => $ex->getMessage(),
+                ], 500);
+            }
+
+
+//        -------------------------------------------------------------------------------------- code block ------------------------------------------------------------------------------------------
 
 //        ------------------------------------------------- validation block -------------------------------------------------
 
