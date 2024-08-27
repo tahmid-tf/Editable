@@ -81,7 +81,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			});
 
 	// order status values
-	
 
 	// Function to handle LuEye icon click
 	const handleLuEyeClick = (id) => {
@@ -137,7 +136,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		{
 			accessorKey: 'id',
 			header: 'ID',
-			Cell: ({ row }) => formatDateAndId(row.original.created_at, row.original.id),
+			Cell: ({ row }) => row.original.order_id,
 
 			size: showAllColumns ? null : 90
 		},
@@ -427,7 +426,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		}
 	}, [data]);
 	useEffect(() => {
-
 		// Function to calculate and set the column width
 		const updateColumnWidth = () => {
 			if (ref.current) {
