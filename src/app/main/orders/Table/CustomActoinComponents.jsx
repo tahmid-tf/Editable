@@ -7,9 +7,8 @@ const CustomActionComponent = (props) => {
 	const { className, setDateValue, dateValue, setOpenDate, setStartDate, setEndDate, setPage } = props;
 
 	const handleApplyClick = () => {
-		console.log(dateValue);
 		setStartDate(dateValue[0] ? getStartOfDayISO(dateValue[0]) : '');
-		setEndDate(dateValue[1] !== null ? getEndOfDayISO(dateValue[1]) : '');
+		setEndDate(dateValue[1] !== null ? getEndOfDayISO(dateValue[1]) : getEndOfDayISO(dateValue[0]));
 		setOpenDate(false);
 		setPage(1);
 	};
