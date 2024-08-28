@@ -8,7 +8,11 @@ import Tooltip from '@mui/material/Tooltip';
 import StyleCard from './StyleCards/StyleCard';
 import PriceCard from './StyleCards/PriceCard';
 import NewOrderNav from './NewOrderNav';
-import { useGetValueForOrderCalculationMutation, usePlaceOrderMutation } from '../orderApi';
+import {
+	useGetValueForOrderCalculationForUserMutation,
+	useGetValueForOrderCalculationMutation,
+	usePlaceOrderMutation
+} from '../orderApi';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { selectOrderState } from '../orderSlice';
@@ -16,6 +20,7 @@ import { getMaxThreshold } from 'src/app/appUtils/appUtils';
 import dayjs from 'dayjs';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -66,13 +71,17 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 	const orderState = useAppSelector(selectOrderState);
 	const dispatch = useAppDispatch();
 
+	const userRole = useAppSelector(selectUserRole);
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
 	const [showSkinRetouchingInputs, setshowSkinRetouchingInputsInputs] = useState(false);
 	const [orderCalcValue, setOrderCalcValue] = useState({});
 	const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
 	const [orderType, setOrderType] = useState(orderState.order_type);
 
-	const [getValueForOrderCalculation, { data }] = useGetValueForOrderCalculationMutation();
+	const [getValueForOrderCalculation, { data }] =
+		userRole === 'admin'
+			? useGetValueForOrderCalculationMutation()
+			: useGetValueForOrderCalculationForUserMutation();
 
 	const [placeOrder, { isLoading }] = usePlaceOrderMutation();
 

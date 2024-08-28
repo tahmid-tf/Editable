@@ -2,6 +2,9 @@ import { Checkbox, Modal, Typography } from '@mui/material';
 import { useState } from 'react';
 import GeneralinfoForm from '../newOrder/GeneralinfoForm';
 import TableFilterComponent from 'app/shared-components/data-table/TableFilterComponent';
+import { useSelector } from 'react-redux';
+import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import UserOrderModal from './UserOrderModal';
 
 const OrderTableHeader = ({
 	search,
@@ -24,13 +27,15 @@ const OrderTableHeader = ({
 	setPage,
 	setAllStyleData
 }) => {
+	const userRole = useSelector(selectUserRole);
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
+	const [newUserOrderOpen, setNewUserOrderOpen] = useState(false);
 
 	const handleNewOrderOpen = () => {
-		setNewOrderOpen(true);
+		userRole === 'admin' ? setNewOrderOpen(true) : setNewUserOrderOpen(true);
 	};
 	const handleNewOrderClose = () => {
-		setNewOrderOpen(false);
+		userRole === 'admin' ? setNewOrderOpen(false) : setNewUserOrderOpen(false);
 	};
 
 	const handleClick = () => {
@@ -102,23 +107,32 @@ const OrderTableHeader = ({
 					</Typography>
 				</div>
 			</div>
-			<Modal
-				open={newOrderOpen}
-				onClose={handleNewOrderClose}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description"
-				className="flex justify-center items-center"
-			>
-				<div className="bg-white flex justify-center items-center rounded-[4px]">
-					{/* <h1>Modal</h1> */}
-					<GeneralinfoForm
-						onClose={handleNewOrderClose}
-						onOrderSubmit={onOrderSubmit}
-						setAllStyleData={setAllStyleData}
-						// successAlert={successAlert}
-					/>
-				</div>
-			</Modal>
+			{userRole === 'admin' ? (
+				<Modal
+					open={newOrderOpen}
+					onClose={handleNewOrderClose}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+					className="flex justify-center items-center"
+				>
+					<div className="bg-white flex justify-center items-center rounded-[4px]">
+						{/* <h1>Modal</h1> */}
+						<GeneralinfoForm
+							onClose={handleNewOrderClose}
+							onOrderSubmit={onOrderSubmit}
+							setAllStyleData={setAllStyleData}
+							// successAlert={successAlert}
+						/>
+					</div>
+				</Modal>
+			) : (
+				<UserOrderModal
+					handleNewOrderClose={handleNewOrderClose}
+					newUserOrderOpen={newUserOrderOpen}
+					setAllStyleData={setAllStyleData}
+					onOrderSubmit={onOrderSubmit}
+				/>
+			)}
 		</div>
 	);
 };

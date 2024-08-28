@@ -1,15 +1,11 @@
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
-import AvatarGroup from '@mui/material/AvatarGroup';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import { useState } from 'react';
 import _ from '../../../@lodash/@lodash';
-import JwtSignUpTab from './tabs/JwSignUpTab';
 import signupImg from '../../../../src/assets/images/auth/auth.png';
+import JwtSignUpForm from 'src/app/auth/services/jwt/components/JwtSignUpForm';
 
 const tabs = [
 	{
@@ -53,7 +49,7 @@ function SignUpPage() {
 						Signup to Editable
 					</Typography>
 
-					<JwtSignUpTab />
+					<JwtSignUpForm />
 
 					<div className="mt-20 flex justify-center font-medium">
 						<Typography>Already have an account?</Typography>
