@@ -167,7 +167,7 @@ class AdminOrderController extends Controller
         $query = Order::query();
 
         $searchParams = [
-            'email' => request('email'), // updated to dynamic search parameters, name is still email cause, no need to change any code in frontend side
+            'email' => request('email'), // updated to dynamic search parameters, name is still email cause, no need to change any code from frontend side
             'order_status' => request('order_status'),
             'payment_status' => request('payment_status'),
             'editor' => request('editor'),
