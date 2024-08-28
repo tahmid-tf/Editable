@@ -27,9 +27,18 @@ class TransactionSearchController extends Controller
             'end_date' => request('end_date'),
         ];
 
-        if ($searchParams['email']) {
-            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
-        }
+//        -------------------------- dynamic column mapping --------------------------
+
+        $query->where(function ($q) use ($searchParams) {
+            $q->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%')
+                ->orWhere('order_id', 'LIKE', '%' . $searchParams['email'] . '%');
+        });
+
+//        -------------------------- dynamic column mapping --------------------------
+
+//        if ($searchParams['email']) {
+//            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
+//        }
 
         if ($searchParams['order_status']) {
             $query->where('order_status', $searchParams['order_status']);
@@ -53,7 +62,7 @@ class TransactionSearchController extends Controller
 //        ---------------------------- between start data and end date modification ----------------------------
 
         $paginate = request('paginate', 10);
-        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status','amount', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
+        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status', 'amount', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
 
 //        ----------------------- Transaction id and Order id -----------------------
 
