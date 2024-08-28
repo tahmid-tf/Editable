@@ -34,8 +34,22 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
         $query = Order::query();
 
         if (!empty($this->searchParams['email'])) {
-            $query->where('users_email', 'LIKE', '%' . $this->searchParams['email'] . '%');
+//            $query->where('users_email', 'LIKE', '%' . $this->searchParams['email'] . '%');
+
+//        -------------------------- dynamic column mapping --------------------------
+
+            $searchParams = $this->searchParams;
+
+            $query->where(function ($q) use ($searchParams) {
+                $q->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%')
+                    ->orWhere('order_id', 'LIKE', '%' . $searchParams['email'] . '%');
+            });
+
+//        -------------------------- dynamic column mapping --------------------------
+
         }
+
+
 
         if (!empty($this->searchParams['order_status'])) {
             $query->where('order_status', $this->searchParams['order_status']);
@@ -62,7 +76,6 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
             'Order Status',
             'Payment Status',
             'Order Date',
-            // Add other headings as needed
         ];
     }
 
