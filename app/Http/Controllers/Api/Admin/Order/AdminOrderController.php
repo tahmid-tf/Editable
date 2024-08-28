@@ -167,7 +167,7 @@ class AdminOrderController extends Controller
         $query = Order::query();
 
         $searchParams = [
-            'email' => request('email'),
+            'email' => request('email'), // updated to dynamic search parameters, name is still email cause, no need to change any code in frontend side
             'order_status' => request('order_status'),
             'payment_status' => request('payment_status'),
             'editor' => request('editor'),
@@ -175,9 +175,19 @@ class AdminOrderController extends Controller
             'end_date' => request('end_date'),
         ];
 
-        if ($searchParams['email']) {
-            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
-        }
+//        -------------------------- dynamic column mapping --------------------------
+
+        $query->where(function ($q) use ($searchParams) {
+            $q->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%')
+                ->orWhere('order_id', 'LIKE', '%' . $searchParams['email'] . '%')
+                ->orWhere('order_name', 'LIKE', '%' . $searchParams['email'] . '%');
+        });
+
+//        -------------------------- dynamic column mapping --------------------------
+
+//        if ($searchParams['email']) {
+//            $query->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%');
+//        }
 
         if ($searchParams['order_status']) {
             $query->where('order_status', $searchParams['order_status']);
