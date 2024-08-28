@@ -27,6 +27,7 @@ import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackba
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import OrderStatusComponent from './OrderStatusComponent';
+import OrderEditModal from './OrderEditModal';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -34,6 +35,8 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const dispatch = useAppDispatch();
 	const ref = useRef();
 	const [columnWidth, setColumnWidth] = useState();
+
+	const [selectedData, setSelectedData] = useState(null);
 	// filtering state
 	const [orderStatusValue, setOrderStatusValue] = useState('');
 	const [paymentStatusValue, setPaymentStatusValue] = useState('');
@@ -89,8 +92,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	};
 
 	// Function to handle FiEdit icon click
-	const handleFiEditClick = () => {
-		console.log('FiEdit clicked');
+	const handleFiEditClick = (data) => {
+		setSelectedData(data);
+	};
+	const closedEditModal = () => {
+		setSelectedData(null);
 	};
 
 	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
@@ -297,7 +303,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		{
 			index: 6,
 			accessorKey: 'users_phone',
-			header: 'User Email',
+			header: 'User Phone',
 			Cell: ({ row }) => row?.original?.users_phone
 		},
 		{
@@ -532,7 +538,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 										</button>
 										<button
 											type="button"
-											onClick={handleFiEditClick}
+											onClick={() => handleFiEditClick(row?.original)}
 										>
 											<FiEdit size={18} />
 										</button>
@@ -592,6 +598,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						handleOrderDetailsClose={handleOrderDetailsClose}
 						selectedId={selectedId}
 					/>
+					<OrderEditModal selectedData={selectedData} closedEditModal={closedEditModal} />
 				</>
 			)}
 		</div>
