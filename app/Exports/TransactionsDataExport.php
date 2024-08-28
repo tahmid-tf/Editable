@@ -63,7 +63,7 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
             $query->whereBetween('created_at', [$this->searchParams['start_date'], $end_date]);
         }
 
-        $query->select('users_email', 'order_status', 'payment_status', 'created_at');
+        $query->select('users_email', 'order_status', 'payment_status','amount', 'created_at');
 
         return $query;
     }
