@@ -36,6 +36,8 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
         if (!empty($this->searchParams['email'])) {
 //            $query->where('users_email', 'LIKE', '%' . $this->searchParams['email'] . '%');
 
+            // updated to dynamic search parameters, name is still email cause, no need to change any code from frontend side
+
 //        -------------------------- dynamic column mapping --------------------------
 
             $searchParams = $this->searchParams;
@@ -46,10 +48,7 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
             });
 
 //        -------------------------- dynamic column mapping --------------------------
-
         }
-
-
 
         if (!empty($this->searchParams['order_status'])) {
             $query->where('order_status', $this->searchParams['order_status']);
@@ -75,6 +74,7 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
             'User Email',
             'Order Status',
             'Payment Status',
+            'Amount',
             'Order Date',
         ];
     }
@@ -85,6 +85,7 @@ class TransactionsDataExport implements FromQuery, WithHeadings, WithMapping, Sh
             $order->users_email,
             $order->order_status,
             $order->payment_status,
+            $order->amount,
             \Carbon\Carbon::parse($order->created_at)->format('d-M-Y'), // Format the date
         ];
     }

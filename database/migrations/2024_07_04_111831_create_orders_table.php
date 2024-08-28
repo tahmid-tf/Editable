@@ -33,8 +33,9 @@ class CreateOrdersTable extends Migration
             $table->string('amount');
             $table->string('editors_id')->nullable();
             $table->enum('order_status', ['pending', 'completed', 'cancelled', 'preview'])->default('pending');
-            $table->string('file_uploaded_by_user')->nullable();
-            $table->string('file_uploaded_by_admin_after_edit')->nullable();
+
+            $table->text('file_uploaded_by_user')->nullable();
+            $table->text('file_uploaded_by_admin_after_edit')->nullable();
 
             //            styles information
 
