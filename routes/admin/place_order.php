@@ -54,6 +54,13 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // --------------------------- Order status pending, complete, cancelled status setup routes ---------------------------
 
+    // --------------------------- Edit order from admin side ---------------------------
+
+    Route::post('edit_order', [\App\Http\Controllers\Api\Admin\Order\EditOrderController::class, 'edit_order']);
+
+    // --------------------------- Edit order from admin side ---------------------------
+
+
 
 });
 

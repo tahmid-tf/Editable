@@ -34,6 +34,8 @@ class OrderAndEditorController extends Controller
         $style_data = Style::withTrashed()->whereIn('id', $stylesArray)->get() ?? [];
         $order->category_name = Category::withTrashed()->find($order['category_id'])->category_name ?? null;
 
+        $order->preview_edit_link = null;
+
         $order->styles_data = $style_data;
 
 
