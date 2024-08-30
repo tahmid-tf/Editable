@@ -111,7 +111,7 @@ class UserTableDataController extends Controller
         $query->where('users_email', $email);
 
         if ($searchParams['order_id']) {
-            $query->where('id', $searchParams['order_id']);
+            $query->where('order_id', $searchParams['order_id']);
         }
 
         if ($searchParams['order_status']) {

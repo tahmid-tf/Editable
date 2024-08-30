@@ -28,23 +28,19 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
 
 //    -------------------------------------- General Settings - Change Password --------------------------------------
 
-//    -------------------------------------- User order lists --------------------------------------
-
-    Route::get('users_order_list', [UserTableDataController::class, 'users_order_data']);
-
-//    -------------------------------------- User order lists --------------------------------------
-
-//    -------------------------------------- search style by categories [ Stage 1 ] --------------------------------------
+//    -------------------------------------- search style by categories  --------------------------------------
 
     Route::post('general_info_and_category', [FindingStylesController::class, 'general_info_and_category_from_user']);
 
-//    -------------------------------------- search style by categories [ Stage 1 ] --------------------------------------
+//    -------------------------------------- search style by categories  --------------------------------------
 
-//    -------------------------------------- storing order with payment gateway --------------------------------------
+//    -------------------------------------- order list, storing order with payment gateway --------------------------------------
 
+    Route::get('users_order_list', [UserTableDataController::class, 'users_order_data']);
     Route::post('order_store', [\App\Http\Controllers\Api\User\Order\OrderController::class, 'store']);
 
-//    -------------------------------------- storing order with payment gateway --------------------------------------
+//    -------------------------------------- order list, storing order with payment gateway --------------------------------------
+
 
 
 });
