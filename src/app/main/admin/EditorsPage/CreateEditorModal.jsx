@@ -9,6 +9,7 @@ import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackba
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { useAppDispatch } from 'app/store/hooks';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { IoClose } from 'react-icons/io5';
 
 const style = {
 	position: 'absolute',
@@ -70,13 +71,22 @@ const CreateEditorModal = ({ openModal, handleCloseModal, editorInfo, setEditorI
 			>
 				<>
 					<Box sx={style}>
-						<Typography
-							color={'gray'}
-							fontSize={20}
-							fontWeight={700}
+						<Box
+							display={'flex'}
+							justifyContent={'space-between'}
+							alignItems={'center'}
 						>
-							Create Editor
-						</Typography>
+							<Typography
+								color={'gray'}
+								fontSize={20}
+								fontWeight={700}
+							>
+								Create Editor
+							</Typography>
+							<button onClick={handleCloseModal}>
+								<IoClose size={24} />
+							</button>
+						</Box>
 						<form
 							onSubmit={handleSubmit(handleCreateName)}
 							className="my-[3em] flex flex-col gap-[1em]"
