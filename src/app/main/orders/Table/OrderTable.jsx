@@ -540,7 +540,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 										>
 											<LuEye size={20} />
 										</button>
-										{userType === 'admin' ? (
+										{userType?.includes('admin') ? (
 											<button
 												type="button"
 												onClick={() => handleFiEditClick(row?.original)}
