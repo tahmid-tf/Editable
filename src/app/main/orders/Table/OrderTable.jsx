@@ -22,18 +22,22 @@ import { useParams } from 'react-router';
 import UserInfoCardContainer from './UserInfoCardContainer';
 import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
 import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
-import { useAppDispatch } from 'app/store/hooks';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import OrderStatusComponent from './OrderStatusComponent';
 import OrderEditModal from './OrderEditModal';
+import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
 	const dispatch = useAppDispatch();
 	const ref = useRef();
+
+	const userType = useAppSelector(selectUserRole);
+
 	const [columnWidth, setColumnWidth] = useState();
 
 	const [selectedData, setSelectedData] = useState(null);
@@ -536,12 +540,16 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 										>
 											<LuEye size={20} />
 										</button>
-										<button
-											type="button"
-											onClick={() => handleFiEditClick(row?.original)}
-										>
-											<FiEdit size={18} />
-										</button>
+										{userType === 'admin' ? (
+											<button
+												type="button"
+												onClick={() => handleFiEditClick(row?.original)}
+											>
+												<FiEdit size={18} />
+											</button>
+										) : (
+											<></>
+										)}
 									</div>
 								)}
 							/>
