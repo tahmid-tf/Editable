@@ -1,10 +1,14 @@
 import { Box, CircularProgress, Modal, Typography } from '@mui/material';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { orderStatusOptions } from 'src/app/appUtils/constant';
+import { orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import * as Yup from 'yup';
 import { useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
 import { IoClose } from 'react-icons/io5';
+import { useEditOrderMutation } from '../orderApi';
+import { useAppDispatch } from 'app/store/hooks';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import clsx from 'clsx';
 
 const style = {
 	position: 'absolute',
@@ -20,20 +24,22 @@ const style = {
 	overflow: 'scroll'
 };
 
-const isLoading = false;
-
 const validationSchema = Yup.object().shape({
-	editor: Yup.string().required('Required'),
+	editor_id: Yup.string().required('Required'),
 	order_status: Yup.string().required('Required'),
 	payment_status: Yup.string().required('Required'),
-	preview_link: Yup.string().required('Required')
+	preview_edit_link: Yup.string(),
+	file_uploaded_by_admin_after_edit: Yup.string()
 });
 
-const OrderEditModal = ({ selectedData, closedEditModal }) => {
+const OrderEditModal = ({ selectedData, closedEditModal,setSelectedData }) => {
 	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery(
 		{ page: 1, rowPerPage: 10000 },
 		{ skip: selectedData === null }
 	);
+	const [editOrder, { isLoading }] = useEditOrderMutation();
+	const dispatch = useAppDispatch();
+
 	return (
 		<Modal
 			open={selectedData !== null}
@@ -42,60 +48,61 @@ const OrderEditModal = ({ selectedData, closedEditModal }) => {
 			aria-describedby="modal-modal-description"
 		>
 			<Box sx={style}>
-				<div
-				// className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]"
-				>
+				<div>
 					<Formik
 						initialValues={{
-							editor: 'john.doe@gmail.com',
-							order_status: '+44 7848 107162',
-							payment_status: '',
-							preview_edit: ''
+							editor_id: selectedData?.editor?.id,
+							order_status: selectedData?.order_status,
+							payment_status: selectedData?.payment_status,
+							preview_edit_link: selectedData?.preview_edit_link,
+							file_uploaded_by_admin_after_edit:
+								selectedData?.file_uploaded_by_admin_after_edit !== null
+									? selectedData?.file_uploaded_by_admin_after_edit
+									: ''
 						}}
 						validationSchema={validationSchema}
 						onSubmit={async (values) => {
-							// successAlert();
-							// onClose();
-
-							const formValue = { ...values };
-							console.log(formValue);
-
-							// dispatch(addOrderGeneralInfo({ ...formValue, category_name: values?.category_name }));
-							// const response = await getStyles(formValue);
-							// if (response.data) {
-							// 	setAllStyleData(response?.data?.data?.style_data);
-
-							// 	onOrderSubmit();
-							// } else {
-							// 	console.log(response.error);
-							// 	dispatch(
-							// 		openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data })
-							// 	);
-							// }
+							const formValue = { ...values, order_id: selectedData.id };
+							const response = await editOrder(formValue);
+							console.log(response);
+							
+							if (response.data) {
+								dispatch(
+									openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message })
+								);
+								setSelectedData(null)
+							} else {
+								dispatch(
+									openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data })
+								);
+							}
 						}}
 						className="rounded-xl"
 					>
-						{({ isSubmitting, setFieldValue }) => (
+						{() => (
 							<Form className="space-y-4 ">
 								<div className="flex items-center justify-between">
-									<p className="text-2xl font-bold text-[#868686]">Order ID : {selectedData?.order_id}</p>
+									<p className="text-2xl font-bold text-[#868686]">
+										Order ID : {selectedData?.order_id}
+									</p>
 									<button onClick={closedEditModal}>
 										<IoClose size={24} />
 									</button>
 								</div>
+
 								<div className="form-group">
 									<label
-										htmlFor="editor"
+										htmlFor="editor_id"
 										className="block text-md font-semibold text-black mt-16"
 									>
 										Editor
 									</label>
 									<Field
 										as="select" // Change Field to select for dropdown
-										name="editor"
+										name="editor_id"
 										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 									>
-										<option value="">Order Status</option>
+										<option value="">Assign Editor</option>
 										{editorData?.data?.data?.map((editors, i) => (
 											<option
 												key={i}
@@ -107,11 +114,12 @@ const OrderEditModal = ({ selectedData, closedEditModal }) => {
 										))}
 									</Field>
 									<ErrorMessage
-										name="editor"
+										name="editor_id"
 										component="div"
 										className="text-red-500 text-xs mt-1"
 									/>
 								</div>
+
 								<div className="form-group">
 									<label
 										htmlFor="order_status"
@@ -156,6 +164,7 @@ const OrderEditModal = ({ selectedData, closedEditModal }) => {
 										<option value="">Select Payment Status</option>
 										<option value="pending">Pending</option>
 										<option value="successful">Successful</option>
+										<option value="cancelled">Cancelled</option>
 									</Field>
 									<ErrorMessage
 										name="payment_status"
@@ -166,19 +175,51 @@ const OrderEditModal = ({ selectedData, closedEditModal }) => {
 
 								<div className="form-group">
 									<label
-										htmlFor="preview_edit"
-										className="block text-md font-semibold text-black mt-16"
+										htmlFor="preview_edit_link"
+										className={clsx(
+											'block text-md font-semibold mt-16',
+											selectedData?.preview_edits === 'no'
+												? 'text-[#868686] opacity-50'
+												: 'text-black'
+										)}
 									>
 										Preview Edit Link
 									</label>
 									<Field
-										type="email"
-										name="preview_edit"
+										type="text"
+										name="preview_edit_link"
 										placeholder="Enter Email Address"
 										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+										disabled={selectedData?.preview_edits === 'no'}
 									/>
 									<ErrorMessage
-										name="preview_edit"
+										name="preview_edit_link"
+										component="div"
+										className="text-red-500 text-xs mt-1"
+									/>
+								</div>
+
+								<div className="form-group">
+									<label
+										htmlFor="file_uploaded_by_admin_after_edit"
+										className={clsx(
+											'block text-md font-semibold mt-16',
+											selectedData?.file_uploaded_by_admin_after_edit === null
+												? 'text-[#868686] opacity-50'
+												: 'text-black'
+										)}
+									>
+										Edited Images Google Drive Link
+									</label>
+									<Field
+										type="text"
+										name="file_uploaded_by_admin_after_edit"
+										placeholder="Enter Email Address"
+										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+										disabled={selectedData?.file_uploaded_by_admin_after_edit === null}
+									/>
+									<ErrorMessage
+										name="file_uploaded_by_admin_after_edit"
 										component="div"
 										className="text-red-500 text-xs mt-1"
 									/>

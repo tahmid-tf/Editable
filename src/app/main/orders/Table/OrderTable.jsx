@@ -598,7 +598,11 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						handleOrderDetailsClose={handleOrderDetailsClose}
 						selectedId={selectedId}
 					/>
-					<OrderEditModal selectedData={selectedData} closedEditModal={closedEditModal} />
+					<OrderEditModal
+						setSelectedData={setSelectedData}
+						selectedData={selectedData}
+						closedEditModal={closedEditModal}
+					/>
 				</>
 			)}
 		</div>

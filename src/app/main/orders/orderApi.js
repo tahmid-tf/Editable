@@ -67,6 +67,14 @@ const orderApi = apiService
 					body
 				}),
 				invalidatesTags: ['orders']
+			}),
+			editOrder: builder.mutation({
+				query: (body) => ({
+					url: 'admin/edit_order',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
 			})
 		})
 	});
@@ -80,5 +88,6 @@ export const {
 	useGetStylesForUserMutation,
 	useGetOrderDetailsQuery,
 	useUpdateOrderStatusMutation,
-	useCompleteOrderMutation
+	useCompleteOrderMutation,
+	useEditOrderMutation
 } = orderApi;
