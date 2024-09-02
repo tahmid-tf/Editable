@@ -15,6 +15,14 @@ class CreatePreviewEditsTable extends Migration
     {
         Schema::create('preview_edits', function (Blueprint $table) {
             $table->id();
+
+            $table->string('order_id');
+            $table->text('comment')->nullable();
+            $table->text('preview_link')->nullable();
+            $table->enum('users_decision',['accepted','rejected'])->nullable();
+            $table->timestamp('users_decision_date')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

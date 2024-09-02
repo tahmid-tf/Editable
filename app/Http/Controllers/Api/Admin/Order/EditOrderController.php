@@ -119,19 +119,19 @@ class EditOrderController extends Controller
 
             // ----------------------------------- if order status is in preview mode
 
-            if ($order->order_status == 'preview') {
-
-                Order::where('id', $inputs['order_id'])->update([
-                    'editors_id' => $inputs['editor_id'],
-                    'payment_status' => $inputs['payment_status'],
-                ]);
-
-                return response()->json([
-                    'message' => 'Order Status is currently on preview state, please complete the process from the list, the Editors information and payment status is being updated.',
-                    'order_id' => $order->order_id,
-                    'status' => 200,
-                ], 200);
-            }
+//            if ($order->order_status == 'preview') {
+//
+//                Order::where('id', $inputs['order_id'])->update([
+//                    'editors_id' => $inputs['editor_id'],
+//                    'payment_status' => $inputs['payment_status'],
+//                ]);
+//
+//                return response()->json([
+//                    'message' => 'Order Status is currently on preview state, please complete the process from the list, the Editors information and payment status is being updated.',
+//                    'order_id' => $order->order_id,
+//                    'status' => 200,
+//                ], 200);
+//            }
 
             // --------------- Updating order
 

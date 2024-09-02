@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User\Order;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\Admin\Order;
+use App\Models\PreviewEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -84,8 +85,17 @@ class OrderController extends Controller
 
             //without preview edits
 
-            $inputs['preview_edits'] = "no";
-            $inputs['preview_edit_status'] = "no";
+
+//            ------------- if the order has preview edits with it ----------------
+
+            if ($inputs['preview_edits'] == "no") {
+                $inputs['preview_edit_status'] = "no";
+            } else {
+                $inputs['preview_edit_status'] = "pending";
+            }
+
+//            ------------- if the order has preview edits with it  ----------------
+
 
 
             // stripe payment gateway block
@@ -150,6 +160,18 @@ class OrderController extends Controller
                     $order->save();
 
 //            ------------- order id creation and initiating order_id ----------------
+
+//            ------------- if the order has preview edits with it , adding columns to PreviewEdit model ----------------
+
+
+                    if ($order->preview_edits == "yes") {
+                        PreviewEdit::create([
+                            'order_id' => $order->id,
+                        ]);
+
+                    }
+
+//            ------------- if the order has preview edits with it , adding columns to PreviewEdit model ----------------
 
                     return response()->json([
                         'data' => $order,

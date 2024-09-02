@@ -7,6 +7,7 @@ use App\Models\Api\Admin\Category;
 use App\Models\Api\Admin\Editor;
 use App\Models\Api\Admin\Order;
 use App\Models\Api\Admin\Style;
+use App\Models\PreviewEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -113,7 +114,7 @@ class AdminOrderController extends Controller
                 'skin_retouching' => 'nullable|in:yes,no',
                 'skin_retouching_type' => 'nullable|string|max:255',
                 'additional_info' => 'nullable|in:yes,no',
-                'preview_edits' => 'nullable|string|max:255',
+                'preview_edits' => 'nullable|in:yes,no',
                 'user_id' => 'nullable|string|max:255',
                 'order_delivery_date' => 'nullable',
                 'preview_edit_status' => 'nullable|in:no,user_review_pending,accepted,rejected,pending',
@@ -131,6 +132,17 @@ class AdminOrderController extends Controller
 
 //        ------------------------------------------------- validation block -------------------------------------------------
 
+//            ------------- if the order has preview edits with it  ----------------
+
+            if ($inputs['preview_edits'] == "no") {
+                $inputs['preview_edit_status'] = "no";
+            } else {
+                $inputs['preview_edit_status'] = "pending";
+            }
+
+//            ------------- if the order has preview edits with it  ----------------
+
+
 //        ------------------------------------------------- code block -------------------------------------------------
 
 
@@ -143,6 +155,18 @@ class AdminOrderController extends Controller
             $order->save();
 
 //            ----------------------------- order id creation and initiating order_id -----------------------------
+
+
+//            ------------- if the order has preview edits with it , adding columns to PreviewEdit model ----------------
+
+            if ($order->preview_edits == "yes") {
+                PreviewEdit::create([
+                    'order_id' => $order->id,
+                ]);
+
+            }
+
+//            ------------- if the order has preview edits with it , adding columns to PreviewEdit model ----------------
 
             return response()->json([
                 'data' => $order,
