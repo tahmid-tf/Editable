@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { json, Link } from 'react-router-dom';
+import { json, Link, useNavigate } from 'react-router-dom';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import Tooltip from '@mui/material/Tooltip';
 import StyleCard from './StyleCards/StyleCard';
@@ -21,6 +21,8 @@ import dayjs from 'dayjs';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import PaymentModal from './PaymentModal';
+import PaymentSuccessModal from './PaymentSuccessModal';
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -77,6 +79,10 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 	const [orderCalcValue, setOrderCalcValue] = useState({});
 	const [isBasicColorSelected, setIsBasicColorSelected] = useState(false);
 	const [orderType, setOrderType] = useState(orderState.order_type);
+
+	const [paymentModalInfo, setPaymentModalInfo] = useState(null);
+	const [openPaymentModal, setOpenPaymentModal] = useState(false);
+	const [openPaymentSuccessModal, setOpenPaymentSuccessModal] = useState(false);
 
 	const [getValueForOrderCalculation, { data }] =
 		userRole === 'admin'
@@ -205,24 +211,33 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 		setFieldValue('additionalStyle', Array.from(allAdditionalStyles));
 		setFieldValue('selectedAdditionalStyleId', Array.from(allAdditionalStylesId));
 	};
+
+	const handlePaymentModalClose = () => {
+		setOpenPaymentModal(false);
+	};
+	const handlePaymentSuccessModalClose = () => {
+		setOpenPaymentSuccessModal(false);
+		onPickStyleSubmit();
+	};
 	return (
 		<Formik
 			initialValues={initialValues}
 			validationSchema={validationSchema}
 			onSubmit={async (values) => {
-				const body = {
+				const userInfo = {
 					users_email: orderState.email,
-					users_phone: orderState.phone,
+					users_phone: orderState.phone
+				};
+				const orderInfo = {
 					order_type: orderType,
 					order_name: orderState.order_name,
 					category_id: orderState.category,
-					payment_status: orderState.payment_status,
-					amount: `${orderState.amount}`,
 					order_status: 'pending',
+				};
+				const styleInfo = {
+					file_uploaded_by_user: values.driveLink,
 					styles_array: JSON.stringify([values.selectedMainStyleId, ...values.selectedAdditionalStyleId]),
 					number_of_images_provided: values.imageQuantity,
-					editors_id: '1',
-					file_uploaded_by_user: values.driveLink,
 					culling: values.additionalEdits.culling ? 'yes' : 'no',
 					images_culled_down_to: `${values?.cullDownTotalImages}`,
 					select_image_culling_type: values?.imageSelectionMethodCulling,
@@ -230,14 +245,36 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 					skin_retouching_type: values?.imageSelectionMethodSkinRetouching,
 					preview_edits: values.additionalEdits.previewEdits ? 'yes' : 'no'
 				};
+				const paymentInfo = {
+					payment_status: orderState.payment_status,
+					amount: `${orderState.amount}`
+				};
+				const body = {
+					...userInfo,
+					...orderInfo,
+					...styleInfo,
+					...paymentInfo
+				};
 
-				const response = await placeOrder(body);
-
-				if (response.data) {
-					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
-					onPickStyleSubmit();
+				if (userRole.includes('user')) {
+					setPaymentModalInfo({
+						...orderInfo,
+						...styleInfo,
+						...paymentInfo,
+						amount: Number(paymentInfo?.amount)
+					});
+					setOpenPaymentModal(true);
 				} else {
-					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
+					const response = await placeOrder(body);
+
+					if (response.data) {
+						dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
+						onPickStyleSubmit();
+					} else {
+						dispatch(
+							openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.message })
+						);
+					}
 				}
 			}}
 		>
@@ -787,6 +824,22 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 									categoryName={orderState.category_name}
 								/>
 							</div>
+							<PaymentModal
+								paymentModalInfo={paymentModalInfo}
+								setPaymentModalInfo={setPaymentModalInfo}
+								openPaymentModal={openPaymentModal}
+								handlePaymentModalClose={handlePaymentModalClose}
+								setOpenPaymentSuccessModal={setOpenPaymentSuccessModal}
+							/>
+							<PaymentSuccessModal
+								handlePaymentSuccessModalClose={handlePaymentSuccessModalClose}
+								openPaymentSuccessModal={openPaymentSuccessModal}
+								paymentModalInfo={{
+									...paymentModalInfo,
+									categoryName: orderState?.category_name,
+									selectedStyle: values?.selectedStyle
+								}}
+							/>
 						</div>
 					</Form>
 				);
