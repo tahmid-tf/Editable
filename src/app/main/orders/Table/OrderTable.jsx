@@ -213,6 +213,13 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 							defaultValue={row?.original?.editor?.id}
 							onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
 						>
+								<option
+									className="bg-white text-black"
+									value=''
+								>
+									Assign Editor
+								</option>
+							
 							{editorData?.data?.data?.map((editors, i) => (
 								<option
 									key={i}

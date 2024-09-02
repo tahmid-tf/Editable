@@ -233,7 +233,6 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 					order_name: orderState.order_name,
 					category_id: orderState.category,
 					order_status: 'pending',
-					editors_id: '1'
 				};
 				const styleInfo = {
 					file_uploaded_by_user: values.driveLink,
