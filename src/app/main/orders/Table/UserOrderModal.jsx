@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { useGetStylesForUserMutation } from '../orderApi';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { selectUser } from 'src/app/auth/user/store/userSlice';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -43,165 +44,170 @@ const UserOrderModal = ({ newUserOrderOpen, handleNewOrderClose, setAllStyleData
 			aria-describedby="modal-modal-description"
 			className="flex justify-center items-center"
 		>
-			<Box
-				style={style}
-				width={orderType?.length ? 'fit' : '90em'}
-			>
-				{orderType?.length ? (
-					<Box className="w-full flex items-center justify-center">
-						<Formik
-							initialValues={{
-								orderName: '',
-								category_id: '',
-								category_name: ''
-							}}
-							validationSchema={validationSchema}
-							onSubmit={async (values) => {
-								const formValue = {
-									email: user?.email,
-									phone: user?.phone,
-									order_type: orderType,
-									order_name: values?.orderName,
-									category: parseFloat(values?.category_id),
-									payment_status: 'successful'
-								};
-								dispatch(addOrderGeneralInfo({ ...formValue, category_name: values?.category_name }));
-								const response = await getStyles(formValue);
-								if (response.data) {
-									setAllStyleData(response?.data?.data?.style_data);
-
-									onOrderSubmit();
-								} else {
-									console.log(response.error);
+			<>
+				<Box
+					style={style}
+					width={orderType?.length ? 'fit' : '90em'}
+				>
+					{orderType?.length ? (
+						<Box className="w-full flex items-center justify-center">
+							<Formik
+								initialValues={{
+									orderName: '',
+									category_id: '',
+									category_name: ''
+								}}
+								validationSchema={validationSchema}
+								onSubmit={async (values) => {
+									const formValue = {
+										email: user?.email,
+										phone: user?.phone,
+										order_type: orderType,
+										order_name: values?.orderName,
+										category: parseFloat(values?.category_id),
+										payment_status: 'successful'
+									};
 									dispatch(
-										openSnackbar({
-											type: SnackbarTypeEnum.ERROR,
-											message: response?.error?.data?.data
-										})
+										addOrderGeneralInfo({ ...formValue, category_name: values?.category_name })
 									);
-								}
-							}}
-						>
-							{({ setFieldValue }) => (
-								<Form className="space-y-4 w-[30em] bg-white p-[25px] rounded-[10px] ">
-									<Typography className="font-semibold text-[#868686] text-[20px] leading-[20px] capitalize">
-										{orderType} Delivery
-									</Typography>
-									<div className="form-group">
-										<label
-											htmlFor="orderName"
-											className="block text-md font-semibold text-black mt-16"
-										>
-											Order Name
-										</label>
-										<Field
-											type="text"
-											name="orderName"
-											placeholder="Enter order name"
-											className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
-										/>
-										<ErrorMessage
-											name="orderName"
-											component="div"
-											className="text-red-500 text-xs mt-1"
-										/>
-									</div>
-									<div className="form-group">
-										<label
-											htmlFor="category_id"
-											className="block text-md font-semibold text-black mt-16"
-										>
-											Select a Category
-										</label>
-										<Field
-											as="select" // Change Field to select for dropdown
-											name="category_id"
-											className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
-											onChange={(event) => {
-												const selectedIndex = event.target.options.selectedIndex;
-												const selectedCategoryId = event.target.value;
-												const selectedCategoryName = event.target.options[selectedIndex].text;
-												setFieldValue('category_id', selectedCategoryId);
-												setFieldValue('category_name', selectedCategoryName);
-											}}
-										>
-											<option value="">Select Category Type</option>
-											{data?.data?.data?.map((category, i) => (
-												<option
-													key={i}
-													value={category?.id}
-												>
-													{category?.category_name}
-												</option>
-											))}
-										</Field>
-										<ErrorMessage
-											name="category_id"
-											component="div"
-											className="text-red-500 text-xs mt-1"
-										/>
-									</div>
-									<div>
-										<Button
-											className="mt-20 w-full bg-[#146ef5ef] flex justify-center items-center gap-5 "
-											color="primary"
-											variant="contained"
-											sx={{
-												borderRadius: '5px',
-												':hover': {
-													backgroundColor: '#0066ff'
-												}
-											}}
-											aria-label="Register"
-											size="large"
-											type="submit"
-										>
-											Proceed
-											{isLoading ? (
-												<Box
-													sx={{
-														display: 'flex',
-														alignItems: 'center',
-														justifyContent: 'center'
-													}}
-												>
-													<CircularProgress
-														sx={{ color: 'white' }}
-														size={20}
-													/>
-												</Box>
-											) : (
-												''
-											)}
-										</Button>
-									</div>
-								</Form>
-							)}
-						</Formik>
-					</Box>
-				) : (
-					<Grid
-						spacing={1}
-						container
-					>
-						{orderTypeInfo?.map((data, i) => (
-							<Grid
-								key={i}
-								item
-								xs={4}
-								display={'flex'}
-								justifyContent={'center'}
-								alignItems={'center'}
+									const response = await getStyles(formValue);
+									if (response.data) {
+										setAllStyleData(response?.data?.data?.style_data);
+
+										onOrderSubmit();
+									} else {
+										dispatch(
+											openSnackbar({
+												type: SnackbarTypeEnum.ERROR,
+												message: response?.error?.data?.message
+											})
+										);
+									}
+								}}
 							>
-								<UserOrderCard
-									setOrderType={setOrderType}
-									data={data}
-								/>
-							</Grid>
-						))}
-					</Grid>
-				)}
-			</Box>
+								{({ setFieldValue }) => (
+									<Form className="space-y-4 w-[30em] bg-white p-[25px] rounded-[10px] ">
+										<Typography className="font-semibold text-[#868686] text-[20px] leading-[20px] capitalize">
+											{orderType} Delivery
+										</Typography>
+										<div className="form-group">
+											<label
+												htmlFor="orderName"
+												className="block text-md font-semibold text-black mt-16"
+											>
+												Order Name
+											</label>
+											<Field
+												type="text"
+												name="orderName"
+												placeholder="Enter order name"
+												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+											/>
+											<ErrorMessage
+												name="orderName"
+												component="div"
+												className="text-red-500 text-xs mt-1"
+											/>
+										</div>
+										<div className="form-group">
+											<label
+												htmlFor="category_id"
+												className="block text-md font-semibold text-black mt-16"
+											>
+												Select a Category
+											</label>
+											<Field
+												as="select" // Change Field to select for dropdown
+												name="category_id"
+												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+												onChange={(event) => {
+													const selectedIndex = event.target.options.selectedIndex;
+													const selectedCategoryId = event.target.value;
+													const selectedCategoryName =
+														event.target.options[selectedIndex].text;
+													setFieldValue('category_id', selectedCategoryId);
+													setFieldValue('category_name', selectedCategoryName);
+												}}
+											>
+												<option value="">Select Category Type</option>
+												{data?.data?.data?.map((category, i) => (
+													<option
+														key={i}
+														value={category?.id}
+													>
+														{category?.category_name}
+													</option>
+												))}
+											</Field>
+											<ErrorMessage
+												name="category_id"
+												component="div"
+												className="text-red-500 text-xs mt-1"
+											/>
+										</div>
+										<div>
+											<Button
+												className="mt-20 w-full bg-[#146ef5ef] flex justify-center items-center gap-5 "
+												color="primary"
+												variant="contained"
+												sx={{
+													borderRadius: '5px',
+													':hover': {
+														backgroundColor: '#0066ff'
+													}
+												}}
+												aria-label="Register"
+												size="large"
+												type="submit"
+											>
+												Proceed
+												{isLoading ? (
+													<Box
+														sx={{
+															display: 'flex',
+															alignItems: 'center',
+															justifyContent: 'center'
+														}}
+													>
+														<CircularProgress
+															sx={{ color: 'white' }}
+															size={20}
+														/>
+													</Box>
+												) : (
+													''
+												)}
+											</Button>
+										</div>
+									</Form>
+								)}
+							</Formik>
+						</Box>
+					) : (
+						<Grid
+							spacing={1}
+							container
+						>
+							{orderTypeInfo?.map((data, i) => (
+								<Grid
+									key={i}
+									item
+									xs={4}
+									display={'flex'}
+									justifyContent={'center'}
+									alignItems={'center'}
+								>
+									<UserOrderCard
+										setOrderType={setOrderType}
+										data={data}
+									/>
+								</Grid>
+							))}
+						</Grid>
+					)}
+				</Box>
+				<GlobalSnackbar />
+			</>
 		</Modal>
 	);
 };
