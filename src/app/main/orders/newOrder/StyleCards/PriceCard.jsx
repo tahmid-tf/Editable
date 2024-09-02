@@ -6,7 +6,15 @@ import { BiSolidShoppingBag } from 'react-icons/bi';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import { useAppDispatch } from 'app/store/hooks';
-import { addOrderAmount } from '../../orderSlice';
+import {
+	addCullingPrice,
+	addExpressAmount,
+	addMainStylePrice,
+	addOrderAmount,
+	addPreviewEditPrice,
+	addRetouchingPice,
+	addSubTotalAmount
+} from '../../orderSlice';
 import { useEffect } from 'react';
 
 export default function PriceCard({ priceInfo, formValue, orderType, setOrderType, categoryName }) {
@@ -15,38 +23,44 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 	const mainStylePrice = useCallback(() => {
 		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.style_price);
 		const calculatedValue = value && formValue?.selectedStyle ? value : 0;
-		return calculatedValue;
+		dispatch(addMainStylePrice(Math.round(calculatedValue)));
+		return Math.round(calculatedValue);
 	}, [formValue?.imageQuantity, priceInfo?.category?.style_price, formValue?.selectedStyle]);
 
 	const cullingPrice = useCallback(() => {
 		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.culling_price);
 		const calculatedValue = value && formValue?.additionalEdits?.culling ? value : 0;
-		return calculatedValue;
+		dispatch(addCullingPrice(Math.round(calculatedValue)));
+		return Math.round(calculatedValue);
 	}, [formValue?.imageQuantity, priceInfo?.category?.culling_price, formValue?.additionalEdits?.culling]);
 
 	const skinRetouchingPrice = useCallback(() => {
 		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.skin_retouch_price);
 		const calculatedValue = value && formValue?.additionalEdits?.skinRetouching ? value : 0;
-		return calculatedValue;
+		dispatch(addRetouchingPice(Math.round(calculatedValue)));
+		return Math.round(calculatedValue);
 	}, [formValue?.imageQuantity, priceInfo?.category?.skin_retouch_price, formValue?.additionalEdits?.skinRetouching]);
 
 	const previewEditPrice = useCallback(() => {
 		const value = formValue?.imageQuantity * parseFloat(priceInfo?.category?.preview_edit_price);
 		const calculatedValue = value && formValue?.additionalEdits?.previewEdits ? value : 0;
-		return calculatedValue;
+		dispatch(addPreviewEditPrice(Math.round(calculatedValue)));
+		return Math.round(calculatedValue);
 	}, [formValue?.imageQuantity, priceInfo?.category?.preview_edit_price, formValue?.additionalEdits?.previewEdits]);
 
 	const amount = mainStylePrice() + cullingPrice() + skinRetouchingPrice() + previewEditPrice();
 
 	const expressDeliveryAmount = useCallback(() => {
 		const calculatedValue = amount * (30 / 100);
-		return calculatedValue ? calculatedValue : 0;
+		dispatch(addExpressAmount(Math.round(calculatedValue)));
+		return calculatedValue ? Math.round(calculatedValue) : 0;
 	}, [amount]);
 
 	const totalPrice = useCallback(() => {
 		const calculatedValue = orderType === 'express' ? amount + expressDeliveryAmount() : amount;
-		dispatch(addOrderAmount(calculatedValue ? calculatedValue : 0));
-		return calculatedValue ? calculatedValue : 0;
+		dispatch(addOrderAmount(calculatedValue ? Math.round(calculatedValue) : 0));
+		dispatch(addSubTotalAmount(amount));
+		return calculatedValue ? Math.round(calculatedValue) : 0;
 	}, [amount, orderType]);
 
 	const handleCheckboxChange = () => {
@@ -81,7 +95,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									className="font-600 text-[#121212]"
 									style={{ fontFamily: 'Roboto', fontSize: '38px' }}
 								>
-									USD {totalPrice()?.toFixed(2)}
+									USD {totalPrice()}
 								</p>
 							</div>
 						</div>
@@ -104,9 +118,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									<p className="text-[16px] text-[#707070]">
 										{formValue?.selectedStyle} ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">
-										${mainStylePrice()?.toFixed(2)}
-									</p>
+									<p className="text-[16px] text-[#121212] font-semibold">${mainStylePrice()}</p>
 								</div>
 							) : (
 								<></>
@@ -116,9 +128,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									<p className="text-[16px] text-[#707070]">
 										Culling ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">
-										${cullingPrice()?.toFixed(2)}
-									</p>
+									<p className="text-[16px] text-[#121212] font-semibold">${cullingPrice()}</p>
 								</div>
 							) : (
 								<></>
@@ -128,9 +138,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									<p className="text-[16px] text-[#707070]">
 										Skin Retouching ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">
-										${skinRetouchingPrice()?.toFixed(2)}
-									</p>
+									<p className="text-[16px] text-[#121212] font-semibold">${skinRetouchingPrice()}</p>
 								</div>
 							) : (
 								<></>
@@ -140,9 +148,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									<p className="text-[16px] text-[#707070]">
 										Preview Edit ({formValue?.imageQuantity} items)
 									</p>
-									<p className="text-[16px] text-[#121212] font-semibold">
-										${previewEditPrice()?.toFixed(2)}
-									</p>
+									<p className="text-[16px] text-[#121212] font-semibold">${previewEditPrice()}</p>
 								</div>
 							) : (
 								<></>
@@ -152,7 +158,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 						<div className="pt-10">
 							<div className="py-10  flex items-center justify-between">
 								<p className="text-[18px] pl-[32px] text-[#707070]">Amount</p>
-								<p className="text-[18px] font-semibold">USD {amount?.toFixed(2)}</p>
+								<p className="text-[18px] font-semibold">USD {amount}</p>
 							</div>
 							<div className="py-10  flex items-center justify-between">
 								<div className="flex justify-center items-center">
@@ -165,7 +171,7 @@ export default function PriceCard({ priceInfo, formValue, orderType, setOrderTyp
 									/>
 									<p className="text-[18px] text-[#707070]">Express Delivery</p>
 								</div>
-								<p className="text-[18px] font-semibold">USD {expressDeliveryAmount()?.toFixed(2)}</p>
+								<p className="text-[18px] font-semibold">USD {expressDeliveryAmount()}</p>
 							</div>
 						</div>
 					</div>

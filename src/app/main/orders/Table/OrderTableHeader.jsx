@@ -32,10 +32,10 @@ const OrderTableHeader = ({
 	const [newUserOrderOpen, setNewUserOrderOpen] = useState(false);
 
 	const handleNewOrderOpen = () => {
-		userRole === 'admin' ? setNewOrderOpen(true) : setNewUserOrderOpen(true);
+		userRole.includes('admin') ? setNewOrderOpen(true) : setNewUserOrderOpen(true);
 	};
 	const handleNewOrderClose = () => {
-		userRole === 'admin' ? setNewOrderOpen(false) : setNewUserOrderOpen(false);
+		userRole.includes('admin') ? setNewOrderOpen(false) : setNewUserOrderOpen(false);
 	};
 
 	const handleClick = () => {
@@ -107,7 +107,7 @@ const OrderTableHeader = ({
 					</Typography>
 				</div>
 			</div>
-			{userRole === 'admin' ? (
+			{userRole.includes('admin') ? (
 				<Modal
 					open={newOrderOpen}
 					onClose={handleNewOrderClose}

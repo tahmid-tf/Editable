@@ -9,7 +9,13 @@ const initialState = {
 	category: 0,
 	category_name: '',
 	payment_status: '',
-	amount: 0
+	amount: 0,
+	mainStylePrice: 0,
+	cullingPrice: 0,
+	retouchingPrice: 0,
+	previewEditPrice: 0,
+	expressAmount: 0,
+	subtotal: 0
 };
 
 export const orderSlice = createSlice({
@@ -27,6 +33,25 @@ export const orderSlice = createSlice({
 		},
 		addOrderAmount: (state, action) => {
 			state.amount = action.payload;
+		},
+
+		addMainStylePrice: (state, action) => {
+			state.mainStylePrice = action.payload;
+		},
+		addCullingPrice: (state, action) => {
+			state.cullingPrice = action.payload;
+		},
+		addRetouchingPice: (state, action) => {
+			state.retouchingPrice = action.payload;
+		},
+		addPreviewEditPrice: (state, action) => {
+			state.previewEditPrice = action.payload;
+		},
+		addExpressAmount: (state, action) => {
+			state.expressAmount = action.payload;
+		},
+		addSubTotalAmount: (state, action) => {
+			state.subtotal = action.payload;
 		}
 	},
 	selectors: {
@@ -41,7 +66,16 @@ rootReducer.inject(orderSlice);
 const injectedSlice = orderSlice.injectInto(rootReducer);
 
 // Action creators are generated for each case reducer function
-export const { addOrderGeneralInfo, addOrderAmount } = orderSlice.actions;
+export const {
+	addOrderGeneralInfo,
+	addOrderAmount,
+	addMainStylePrice,
+	addCullingPrice,
+	addPreviewEditPrice,
+	addRetouchingPice,
+	addExpressAmount,
+	addSubTotalAmount
+} = orderSlice.actions;
 
 export const { selectOrderState } = injectedSlice.selectors;
 

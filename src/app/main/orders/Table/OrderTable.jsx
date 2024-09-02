@@ -84,7 +84,8 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				startDate,
 				endDate,
 				page: currentPage,
-				rowPerPage
+				rowPerPage,
+				userRole: userType
 			});
 
 	// order status values

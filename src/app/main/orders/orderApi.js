@@ -16,9 +16,10 @@ const orderApi = apiService
 					rowPerPage,
 					page,
 					startDate,
-					endDate
+					endDate,
+					userRole
 				}) =>
-					`admin/order_list?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${searchValue ? `&&email=${searchValue}` : ''}${orderStatusValue ? `&&order_status=${orderStatusValue}` : ''}${paymentStatusValue ? `&&payment_status=${paymentStatusValue}` : ''}${editorValue ? `&&editor=${editorValue}` : ''}${startDate ? `&&start_date=${startDate}` : ''}${endDate ? `&&end_date=${endDate}` : ''}`,
+					`${userRole?.includes('admin') ? 'admin/order_list' : 'user/users_order_list'}?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${searchValue ? `&&email=${searchValue}` : ''}${orderStatusValue ? `&&order_status=${orderStatusValue}` : ''}${paymentStatusValue ? `&&payment_status=${paymentStatusValue}` : ''}${editorValue ? `&&editor=${editorValue}` : ''}${startDate ? `&&start_date=${startDate}` : ''}${endDate ? `&&end_date=${endDate}` : ''}`,
 				providesTags: ['orders']
 			}),
 			getValueForOrderCalculation: builder.mutation({
@@ -30,6 +31,14 @@ const orderApi = apiService
 			placeOrder: builder.mutation({
 				query: (body) => ({
 					url: 'admin/order_store',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
+			}),
+			placeOrderForUser: builder.mutation({
+				query: (body) => ({
+					url: 'user/order_store',
 					method: 'POST',
 					body
 				}),
@@ -84,6 +93,7 @@ export const {
 	useGetValueForOrderCalculationMutation,
 	useGetValueForOrderCalculationForUserMutation,
 	usePlaceOrderMutation,
+	usePlaceOrderForUserMutation,
 	useGetStylesMutation,
 	useGetStylesForUserMutation,
 	useGetOrderDetailsQuery,
