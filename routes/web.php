@@ -22,4 +22,15 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// production mode update 1 : 27-5-24
+// ---------------------------- development based routes ----------------------------
+
+Route::get('dev/delete_data_test/{id}', function ($id) {
+    \App\Models\Api\Admin\Order::where('id', $id)->forceDelete();
+
+
+    if (\App\Models\PreviewEdit::where('order_id', $id)->exists()) {
+        \App\Models\PreviewEdit::where('order_id', $id)->forceDelete();
+    }
+
+    return "Dev mode delete executed";
+});
