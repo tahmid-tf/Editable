@@ -14,26 +14,23 @@ import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
 import { useGetOrdersDataQuery, useUpdateOrderStatusMutation } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { AiFillInfoCircle } from 'react-icons/ai';
-import dayjs from 'dayjs';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useParams } from 'react-router';
 import UserInfoCardContainer from './UserInfoCardContainer';
 import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
-import { useAssignEditorMutation, useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
+import { useAppSelector } from 'app/store/hooks';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import OrderStatusComponent from './OrderStatusComponent';
 import OrderEditModal from './OrderEditModal';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import AssignEditorComponent from './AssignEditorComponent';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
 	const [selectedId, setSelectedId] = useState('');
-	const dispatch = useAppDispatch();
 	const ref = useRef();
 
 	const userType = useAppSelector(selectUserRole);
@@ -55,8 +52,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const [showAllColumns, setShowAllColumns] = useState(false);
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
-
-	const [assignEditor] = useAssignEditorMutation();
 
 	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
 	// console.log(editorData.data.data);
@@ -105,19 +100,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	};
 
 	const handleOrderDetailsClose = () => setOrderDetailsOpen(false);
-
-	const handleEditorChange = async (editor_id, order_id) => {
-		try {
-			const res = await assignEditor({ editor_id: parseFloat(editor_id), order_id });
-			if (res.data) {
-				dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'New Editor assigned' }));
-			} else {
-				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
-			}
-		} catch (error) {
-			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
-		}
-	};
 
 	// page navigation
 
@@ -195,44 +177,12 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'editor',
 			header: 'Editor',
 
-			Cell: ({ row }) => {
-				return (
-					<Typography
-						className={clsx(
-							'inline-flex items-center px-[8px] py-[2px] rounded-full ',
-							row?.original?.editor?.editor_name ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
-						)}
-					>
-						<select
-							className={clsx(
-								'inline-flex items-center w-full text-[12px]',
-								row?.original?.editor?.editor_name
-									? 'bg-[#CBCBCB] text-Black'
-									: 'bg-[#F29339] text-black'
-							)}
-							defaultValue={row?.original?.editor?.id}
-							onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
-						>
-								<option
-									className="bg-white text-black"
-									value=''
-								>
-									Assign Editor
-								</option>
-							
-							{editorData?.data?.data?.map((editors, i) => (
-								<option
-									key={i}
-									className="bg-white text-black"
-									value={editors?.id}
-								>
-									{editors?.editor_name}
-								</option>
-							))}
-						</select>
-					</Typography>
-				);
-			}
+			Cell: ({ row }) => (
+				<AssignEditorComponent
+					row={row}
+					editorData={editorData}
+				/>
+			)
 			// accessorFn: (row) => `${row?.editor?.editor_name}`
 		},
 		{

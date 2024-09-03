@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 	file_uploaded_by_admin_after_edit: Yup.string()
 });
 
-const OrderEditModal = ({ selectedData, closedEditModal,setSelectedData }) => {
+const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery(
 		{ page: 1, rowPerPage: 10000 },
 		{ skip: selectedData === null }
@@ -65,15 +65,23 @@ const OrderEditModal = ({ selectedData, closedEditModal,setSelectedData }) => {
 							const formValue = { ...values, order_id: selectedData.id };
 							const response = await editOrder(formValue);
 							console.log(response);
-							
+
 							if (response.data) {
 								dispatch(
-									openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message })
+									openSnackbar({
+										type: SnackbarTypeEnum.SUCCESS,
+										message: response?.data?.message,
+										duration: 4000
+									})
 								);
-								setSelectedData(null)
+								setSelectedData(null);
 							} else {
 								dispatch(
-									openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data })
+									openSnackbar({
+										type: SnackbarTypeEnum.ERROR,
+										message: response?.error?.data?.data,
+										duration: 4000
+									})
 								);
 							}
 						}}
@@ -164,7 +172,7 @@ const OrderEditModal = ({ selectedData, closedEditModal,setSelectedData }) => {
 										<option value="">Select Payment Status</option>
 										<option value="pending">Pending</option>
 										<option value="successful">Successful</option>
-										<option value="cancelled">Cancelled</option>
+										<option value="failed">Failed</option>
 									</Field>
 									<ErrorMessage
 										name="payment_status"

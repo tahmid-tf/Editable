@@ -4,7 +4,8 @@ import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 const initialState = {
 	isSnackbarOpen: false,
 	type: SnackbarTypeEnum.SUCCESS,
-	message: ''
+	message: '',
+	duration: 2000
 };
 export const GlobalSnackbarSlice = createSlice({
 	name: 'globalSnackbar',
@@ -14,6 +15,7 @@ export const GlobalSnackbarSlice = createSlice({
 			state.isSnackbarOpen = true;
 			state.message = action.payload.message;
 			state.type = action.payload.type;
+			state.duration = action.payload.duration ? action.payload.duration : 2000;
 		},
 		closeSnackbar: (state) => {
 			return { ...initialState, type: state.type };

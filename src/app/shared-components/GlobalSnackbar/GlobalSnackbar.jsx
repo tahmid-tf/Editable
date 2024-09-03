@@ -5,7 +5,9 @@ import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import clsx from 'clsx';
 
 const GlobalSnackbar = ({ snackbarStyle }) => {
-	const { isSnackbarOpen, message, type } = useAppSelector(selectSnackbarState);
+	const { isSnackbarOpen, message, type, duration } = useAppSelector(selectSnackbarState);
+	
+	
 	const dispatch = useAppDispatch();
 	const [snackbarBgColor, typeBgColor, typeColor, messageColor] = {
 		[SnackbarTypeEnum.SUCCESS]: ['#ECFDF3', '#039855', '#FFFFFF', '#027A48'],
@@ -16,7 +18,7 @@ const GlobalSnackbar = ({ snackbarStyle }) => {
 	return (
 		<Snackbar
 			open={isSnackbarOpen}
-			autoHideDuration={2000}
+			autoHideDuration={duration}
 			onClose={() => dispatch(closeSnackbar())}
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
 			className={clsx('mt-40 z-[500]', snackbarStyle)}

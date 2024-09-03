@@ -39,8 +39,6 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 	const [openCopyTooltip, setOpenCopyTooltip] = useState(false);
 
 	const { data } = useGetOrderDetailsQuery(selectedId, { skip: !selectedId });
-	console.log(getStyleAndAdditionalStyleName(data?.data?.styles_data));
-	console.log(data?.data);
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
