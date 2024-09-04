@@ -24,7 +24,6 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 	const dispatch = useAppDispatch();
 	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 100000000 });
 	const [getStyles, { isLoading }] = useGetStylesMutation();
-	console.log(data?.data?.data);
 	return (
 		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
 			<Formik
@@ -56,7 +55,6 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 
 						onOrderSubmit();
 					} else {
-						console.log(response.error);
 						dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: response?.error?.data?.data }));
 					}
 				}}
@@ -168,7 +166,6 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 									const selectedIndex = event.target.options.selectedIndex;
 									const selectedCategoryId = event.target.value;
 									const selectedCategoryName = event.target.options[selectedIndex].text;
-									console.log(selectedCategoryId, selectedCategoryName);
 									setFieldValue('category_id', selectedCategoryId);
 									setFieldValue('category_name', selectedCategoryName);
 								}}

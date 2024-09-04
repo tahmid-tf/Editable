@@ -84,16 +84,14 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 	const [openPaymentModal, setOpenPaymentModal] = useState(false);
 	const [openPaymentSuccessModal, setOpenPaymentSuccessModal] = useState(false);
 
-	const [getValueForOrderCalculation, { data }] =
-		userRole === 'admin'
-			? useGetValueForOrderCalculationMutation()
-			: useGetValueForOrderCalculationForUserMutation();
+	const [getValueForOrderCalculation, { data }] = userRole?.includes('admin')
+		? useGetValueForOrderCalculationMutation()
+		: useGetValueForOrderCalculationForUserMutation();
 
 	const [placeOrder, { isLoading }] = usePlaceOrderMutation();
 
 	const styleData = allStyleData?.filter((data) => data?.additional_style === 'no');
 	const additionalData = allStyleData?.filter((data) => data?.additional_style === 'yes');
-	console.log(allStyleData);
 	const handleCullingChange = (e, setFieldValue) => {
 		const isChecked = e.target.checked;
 		setFieldValue('additionalEdits.culling', isChecked);
@@ -232,7 +230,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 					order_type: orderType,
 					order_name: orderState.order_name,
 					category_id: orderState.category,
-					order_status: 'pending',
+					order_status: 'pending'
 				};
 				const styleInfo = {
 					file_uploaded_by_user: values.driveLink,
@@ -279,7 +277,6 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 			}}
 		>
 			{({ values, errors, touched, setFieldValue }) => {
-				console.log({ values });
 				return (
 					<Form>
 						<div className="py-[40px]">
@@ -290,7 +287,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 								<div>
 									<p className="text-[32px] font-bold text-[#868686] pb-36">Pick a style</p>
 								</div>
-								<div className="pr-[100px]">
+								<div className="pr-[60px]">
 									<Grid
 										container
 										spacing={5}
@@ -812,10 +809,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 									) : null}
 								</div>
 							</div>
-							<div
-								className=""
-								style={{ position: 'sticky', top: 78, alignSelf: 'flex-start' }}
-							>
+							<div style={{ position: 'sticky', top: 78, alignSelf: 'flex-start' }}>
 								<PriceCard
 									priceInfo={orderCalcValue}
 									formValue={values}

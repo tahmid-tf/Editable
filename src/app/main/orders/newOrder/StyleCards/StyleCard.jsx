@@ -25,7 +25,9 @@ export default function StyleCard({
 			sx={{
 				maxWidth: 326,
 				width: '100%',
-				position: 'relative'
+				position: 'relative',
+				border:'1px solid #C9C9C9',
+				boxShadow:'none'
 			}}
 			onClick={() => handleChange({ target: { value } })}
 		>
