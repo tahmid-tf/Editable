@@ -148,8 +148,15 @@ class OrderAndEditorController extends Controller
 
 //        --------------------- checking validated list ---------------------
 
-        $order->order_status = $order_status;
-        $order->save();
+        // --------------------------- if order status is pending or cancelled // new update 3/9/24
+
+            $order->file_uploaded_by_admin_after_edit = null;
+            $order->order_delivery_date = null;
+            $order->order_status = $order_status;
+            $order->save();
+
+//        $order->order_status = $order_status;
+//        $order->save();
 
         return response()->json([
             'data' => 'Order status successfully updated',

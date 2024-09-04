@@ -89,9 +89,6 @@ class OrderController extends Controller
 //            ------------- if the order has preview edits with it ----------------
 
 
-//            $inputs['preview_edits'] = "no";
-//            $inputs['preview_edit_status'] = "no";
-
             if (isset($inputs['preview_edits']) && $inputs['preview_edits'] == "no") {
                 $inputs['preview_edits'] = "no";
                 $inputs['preview_edit_status'] = "no";

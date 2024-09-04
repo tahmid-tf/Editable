@@ -57,6 +57,10 @@ class RouteServiceProvider extends ServiceProvider
                         require base_path('routes/admin/place_order.php');
                         require base_path('routes/admin/table_searches.php');
 
+                        // preview edit routes
+
+                        require base_path('routes/admin/preview_edit.php');
+                        require base_path('routes/user/preview_edit.php');
                     }
                 );
 
