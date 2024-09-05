@@ -14,6 +14,7 @@ const OrderStatusComponent = ({ row }) => {
 	const [driveLink, setDriveLink] = useState('');
 	const [driveLinkError, setDriveLinkError] = useState('');
 	const [openModal, setOpenModal] = useState(false);
+	const [openPreviewEditModal, setOpenPreviewEditModal] = useState(false);
 	const dispatch = useAppDispatch();
 
 	const handleOrderStatusChanges = async (order_id, event) => {
@@ -35,11 +36,16 @@ const OrderStatusComponent = ({ row }) => {
 			}
 		} else if (order_status === 'completed') {
 			setOpenModal(true);
+			setOpenPreviewEditModal(false);
+		} else if (order_status === 'preview') {
+			setOpenPreviewEditModal(true);
+			setOpenModal(false);
 		}
 	};
 
 	const handleCloseModal = () => {
 		setOpenModal(false);
+		setOpenPreviewEditModal(false);
 		setOrderStatusValues(row?.original?.order_status);
 	};
 	const handleSubmit = async () => {
@@ -53,7 +59,7 @@ const OrderStatusComponent = ({ row }) => {
 				console.log(res);
 				if (res.data) {
 					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: res.data.data }));
-                    setOpenModal(false)
+					setOpenModal(false);
 				} else {
 					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: res.error.data.data }));
 					setOrderStatusValues(row?.original?.order_status);
@@ -91,6 +97,29 @@ const OrderStatusComponent = ({ row }) => {
 				)}
 				defaultChecked={row?.original?.order_status}
 			>
+				<option
+					className="bg-white text-black"
+					value=""
+				>
+					Order Status
+				</option>
+				{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'approved' ? (
+					<option
+						className="bg-white text-black"
+						value="preview"
+					>
+						Preview Edit
+					</option>
+				) : row?.original?.preview_edit_status === 'approved' ? (
+					<option
+						className="bg-white text-black"
+						value="editing"
+					>
+						Editing
+					</option>
+				) : (
+					<></>
+				)}
 				{orderStatusOptions?.map((orderData, i) => (
 					<option
 						className="bg-white text-black"
@@ -102,12 +131,18 @@ const OrderStatusComponent = ({ row }) => {
 				))}
 			</select>
 			<DriveLinkProviderComponent
-				openModal={openModal}
+				openModal={openModal || openPreviewEditModal}
 				handleCloseModal={handleCloseModal}
 				handleSubmit={handleSubmit}
 				error={driveLinkError}
 				setDriveLink={setDriveLink}
 				isLoading={isLoading}
+				title={
+					openPreviewEditModal
+						? 'Paste the link to the Preview Edit Images'
+						: 'Paste the link to the edited images for this order'
+				}
+				btnText={openPreviewEditModal ? 'Ask user to review' : 'Save Changes'}
 			/>
 		</Typography>
 	);

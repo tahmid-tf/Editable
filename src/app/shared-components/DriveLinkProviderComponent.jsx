@@ -12,7 +12,16 @@ const style = {
 	p: 4,
 	borderRadius: 2
 };
-const DriveLinkProviderComponent = ({ openModal, handleCloseModal, isLoading, setDriveLink, error, handleSubmit }) => {
+const DriveLinkProviderComponent = ({
+	openModal,
+	handleCloseModal,
+	isLoading,
+	title,
+	btnText,
+	setDriveLink,
+	error,
+	handleSubmit
+}) => {
 	return (
 		<Modal
 			open={openModal}
@@ -37,9 +46,7 @@ const DriveLinkProviderComponent = ({ openModal, handleCloseModal, isLoading, se
 						textAlign={'center'}
 						mt={4}
 					>
-						<Typography className="text-[24px] font-normal leading-[24px]">
-							Paste the link to the edited images for this order
-						</Typography>
+						<Typography className="text-[24px] font-normal leading-[24px]">{title}</Typography>
 						<Typography className="text-[12px] font-normal leading-[12px] mt-5">
 							Order Id: 123131
 						</Typography>
@@ -98,7 +105,7 @@ const DriveLinkProviderComponent = ({ openModal, handleCloseModal, isLoading, se
 							size="large"
 							onClick={handleSubmit}
 						>
-							Save Changes
+							{btnText}
 							{isLoading ? (
 								<Box
 									sx={{

@@ -27,6 +27,7 @@ import OrderStatusComponent from './OrderStatusComponent';
 import OrderEditModal from './OrderEditModal';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 import AssignEditorComponent from './AssignEditorComponent';
+import CustomPagination from 'app/shared-components/data-table/CustomPagination';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -205,22 +206,110 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			size: 170
 		},
 		{
-			accessorKey: 'files',
-			header: 'Files',
-			Cell: () => (
-				<Link
-					to={'#'}
-					className="!text-[#0066ff]"
+			accessorKey: 'file_uploaded_by_user',
+			header: (
+				<Tooltip
+					title={`${userType?.includes('admin') ? 'Files' : 'My Drive Link'}`}
+					placement="top-start"
 				>
-					Download
-				</Link>
+					<span>{userType?.includes('admin') ? 'Files' : 'My Drive Link'}</span>
+				</Tooltip>
 			),
-			size: 90
+			Cell: ({ row }) =>
+				userType?.includes('admin') ? (
+					<div className="inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] bg-black text-white">
+						<Link
+							to={row?.original?.file_uploaded_by_user}
+							type="button"
+							target="_blank"
+							className="tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none"
+						>
+							Download
+						</Link>
+					</div>
+				) : (
+					<Link
+						to={row?.original?.file_uploaded_by_user}
+						className="!text-[#0066ff] !border-[#0066ff] !bg-transparent"
+						target="_blank"
+					>
+						My Drive
+					</Link>
+				)
+			// size: 90
 		},
 		{
 			accessorKey: 'order_status',
 			header: 'Status',
 			Cell: ({ row }) => <OrderStatusComponent row={row} />
+		},
+		{
+			index: 14,
+			accessorKey: 'download',
+			header: 'Download Link',
+			Cell: ({ row }) =>
+				calculateRemainingDays(row?.original?.created_at) > 7 ? (
+					<Typography sx={{ color: 'red' }}>Link Expired</Typography>
+				) : (
+					<div className="flex">
+						<div
+							className={clsx(
+								'inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] text-white',
+								!row?.original?.file_uploaded_by_admin_after_edit?.length ? 'bg-[#CBCBCB]' : 'bg-black'
+							)}
+						>
+							<Link
+								to={row?.original?.file_uploaded_by_admin_after_edit}
+								type="button"
+								target="_blank"
+								className={clsx(
+									'tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none',
+									!row?.original?.file_uploaded_by_admin_after_edit?.length && 'cursor-not-allowed'
+								)}
+								onClick={(e) => {
+									if (!row?.original?.file_uploaded_by_admin_after_edit?.length) {
+										e.preventDefault();
+									}
+								}}
+							>
+								Download
+							</Link>
+						</div>
+						<Tooltip
+							color="red"
+							placement="right"
+							title={
+								<span className="text-[16px]">
+									{`Please download the images within 7 days of order completion. We delete everything after 7 days. Remaining Days: 0${calculateRemainingDays(row?.original?.created_at)}/07`}
+								</span>
+							}
+							componentsProps={{
+								tooltip: {
+									sx: {
+										fontSize: '16px',
+										backgroundColor: 'white', // Customize the background color
+										color: 'black', // Customize the text color
+										boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+										padding: '10px',
+										borderRadius: '10px'
+									}
+								}
+							}}
+						>
+							<button
+								onClick={() => {
+									console.log('info icon clicked');
+								}}
+								type="button"
+							>
+								<AiFillInfoCircle
+									className="ml-4 text-[#F29339]"
+									size={14}
+								/>
+							</button>
+						</Tooltip>
+					</div>
+				)
 		}
 	];
 	const additionalColumns = [
@@ -319,33 +408,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					</Tooltip>
 				</Box>
 			)
-		},
-		{
-			index: 14,
-			accessorKey: 'download',
-			header: 'Download Link',
-			Cell: ({ row }) => (
-				// <div
-				// 	className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
-				// >
-				<Link
-					to={'#'}
-					className="!text-[#0066ff]"
-					// type="button"
-					// // href={row?.original?.files}
-					// // target="_blank"
-					// // download
-					// className="tracking-[0.2px] leading-[20px] font-medium"
-					// style={{
-					// 	textDecoration: 'none',
-					// 	color: 'white'
-					// }}
-					// disabled
-				>
-					Download
-				</Link>
-				// </div>
-			)
 		}
 	];
 
@@ -397,7 +459,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		// Function to calculate and set the column width
 		const updateColumnWidth = () => {
 			if (ref.current) {
-				setColumnWidth((ref.current.clientWidth - 78) / 8);
+				setColumnWidth((ref.current.clientWidth - 78) / 9);
 			}
 		};
 
@@ -515,50 +577,13 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					) : (
 						<></>
 					)}
-
-					<div className="py-36">
-						<div className="flex justify-center items-center">
-							<Pagination
-								count={data?.data?.last_page}
-								page={currentPage}
-								onChange={handleChangePage}
-								variant="text"
-								shape="rounded"
-								sx={{
-									'& .MuiPaginationItem-root': {
-										// color: '#0066ff',
-										'&.Mui-selected': {
-											backgroundColor: '#0066ff',
-											color: 'white'
-										},
-										'&.Mui-selected:hover': {
-											bgcolor: '#0066ff'
-										},
-										'& button:hover': {
-											backgroundColor: 'rgba(0, 102, 255, 0.1)'
-										}
-									}
-								}}
-							/>
-							<Select
-								sx={{
-									width: 70,
-									height: 5,
-									pt: '5px'
-								}}
-								variant="outlined"
-								value={rowPerPage}
-								onChange={(e) => {
-									setRowPerPage(e.target.value);
-									setPage(1);
-								}}
-							>
-								<MenuItem value={10}>10</MenuItem>
-								<MenuItem value={20}>20</MenuItem>
-								<MenuItem value={30}>30</MenuItem>
-							</Select>
-						</div>
-					</div>
+					<CustomPagination
+						totalPage={data?.data?.last_page}
+						page={currentPage}
+						setPage={setCurrentPage}
+						rowPerPage={rowPerPage}
+						setRowPerPage={setRowPerPage}
+					/>
 					<OrderDetailsModal
 						orderDetailsOpen={orderDetailsOpen}
 						handleOrderDetailsClose={handleOrderDetailsClose}
