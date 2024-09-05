@@ -14,7 +14,6 @@ class AdminPreviewEditController extends Controller
 {
 
     // -------------------- Upload edited image link --------------------
-
     public function uploadPreviewImageLink(Request $request)
     {
         try {
@@ -76,7 +75,6 @@ class AdminPreviewEditController extends Controller
         }
 
     }
-
 
     // -------------------- Stage 4 - Admin can send again a link again if its rejected --------------------
 
@@ -153,5 +151,55 @@ class AdminPreviewEditController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->validator->errors()], 422);
         }
+    }
+
+
+    // -------------------- retrieving all specific preview edits data from specific orders --------------------
+
+    public function retrievePreviewEditsData(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'order_id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $inputs = $validator->validated();
+            $order_id = $inputs['order_id'];
+
+            $order = Order::find($order_id);
+
+            // checking if order data really exists
+
+            if (!$order) {
+                return response()->json([
+                    'data' => 'Order data not found',
+                    'status' => 404,
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            if ($order->preview_edits == "yes") {
+                $preview_edits_data = PreviewEdit::where('order_id', $order->id)->orderBy('id', 'desc')->get();
+
+                return response()->json([
+                    'data' => $preview_edits_data,
+                    'status' => Response::HTTP_OK,
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => 'No preview edits available for this order.',
+                    'status' => Response::HTTP_NOT_FOUND,
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 422);
+        }
+
+
     }
 }

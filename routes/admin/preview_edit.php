@@ -16,4 +16,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin/preview')->group(fun
 
     Route::post('new_request_after_rejection', [AdminPreviewEditController::class, 'requestAgainAfterRejection']);
 
+    // -------------------- retrieving all specific preview edits data from specific orders --------------------
+
+    Route::get('retrieving_preview_edits_data', [AdminPreviewEditController::class, 'retrievePreviewEditsData']);
+
 });
+
