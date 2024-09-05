@@ -16,7 +16,7 @@ const style = {
 	boxShadow: 24
 };
 const validationSchema = Yup.object({
-	number: Yup.string().required('required'),
+	number: Yup.number().required('required'),
 	exp_month: Yup.string().required('required'),
 	exp_year: Yup.string().required('required'),
 	cvc: Yup.string().required('required')
@@ -112,7 +112,7 @@ const PaymentModal = ({
 												Card Number
 											</label>
 											<Field
-												type="string"
+												type="number"
 												name="number"
 												placeholder=""
 												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"

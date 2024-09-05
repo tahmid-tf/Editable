@@ -30,9 +30,13 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 		<Card
 			sx={{
 				width: '80%',
-				backgroundColor: '#F2F2F7',
 				height: '100%',
-				alignSelf: index % 2 === 0 ? 'flex-start' : 'flex-end'
+				alignSelf: index % 2 === 0 ? 'flex-start' : 'flex-end',
+				bgcolor: '#F2F4F5',
+				boxShadow: 'none',
+				borderRadius: '16px',
+				borderTopLeftRadius: index % 2 === 0 ? 0 : '16px',
+				borderBottomRightRadius: index % 2 === 0 ? '16px' : '0'
 			}}
 		>
 			<CardContent sx={{ pb: '16px !important' }}>
@@ -47,7 +51,7 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
 						<Typography
 							sx={{
-								fontSize: '14px',
+								fontSize: '12px',
 								lineHeight: '18px',
 								color: '#2C2C2E'
 							}}
@@ -56,8 +60,8 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 						</Typography>
 						<Typography
 							sx={{
-								fontSize: '12px',
-								lineHeight: '15px',
+								fontSize: '10px',
+								lineHeight: '12px',
 								color: '#666668'
 							}}
 						>
@@ -89,14 +93,14 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 				</Box>
 				<Box
 					width={'80%'}
-					mt={1}
+					mt={0.3}
 				>
 					<Typography
 						sx={{
 							fontSize: '16px',
 							fontWeight: 400,
-							lineHeight: '150%',
-							color: '#2C2C2E'
+							lineHeight: '24px',
+							color: '#303437'
 						}}
 					>
 						{messageInfo.message}
