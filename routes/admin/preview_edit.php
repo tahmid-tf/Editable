@@ -14,4 +14,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin/preview')->group(fun
 
     // -------------------- Stage 4 - Admin can send again a link again if its rejected --------------------
 
+    Route::post('new_request_after_rejection', [AdminPreviewEditController::class, 'requestAgainAfterRejection']);
+
 });

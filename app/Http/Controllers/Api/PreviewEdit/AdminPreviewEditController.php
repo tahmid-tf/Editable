@@ -76,4 +76,82 @@ class AdminPreviewEditController extends Controller
         }
 
     }
+
+
+    // -------------------- Stage 4 - Admin can send again a link again if its rejected --------------------
+
+
+    public function requestAgainAfterRejection(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'order_id' => 'required',
+                'preview_link' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $inputs = $validator->validated();
+
+
+            // ----------------- validating if order exists
+
+            $order = Order::find($inputs['order_id']);
+
+            if (!$order) {
+                return response()->json([
+                    'data' => 'Order data not found',
+                    'status' => 404,
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // ----------------- if its not found in preview edits table
+
+            $preview_order_data = PreviewEdit::where('order_id', $inputs['order_id'])->orderBy('id', 'desc')->first();
+
+            if (!$preview_order_data) {
+                return response()->json([
+                    'data' => 'Preview order data data not found',
+                    'status' => 404,
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+
+            // ----------------------- validating if the last request was rejected -----------------------
+
+            if (!$preview_order_data->users_decision == "rejected") {
+                return response()->json([
+                    'data' => "The last request wasn't rejected by the user",
+                    'status' => 409,
+                ], Response::HTTP_CONFLICT);
+            }
+
+            // ----------------------- adding a new preview edit row if the latest one is rejected -----------------------
+
+            PreviewEdit::create([
+                'order_id' => $order->id,
+                'preview_link' => $inputs['preview_link'],
+            ]);
+
+            // ----------------------- adding a new preview edit row if the latest one is rejected -----------------------
+
+
+            $order->update([
+                'preview_edit_status' => 'user_review_pending',
+                'order_status' => 'pending'
+            ]);
+
+            return response()->json([
+                'data' => 'New preview edit link updated successfully after rejected by the user',
+                'preview_link' => $inputs['preview_link'],
+                'order_id' => $inputs['order_id'],
+                'status' => Response::HTTP_OK,
+            ], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 422);
+        }
+    }
 }
