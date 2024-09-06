@@ -47,16 +47,20 @@ class EditOrderController extends Controller
 
             // --------------- validating if editor is not found
 
-//            $editor = Editor::find($inputs['editor_id']);
-//
-//            if (!$editor) {
-//                return response()->json([
-//                    'message' => 'Editor not found',
-//                    'status' => 404,
-//                ], Response::HTTP_NOT_FOUND);
-//            }
+            if (isset($inputs['editor_id']) && $inputs['editor_id'] != null) {
+
+                $editor = Editor::find($inputs['editor_id']);
+
+                if (!$editor) {
+                    return response()->json([
+                        'message' => 'Editor not found',
+                        'status' => 404,
+                    ], Response::HTTP_NOT_FOUND);
+                }
+            }
 
             // --------------- if order work is not completed
+
 
 
             // ----------------------------------- operations for preview edit link
