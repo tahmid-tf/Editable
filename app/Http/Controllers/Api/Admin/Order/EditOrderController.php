@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Models\Api\Admin\Order;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\PreviewEdit;
 
 class EditOrderController extends Controller
 {
@@ -20,7 +21,7 @@ class EditOrderController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'order_id' => 'required',
-                'editor_id' => 'required',
+                'editor_id' => 'nullable',
                 'order_status' => 'nullable|in:pending,completed,cancelled',
                 'payment_status' => 'nullable|in:pending,successful,failed',
                 'preview_edit_link' => 'nullable',
@@ -46,16 +47,25 @@ class EditOrderController extends Controller
 
             // --------------- validating if editor is not found
 
-            $editor = Editor::find($inputs['editor_id']);
-
-            if (!$editor) {
-                return response()->json([
-                    'message' => 'Editor not found',
-                    'status' => 404,
-                ], Response::HTTP_NOT_FOUND);
-            }
+//            $editor = Editor::find($inputs['editor_id']);
+//
+//            if (!$editor) {
+//                return response()->json([
+//                    'message' => 'Editor not found',
+//                    'status' => 404,
+//                ], Response::HTTP_NOT_FOUND);
+//            }
 
             // --------------- if order work is not completed
+
+
+            // ----------------------------------- operations for preview edit link
+
+            if ($order->preview_edits == "yes") {
+                if (PreviewEdit::where('order_id', $inputs['order_id'])->orderBy('id', 'desc')->first()->preview_link != null) {
+                    PreviewEdit::where('order_id', $inputs['order_id'])->orderBy('id', 'desc')->first()->update(['preview_link' => $inputs['preview_edit_link']]);
+                }
+            }
 
 
             if ($order->order_status != 'completed' && $inputs['order_status'] == 'completed') {
@@ -116,38 +126,6 @@ class EditOrderController extends Controller
 //                    'data' => $order,
                 ], 200);
             }
-
-            // ----------------------------------- if order status is in preview mode
-
-//            if ($order->order_status == 'preview') {
-//
-//                Order::where('id', $inputs['order_id'])->update([
-//                    'editors_id' => $inputs['editor_id'],
-//                    'payment_status' => $inputs['payment_status'],
-//                ]);
-//
-//                return response()->json([
-//                    'message' => 'Order Status is currently on preview state, please complete the process from the list, the Editors information and payment status is being updated.',
-//                    'order_id' => $order->order_id,
-//                    'status' => 200,
-//                ], 200);
-//            }
-
-            // --------------- Updating order
-
-//            Order::where('id', $inputs['order_id'])->update([
-//                'editors_id' => $inputs['editor_id'],
-//                'order_status' => $inputs['order_status'],
-//                'payment_status' => $inputs['payment_status'],
-//                'file_uploaded_by_admin_after_edit' => $inputs['file_uploaded_by_admin_after_edit'],
-//            ]);
-
-            // --------------- preview edits [ Still on progress ]
-
-//            return response()->json([
-//                'message' => 'Order Status Updated Successfully',
-//                'status' => 200,
-//            ], 200);
 
 
         } catch (ValidationException $e) {

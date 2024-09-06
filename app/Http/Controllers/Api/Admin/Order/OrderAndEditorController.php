@@ -7,6 +7,7 @@ use App\Models\Api\Admin\Category;
 use App\Models\Api\Admin\Editor;
 use App\Models\Api\Admin\Order;
 use App\Models\Api\Admin\Style;
+use App\Models\PreviewEdit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -34,7 +35,7 @@ class OrderAndEditorController extends Controller
         $style_data = Style::withTrashed()->whereIn('id', $stylesArray)->get() ?? [];
         $order->category_name = Category::withTrashed()->find($order['category_id'])->category_name ?? null;
 
-        $order->preview_edit_link = null;
+        $order->preview_edit_link = PreviewEdit::where('order_id', $id)->orderBy('id', 'desc')->first()->preview_link ?? null;
 
         $order->styles_data = $style_data;
 
