@@ -5,10 +5,10 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useEffect, useState } from 'react';
 import { getOrdinal } from 'src/app/appUtils/appUtils';
 
-const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
+const PreviewEditReviewMessageCard = ({ messageInfo, index, userName }) => {
 	const [openCopyTooltip, setOpenCopyTooltip] = useState(false);
 
-	const copiedContent = `${messageInfo.message}`;
+	const copiedContent = `${messageInfo.comment}`;
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
@@ -56,7 +56,7 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 								color: '#2C2C2E'
 							}}
 						>
-							{messageInfo.name}
+							{userName}
 						</Typography>
 						<Typography
 							sx={{
@@ -103,7 +103,7 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 							color: '#303437'
 						}}
 					>
-						{messageInfo.message}
+						{messageInfo.comment}
 					</Typography>
 				</Box>
 				<Box
@@ -119,7 +119,7 @@ const PreviewEditReviewMessageCard = ({ messageInfo, index }) => {
 							color: '#666668'
 						}}
 					>
-						{dayjs(messageInfo.date).format('DD MMM YYYY')}
+						{dayjs(messageInfo.created_at).format('DD MMM YYYY')}
 					</Typography>
 				</Box>
 			</CardContent>

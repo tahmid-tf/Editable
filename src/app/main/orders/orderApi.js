@@ -22,6 +22,10 @@ const orderApi = apiService
 					`${userRole?.includes('admin') ? 'admin/order_list' : 'user/users_order_list'}?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${searchValue ? `&&email=${searchValue}` : ''}${orderStatusValue ? `&&order_status=${orderStatusValue}` : ''}${paymentStatusValue ? `&&payment_status=${paymentStatusValue}` : ''}${editorValue ? `&&editor=${editorValue}` : ''}${startDate ? `&&start_date=${startDate}` : ''}${endDate ? `&&end_date=${endDate}` : ''}`,
 				providesTags: ['orders']
 			}),
+			getAllPreviewEditsById: builder.query({
+				query: ({ rowPerPage, page, order_id }) =>
+					`admin/preview/retrieving_preview_edits_data?page=${page}${rowPerPage ? `&&paginate=${rowPerPage}` : ''}${order_id ? `&&order_id=${order_id}` : ''}`
+			}),
 			getValueForOrderCalculation: builder.mutation({
 				query: (body) => ({ url: 'admin/selected_style_with_amount_calculation', method: 'POST', body })
 			}),
@@ -84,6 +88,38 @@ const orderApi = apiService
 					body
 				}),
 				invalidatesTags: ['orders']
+			}),
+			uploadPreviewImage: builder.mutation({
+				query: (body) => ({
+					url: 'admin/preview/upload_preview_image_link',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
+			}),
+			reUploadPreviewImage: builder.mutation({
+				query: (body) => ({
+					url: 'admin/preview/new_request_after-rejection',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
+			}),
+			userPreviewEditDecision: builder.mutation({
+				query: (body) => ({
+					url: 'user/preview/decision',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
+			}),
+			getPreviewLink: builder.mutation({
+				query: (body) => ({
+					url: 'user/preview/preview_link',
+					method: 'POST',
+					body
+				}),
+				invalidatesTags: ['orders']
 			})
 		})
 	});
@@ -99,5 +135,10 @@ export const {
 	useGetOrderDetailsQuery,
 	useUpdateOrderStatusMutation,
 	useCompleteOrderMutation,
-	useEditOrderMutation
+	useEditOrderMutation,
+	useUploadPreviewImageMutation,
+	useReUploadPreviewImageMutation,
+	useUserPreviewEditDecisionMutation,
+	useGetPreviewLinkMutation,
+	useGetAllPreviewEditsByIdQuery
 } = orderApi;

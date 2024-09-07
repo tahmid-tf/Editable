@@ -1,6 +1,11 @@
 import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useCompleteOrderMutation, useUpdateOrderStatusMutation } from '../orderApi';
+import {
+	useCompleteOrderMutation,
+	useReUploadPreviewImageMutation,
+	useUpdateOrderStatusMutation,
+	useUploadPreviewImageMutation
+} from '../orderApi';
 import { orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import clsx from 'clsx';
 import { useAppDispatch } from 'app/store/hooks';
@@ -10,6 +15,9 @@ import DriveLinkProviderComponent from 'app/shared-components/DriveLinkProviderC
 const OrderStatusComponent = ({ row }) => {
 	const [updateOrderStatus] = useUpdateOrderStatusMutation();
 	const [completeOrder, { isLoading }] = useCompleteOrderMutation();
+	const [uploadPreviewImage, { isLoading: uploadPreviewImageLoading }] = useUploadPreviewImageMutation();
+	const [reUploadPreviewImage, { isLoading: reUploadPreviewImageLoading }] = useReUploadPreviewImageMutation();
+
 	const [orderStatusValues, setOrderStatusValues] = useState('');
 	const [driveLink, setDriveLink] = useState('');
 	const [driveLinkError, setDriveLinkError] = useState('');
@@ -51,15 +59,27 @@ const OrderStatusComponent = ({ row }) => {
 	const handleSubmit = async () => {
 		if (driveLink?.length) {
 			try {
-				const res = await completeOrder({
-					order_status: orderStatusValues,
-					order_id: row?.original?.id,
-					uploaded_drive_link: driveLink
-				});
+				const res =
+					!openPreviewEditModal && openModal
+						? await completeOrder({
+								order_status: orderStatusValues,
+								order_id: row?.original?.id,
+								uploaded_drive_link: driveLink
+							})
+						: openPreviewEditModal && row?.original?.preview_edit_status === 'rejected'
+							? await reUploadPreviewImage({
+									order_id: row?.original?.id,
+									preview_link: driveLink
+								})
+							: await uploadPreviewImage({
+									order_id: row?.original?.id,
+									preview_link: driveLink
+								});
 				console.log(res);
 				if (res.data) {
 					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: res.data.data }));
 					setOpenModal(false);
+					setOpenPreviewEditModal(false);
 				} else {
 					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: res.error.data.data }));
 					setOrderStatusValues(row?.original?.order_status);
@@ -103,14 +123,14 @@ const OrderStatusComponent = ({ row }) => {
 				>
 					Order Status
 				</option>
-				{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'approved' ? (
+				{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'accepted' ? (
 					<option
 						className="bg-white text-black"
 						value="preview"
 					>
 						Preview Edit
 					</option>
-				) : row?.original?.preview_edit_status === 'approved' ? (
+				) : row?.original?.preview_edit_status === 'accepted' ? (
 					<option
 						className="bg-white text-black"
 						value="editing"
@@ -136,7 +156,7 @@ const OrderStatusComponent = ({ row }) => {
 				handleSubmit={handleSubmit}
 				error={driveLinkError}
 				setDriveLink={setDriveLink}
-				isLoading={isLoading}
+				isLoading={isLoading || uploadPreviewImageLoading}
 				title={
 					openPreviewEditModal
 						? 'Paste the link to the Preview Edit Images'

@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Grid, Modal, Tooltip, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { useGetOrderDetailsQuery } from '../orderApi';
+import { useGetAllPreviewEditsByIdQuery, useGetOrderDetailsQuery } from '../orderApi';
 import { calculateDeliveryDays, getOrdinal, getStyleAndAdditionalStyleName } from 'src/app/appUtils/appUtils';
 import { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -37,8 +37,10 @@ const style = {
 
 const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClose }) => {
 	const [openCopyTooltip, setOpenCopyTooltip] = useState(false);
+	const { data: prevEditsData } = useGetAllPreviewEditsByIdQuery({ order_id: selectedId }, { skip: !selectedId });
 
 	const { data } = useGetOrderDetailsQuery(selectedId, { skip: !selectedId });
+	console.log(data);
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
@@ -342,10 +344,12 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 								fontSize: '16px',
 								fontWeight: 500,
 								lineHeight: '20px',
-								color: '#CB1717'
+								color: data?.data?.preview_edit_status === 'rejected' ? '#CB1717' : 'black'
 							}}
 						>
-							Rejected
+							{data?.data?.preview_edit_status === 'user_review_pending'
+								? 'User Review Pending'
+								: data?.data?.preview_edit_status}
 						</Typography>
 					</Box>
 				</Box>
@@ -357,10 +361,11 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 						mt: 2
 					}}
 				>
-					{previewEditsMessage.map((info, i) => (
+					{prevEditsData?.data?.map((info, i) => (
 						<PreviewEditReviewMessageCard
 							messageInfo={info}
 							index={i}
+							userName={data?.data?.users_name}
 						/>
 					))}
 				</Box>

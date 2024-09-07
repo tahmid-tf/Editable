@@ -28,6 +28,7 @@ import OrderEditModal from './OrderEditModal';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 import AssignEditorComponent from './AssignEditorComponent';
 import CustomPagination from 'app/shared-components/data-table/CustomPagination';
+import PreviewEditStatusComponent from './PreviewEditStatusComponent';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -151,28 +152,13 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'previewstatus',
 			header: 'Preview',
 			// eslint-disable-next-line react/no-unstable-nested-components
-			Cell: ({ row }) => {
-				// console.log({ row });
-
-				return (
-					<div
-						className={clsx(
-							'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
-							row?.original?.previewstatus === 'Approved'
-								? 'bg-[#039855] text-white'
-								: row?.original?.previewstatus === 'Rejected'
-									? 'bg-[#CB1717] text-white'
-									: row?.original?.previewstatus === 'Pending'
-										? 'bg-[#FFCC00] text-black'
-										: 'bg-[#CBCBCB] text-black'
-						)}
-					>
-						<div className="tracking-[0.2px] leading-[20px] text-[12px]">
-							{row?.original?.previewstatus ? row?.original?.previewstatus : 'N/A'}
-						</div>
-					</div>
-				);
-			}
+			Cell: ({ row }) => (
+				<PreviewEditStatusComponent
+					row={row}
+					userType={userType}
+				/>
+			),
+			size: 165
 		},
 		{
 			accessorKey: 'editor',
