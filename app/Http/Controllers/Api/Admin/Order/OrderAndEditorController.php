@@ -31,6 +31,15 @@ class OrderAndEditorController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        if (auth()->user()->role == "user"){
+            if (auth()->user()->email != $order->users_email) {
+                return response()->json([
+                    'status' => Response::HTTP_FORBIDDEN,
+                    'data' => 'Order data does not belong to the user',
+                ], Response::HTTP_FORBIDDEN);
+            }
+        }
+
         $stylesArray = json_decode($order['styles_array'], true);
         $style_data = Style::withTrashed()->whereIn('id', $stylesArray)->get() ?? [];
         $order->category_name = Category::withTrashed()->find($order['category_id'])->category_name ?? null;

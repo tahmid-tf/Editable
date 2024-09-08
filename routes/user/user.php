@@ -34,12 +34,15 @@ Route::middleware(['auth:sanctum', 'user'])->prefix('user')->group(function () {
 
 //    -------------------------------------- search style by categories  --------------------------------------
 
-//    -------------------------------------- order list, storing order with payment gateway --------------------------------------
+//    -------------------------------------- order list, single order info, storing order with payment gateway --------------------------------------
 
     Route::get('users_order_list', [UserTableDataController::class, 'users_order_data']);
+    Route::get('order_info/{id}', [\App\Http\Controllers\Api\Admin\Order\OrderAndEditorController::class, 'view']);
     Route::post('order_store', [\App\Http\Controllers\Api\User\Order\OrderController::class, 'store']);
 
-//    -------------------------------------- order list, storing order with payment gateway --------------------------------------
+//    -------------------------------------- order list, single order info, storing order with payment gateway --------------------------------------
+
+
 
 
 
