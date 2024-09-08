@@ -45,9 +45,19 @@ function JwtAuthProvider(props) {
 	 * Handle sign-up success
 	 */
 	const handleSignUpSuccess = useCallback((userData, accessToken) => {
+		const formattedUserData = {
+			...userData,
+			uid: userData?.id,
+			role: [userData?.role],
+			data: {
+				displayName: userData?.name,
+				email: userData?.email
+			}
+		};
+
 		setSession(accessToken);
 		setIsAuthenticated(true);
-		setUser(userData);
+		setUser(formattedUserData);
 	}, []);
 	/**
 	 * Handle sign-in failure

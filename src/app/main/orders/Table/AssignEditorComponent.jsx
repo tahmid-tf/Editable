@@ -12,17 +12,20 @@ const AssignEditorComponent = ({ row, editorData }) => {
 	const [assignEditor] = useAssignEditorMutation();
 	const dispatch = useAppDispatch();
 	const handleEditorChange = async (editor_id, order_id) => {
-		try {
-			const res = await assignEditor({ editor_id: parseFloat(editor_id), order_id });
+		if (editor_id !== null && editor_id !== undefined && editor_id !== '') {
 			setSelectedEditor(editor_id);
-			if (res.data) {
-				dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'New Editor assigned' }));
-			} else {
-				setSelectedEditor(parseFloat(row?.original?.editors_id));
+			try {
+				const res = await assignEditor({ editor_id: parseFloat(editor_id), order_id });
+
+				if (res.data) {
+					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: 'New Editor assigned' }));
+				} else {
+					setSelectedEditor(parseFloat(row?.original?.editors_id));
+					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
+				}
+			} catch (error) {
 				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
 			}
-		} catch (error) {
-			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: 'Editor assigned failed' }));
 		}
 	};
 	useEffect(() => {
@@ -36,10 +39,7 @@ const AssignEditorComponent = ({ row, editorData }) => {
 			)}
 		>
 			<select
-				className={clsx(
-					'inline-flex items-center w-full text-[12px] text-black',
-					
-				)}
+				className={clsx('inline-flex items-center w-full text-[12px] text-black')}
 				value={selectedEditor}
 				onChange={(e) => handleEditorChange(e.target.value, row.original.id)}
 			>

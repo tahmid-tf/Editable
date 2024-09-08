@@ -10,6 +10,6 @@ const GeneralSettingsConfig = {
 			element: <GeneralSettings />
 		}
 	],
-    auth:['user']
+    auth:['user','admin']
 };
 export default GeneralSettingsConfig;

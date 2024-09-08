@@ -16,6 +16,12 @@ export const commonNavigationItems = [
 		translate: 'Orders',
 		type: 'item',
 		url: 'orders'
+	},
+	{
+		id: 'general-settings',
+		title: 'General Settings',
+		type: 'item',
+		url: 'user/general-settings'
 	}
 ];
 const navigationConfig = [

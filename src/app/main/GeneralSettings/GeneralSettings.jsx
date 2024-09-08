@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import _ from 'lodash';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { selectUser } from 'src/app/auth/user/store/userSlice';
+import { selectUser, selectUserRole } from 'src/app/auth/user/store/userSlice';
 import { useResetPasswordMutation } from './GeneralSettingsApi';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
@@ -20,7 +20,6 @@ const schema = z
 			.nonempty('Please enter your password.')
 			.min(8, 'Password is too short - should be 8 chars minimum.'),
 		passwordConfirm: z.string().nonempty('Password confirmation is required')
-		
 	})
 	.refine((data) => data.newPassword === data.passwordConfirm, {
 		message: 'Passwords must match',
@@ -31,6 +30,8 @@ const GeneralSettings = () => {
 	const userInfo = useAppSelector(selectUser);
 	const [resentPassword, { isLoading }] = useResetPasswordMutation();
 	const dispatch = useAppDispatch();
+	const userType = useAppSelector(selectUserRole);
+
 	const defaultValues = {
 		displayName: userInfo?.name,
 		email: userInfo?.email,
@@ -49,8 +50,8 @@ const GeneralSettings = () => {
 	async function onSubmit(formData) {
 		const { oldPassword, newPassword } = formData;
 		const response = await resentPassword({
-			old_password: oldPassword,
-			new_password: newPassword
+			body: { old_password: oldPassword, new_password: newPassword },
+			userType
 		});
 		console.log(response);
 

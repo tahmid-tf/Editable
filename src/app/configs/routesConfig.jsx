@@ -7,11 +7,10 @@ import SignUpConfig from '../main/sign-up/SignUpConfig';
 import SignOutConfig from '../main/sign-out/SignOutConfig';
 import Error404Page from '../main/404/Error404Page';
 import ExampleConfig from '../main/example/ExampleConfig';
-import Categories from '../main/admin/categories/Categories';
-import Styles from '../main/admin/styles/Styles';
 import OrdersConfig from '../main/orders/OrdersConfig';
 import adminConfig from '../main/admin/adminConfig';
 import userConfig from '../main/user/userConfig';
+import GeneralSettingsConfig from '../main/GeneralSettings/GeneralSettingsConfig';
 
 const routeConfigs = [
 	ExampleConfig,
@@ -19,6 +18,7 @@ const routeConfigs = [
 	SignInConfig,
 	SignUpConfig,
 	OrdersConfig,
+	GeneralSettingsConfig,
 	...adminConfig,
 	...userConfig
 ];

@@ -7,7 +7,7 @@ export const calculateRemainingDays = (orderDate) => {
 	const parsedOrderDate = dayjs(orderDate);
 
 	// Add 7 days to the parsed order date
-	const targetDate = parsedOrderDate.add(7, 'day');
+	const targetDate = parsedOrderDate.add(8, 'day');
 
 	// Get the current date
 	const currentDate = dayjs();

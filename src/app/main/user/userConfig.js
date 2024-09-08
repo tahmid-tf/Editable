@@ -1,5 +1,3 @@
-import GeneralSettingsConfig from './GeneralSettings/GeneralSettingsConfig';
-
-const userConfig = [GeneralSettingsConfig];
+const userConfig = [];
 
 export default userConfig;
