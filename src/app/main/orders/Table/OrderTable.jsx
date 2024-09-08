@@ -123,7 +123,13 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					<span>Remaining Days</span>
 				</Tooltip>
 			),
-			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>
+			Cell: ({ row }) => {
+				return row?.original?.order_delivery_date !== null ? (
+					<Box>{calculateRemainingDays(row?.original?.order_delivery_date)}/07 days</Box>
+				) : (
+					''
+				);
+			}
 		},
 		{
 			accessorKey: 'editor',
@@ -163,7 +169,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'download',
 			header: 'Download Link',
 			Cell: ({ row }) =>
-				row?.original?.order_delivery_date?.length &&
+				row?.original?.order_delivery_date !== null &&
 				calculateRemainingDays(row?.original?.order_delivery_date) < 1 ? (
 					<Typography sx={{ color: 'red' }}>Link Expired</Typography>
 				) : (
@@ -370,8 +376,8 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					userType={userType}
 					row={row}
 				/>
-			),
-			size: 100
+			)
+			// size: 100
 		}
 	];
 	const commonAdditionalColumns = [
