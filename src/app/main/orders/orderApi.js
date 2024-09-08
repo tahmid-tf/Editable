@@ -99,7 +99,7 @@ const orderApi = apiService
 			}),
 			reUploadPreviewImage: builder.mutation({
 				query: (body) => ({
-					url: 'admin/preview/new_request_after-rejection',
+					url: 'admin/preview/new_request_after_rejection',
 					method: 'POST',
 					body
 				}),

@@ -40,7 +40,6 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 	const { data: prevEditsData } = useGetAllPreviewEditsByIdQuery({ order_id: selectedId }, { skip: !selectedId });
 
 	const { data } = useGetOrderDetailsQuery(selectedId, { skip: !selectedId });
-	console.log(data);
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
@@ -344,6 +343,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 								fontSize: '16px',
 								fontWeight: 500,
 								lineHeight: '20px',
+								textTransform:'capitalize',
 								color: data?.data?.preview_edit_status === 'rejected' ? '#CB1717' : 'black'
 							}}
 						>

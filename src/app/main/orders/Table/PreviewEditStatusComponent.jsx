@@ -5,7 +5,7 @@ import EditPreviewStatusReviewModal from './EditPreviewStatusReviewModal';
 import { Tooltip } from '@mui/material';
 import { AiFillInfoCircle } from 'react-icons/ai';
 
-const PreviewEditStatusComponent = ({ row, userType }) => {
+const PreviewEditStatusComponent = ({ row, userType, setSelectedId, setOrderDetailsOpen }) => {
 	const [openPreviewEditReviewModal, setOpenPreviewEditReviewModal] = useState(false);
 
 	const handleClick = () => {
@@ -15,6 +15,10 @@ const PreviewEditStatusComponent = ({ row, userType }) => {
 	};
 	const handleModalClose = () => {
 		setOpenPreviewEditReviewModal(false);
+	};
+	const handleTooltipClick = () => {
+		setSelectedId(row?.original?.id);
+		setOrderDetailsOpen(true);
 	};
 	return (
 		<>
@@ -51,9 +55,18 @@ const PreviewEditStatusComponent = ({ row, userType }) => {
 					color="red"
 					placement="right"
 					title={
-						<span className="text-[16px]">
-							{`Shoot! It looks like the user didn't like what we created. Click ${(<strong>HERE</strong>)} to find out why.`}
-						</span>
+						<>
+							<span className="text-[16px]">
+								Shoot! It looks like the user didn't like what we created. Click
+							</span>
+							<span
+								className="font-semibold underline cursor-pointer ml-[3px]"
+								onClick={handleTooltipClick}
+							>
+								HERE
+							</span>
+							<span> to find out why.</span>
+						</>
 					}
 					componentsProps={{
 						tooltip: {

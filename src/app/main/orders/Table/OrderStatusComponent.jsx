@@ -12,7 +12,7 @@ import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import DriveLinkProviderComponent from 'app/shared-components/DriveLinkProviderComponent';
 
-const OrderStatusComponent = ({ row }) => {
+const OrderStatusComponent = ({ row, userType }) => {
 	const [updateOrderStatus] = useUpdateOrderStatusMutation();
 	const [completeOrder, { isLoading }] = useCompleteOrderMutation();
 	const [uploadPreviewImage, { isLoading: uploadPreviewImageLoading }] = useUploadPreviewImageMutation();
@@ -98,65 +98,71 @@ const OrderStatusComponent = ({ row }) => {
 	return (
 		<Typography
 			className={clsx(
-				'inline-flex items-center px-[8px] py-[2px] rounded-full w-full ',
+				'inline-flex items-center px-[8px] py-[2px] rounded-full ',
 				(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#FFCC00] text-black',
 				(orderStatusValues || row?.original?.order_status) === 'completed' && 'bg-[#039855] text-white ',
 				(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#CB1717] text-white',
-				(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black'
+				(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black',
+				userType?.includes('admin') ? 'w-full' : 'capitalize text-[12px] tracking-[0.2px] leading-[20px]'
 			)}
 		>
-			<select
-				value={orderStatusValues ? orderStatusValues : row?.original?.order_status}
-				onChange={(event) => handleOrderStatusChanges(row?.original?.id, event)}
-				className={clsx(
-					'inline-flex items-center !w-full text-[12px]',
-					(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#FFCC00] text-black',
-					(orderStatusValues || row?.original?.order_status) === 'completed' && 'bg-[#039855] text-white ',
-					(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#CB1717] text-white',
-					(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black'
-				)}
-				defaultChecked={row?.original?.order_status}
-			>
-				<option
-					className="bg-white text-black"
-					value=""
+			{userType?.includes('admin') ? (
+				<select
+					value={orderStatusValues ? orderStatusValues : row?.original?.order_status}
+					onChange={(event) => handleOrderStatusChanges(row?.original?.id, event)}
+					className={clsx(
+						'inline-flex items-center !w-full text-[12px]',
+						(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#FFCC00] text-black',
+						(orderStatusValues || row?.original?.order_status) === 'completed' &&
+							'bg-[#039855] text-white ',
+						(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#CB1717] text-white',
+						(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black'
+					)}
+					defaultChecked={row?.original?.order_status}
 				>
-					Order Status
-				</option>
-				{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'accepted' ? (
 					<option
 						className="bg-white text-black"
-						value="preview"
+						value=""
 					>
-						Preview Edit
+						Order Status
 					</option>
-				) : row?.original?.preview_edit_status === 'accepted' ? (
-					<option
-						className="bg-white text-black"
-						value="editing"
-					>
-						Editing
-					</option>
-				) : (
-					<></>
-				)}
-				{orderStatusOptions?.map((orderData, i) => (
-					<option
-						className="bg-white text-black"
-						value={orderData.value}
-						key={i}
-					>
-						{orderData.name}
-					</option>
-				))}
-			</select>
+					{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'accepted' ? (
+						<option
+							className="bg-white text-black"
+							value="preview"
+						>
+							Preview Edit
+						</option>
+					) : row?.original?.preview_edit_status === 'accepted' ? (
+						<option
+							className="bg-white text-black"
+							value="editing"
+						>
+							Editing
+						</option>
+					) : (
+						<></>
+					)}
+					{orderStatusOptions?.map((orderData, i) => (
+						<option
+							className="bg-white text-black"
+							value={orderData.value}
+							key={i}
+						>
+							{orderData.name}
+						</option>
+					))}
+				</select>
+			) : (
+				row?.original?.order_status
+			)}
 			<DriveLinkProviderComponent
 				openModal={openModal || openPreviewEditModal}
 				handleCloseModal={handleCloseModal}
 				handleSubmit={handleSubmit}
 				error={driveLinkError}
 				setDriveLink={setDriveLink}
-				isLoading={isLoading || uploadPreviewImageLoading}
+				isLoading={isLoading || uploadPreviewImageLoading || reUploadPreviewImageLoading}
 				title={
 					openPreviewEditModal
 						? 'Paste the link to the Preview Edit Images'

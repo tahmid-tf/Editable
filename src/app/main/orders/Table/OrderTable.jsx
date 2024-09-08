@@ -12,7 +12,7 @@ import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
-import { useGetOrdersDataQuery, useUpdateOrderStatusMutation } from '../orderApi';
+import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import OrderDetailsModal from './OrderDetailsModal';
@@ -55,7 +55,10 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
-	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
+	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery(
+		{ page: 1, rowPerPage: 10000 },
+		{ skip: !userType?.includes('admin') }
+	);
 	// console.log(editorData.data.data);
 	// fetch table data
 	const { data, isLoading } = params?.email
@@ -108,33 +111,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
-
-	const initialColumns = [
-		{
-			id: 'order_date_formatted',
-			accessorKey: 'order_date',
-			header: 'Date',
-			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
-			sortingFn: (rowA, rowB, columnId) => {
-				const dateA = new Date(rowA.original.created_at).getTime();
-				const dateB = new Date(rowB.original.created_at).getTime();
-
-				if (dateA < dateB) {
-					return -1;
-				}
-				if (dateA > dateB) {
-					return 1;
-				}
-				return 0;
-			}
-		},
-		{
-			accessorKey: 'id',
-			header: 'ID',
-			Cell: ({ row }) => row.original.order_id,
-
-			size: showAllColumns ? null : 90
-		},
+	const adminColumn = [
 		{
 			id: 'remaining_days',
 			accessorKey: 'order_date',
@@ -147,18 +124,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				</Tooltip>
 			),
 			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>
-		},
-		{
-			accessorKey: 'previewstatus',
-			header: 'Preview',
-			// eslint-disable-next-line react/no-unstable-nested-components
-			Cell: ({ row }) => (
-				<PreviewEditStatusComponent
-					row={row}
-					userType={userType}
-				/>
-			),
-			size: 165
 		},
 		{
 			accessorKey: 'editor',
@@ -190,45 +155,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				</div>
 			),
 			size: 170
-		},
-		{
-			accessorKey: 'file_uploaded_by_user',
-			header: (
-				<Tooltip
-					title={`${userType?.includes('admin') ? 'Files' : 'My Drive Link'}`}
-					placement="top-start"
-				>
-					<span>{userType?.includes('admin') ? 'Files' : 'My Drive Link'}</span>
-				</Tooltip>
-			),
-			Cell: ({ row }) =>
-				userType?.includes('admin') ? (
-					<div className="inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] bg-black text-white">
-						<Link
-							to={row?.original?.file_uploaded_by_user}
-							type="button"
-							target="_blank"
-							className="tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none"
-						>
-							Download
-						</Link>
-					</div>
-				) : (
-					<Link
-						to={row?.original?.file_uploaded_by_user}
-						className="!text-[#0066ff] !border-[#0066ff] !bg-transparent"
-						target="_blank"
-					>
-						My Drive
-					</Link>
-				)
-			// size: 90
-		},
-		{
-			accessorKey: 'order_status',
-			header: 'Status',
-			Cell: ({ row }) => <OrderStatusComponent row={row} />
-		},
+		}
+	];
+	const userColumns = [
 		{
 			index: 14,
 			accessorKey: 'download',
@@ -296,9 +225,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						</Tooltip>
 					</div>
 				)
-		}
-	];
-	const additionalColumns = [
+		},
 		{
 			index: 2,
 			accessorKey: 'order_name',
@@ -306,47 +233,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => row?.original?.order_name
 		},
 		{
-			index: 3,
-			accessorKey: 'order_type',
-			header: 'Order Type',
-			Cell: ({ row }) => {
-				// console.log({ row });
-
-				return (
-					<div
-						className={
-							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black'
-						}
-					>
-						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
-							{row?.original?.order_type}
-						</div>
-					</div>
-				);
-			}
-		},
-		{
-			index: 4,
-			accessorKey: 'users_name',
-			header: 'User Name',
-			Cell: ({ row }) => row?.original?.users_name
-		},
-		{
-			index: 5,
-			accessorKey: 'users_email',
-			header: 'User Email',
-			Cell: ({ row }) => row?.original?.users_email
-		},
-		{
-			index: 6,
-			accessorKey: 'users_phone',
-			header: 'User Phone',
-			Cell: ({ row }) => row?.original?.users_phone
-		},
-		{
 			index: 7,
 			accessorKey: 'delivery_date',
-			header: 'Delivery Date',
+			header: 'Expected Delivery',
 			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.created_at, row?.original?.order_type)}`
 		},
 		{
@@ -387,54 +276,196 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 							type="button"
 						>
 							<AiFillInfoCircle
-								className="ml-8"
-								size={14}
+								className="ml-2"
+								size={10}
 							/>
 						</button>
 					</Tooltip>
 				</Box>
-			)
+			),
+			size:100
 		}
 	];
+	const commonColumn = [
+		{
+			id: 'order_date_formatted',
+			accessorKey: 'order_date',
+			header: 'Date',
+			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
+			sortingFn: (rowA, rowB, columnId) => {
+				const dateA = new Date(rowA.original.created_at).getTime();
+				const dateB = new Date(rowB.original.created_at).getTime();
 
-	const [columns, setColumns] = useState(initialColumns);
+				if (dateA < dateB) {
+					return -1;
+				}
+				if (dateA > dateB) {
+					return 1;
+				}
+				return 0;
+			}
+		},
+		{
+			accessorKey: 'id',
+			header: 'ID',
+			Cell: ({ row }) => row.original.order_id,
+
+			size: showAllColumns ? null : 90
+		},
+		{
+			accessorKey: 'previewstatus',
+			header: 'Preview',
+			// eslint-disable-next-line react/no-unstable-nested-components
+			Cell: ({ row }) => (
+				<PreviewEditStatusComponent
+					row={row}
+					userType={userType}
+					setSelectedId={setSelectedId}
+					setOrderDetailsOpen={setOrderDetailsOpen}
+				/>
+			),
+			size: 165
+		},
+
+		{
+			accessorKey: 'file_uploaded_by_user',
+			header: (
+				<Tooltip
+					title={`${userType?.includes('admin') ? 'Files' : 'My Drive Link'}`}
+					placement="top-start"
+				>
+					<span>{userType?.includes('admin') ? 'Files' : 'My Drive Link'}</span>
+				</Tooltip>
+			),
+			Cell: ({ row }) =>
+				userType?.includes('admin') ? (
+					<div className="inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] bg-black text-white">
+						<Link
+							to={row?.original?.file_uploaded_by_user}
+							type="button"
+							target="_blank"
+							className="tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none"
+						>
+							Download
+						</Link>
+					</div>
+				) : (
+					<Link
+						to={row?.original?.file_uploaded_by_user}
+						className="!text-[#0066ff] !border-[#0066ff] !bg-transparent"
+						target="_blank"
+					>
+						My Drive
+					</Link>
+				)
+			// size: 90
+		},
+		{
+			accessorKey: 'order_status',
+			header: 'Status',
+			Cell: ({ row }) => (
+				<OrderStatusComponent
+					userType={userType}
+					row={row}
+				/>
+			),
+			size:100
+		}
+	];
+	const commonAdditionalColumns = [
+		{
+			index: 3,
+			accessorKey: 'order_type',
+			header: 'Order Type',
+			Cell: ({ row }) => {
+				return (
+					<div
+						className={
+							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black'
+						}
+					>
+						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+							{row?.original?.order_type}
+						</div>
+					</div>
+				);
+			}
+		},
+		{
+			index: 4,
+			accessorKey: 'users_name',
+			header: 'User Name',
+			Cell: ({ row }) => row?.original?.users_name
+		},
+		{
+			index: 5,
+			accessorKey: 'users_email',
+			header: 'User Email',
+			Cell: ({ row }) => row?.original?.users_email
+		},
+		{
+			index: 6,
+			accessorKey: 'users_phone',
+			header: 'User Phone',
+			Cell: ({ row }) => row?.original?.users_phone
+		}
+	];
+	const [columns, setColumns] = useState([]);
 
 	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading, editorLoading, editorData]);
-	const initialColumnOrder = [
+
+	const initialAdminColumnOrder = [
 		'order_date_formatted',
 		'id',
 		'remaining_days',
 		'previewstatus',
 		'editor',
-		'order_status',
 		'payment_status',
-		'files',
+		'file_uploaded_by_user',
+		'order_status',
+		'mrt-row-select'
+	];
+	const initialUserColumnOrder = [
+		'order_date_formatted',
+		'order_name',
+		'id',
+		'delivery_date',
+		'file_uploaded_by_user',
+		'previewstatus',
+		'order_status',
+		'amount',
+		'download',
 		'mrt-row-select'
 	];
 
-	const [columnOrder, setColumnOrder] = useState(initialColumnOrder);
+	const [columnOrder, setColumnOrder] = useState([]);
 	const handleAllColumns = (showAllColumns) => {
-		if (showAllColumns) {
-			const updatedColumns = [...initialColumns, ...additionalColumns];
-			const updatedColumnOrder = [...initialColumnOrder];
-			setColumns(updatedColumns);
-
-			additionalColumns.forEach((addColl) => {
-				updatedColumnOrder.splice(addColl.index, 0, addColl.accessorKey);
-			});
-			setColumnOrder(updatedColumnOrder);
-		} else {
-			setColumns(initialColumns);
-		}
+		// if (showAllColumns) {
+		// 	const updatedColumns = [...initialColumns, ...additionalColumns];
+		// 	const updatedColumnOrder = [...initialColumnOrder];
+		// 	setColumns(updatedColumns);
+		// 	additionalColumns.forEach((addColl) => {
+		// 		updatedColumnOrder.splice(addColl.index, 0, addColl.accessorKey);
+		// 	});
+		// 	setColumnOrder(updatedColumnOrder);
+		// } else {
+		// 	setColumns(initialColumns);
+		// }
 	};
 
 	useEffect(() => {
-		if (editorData?.data?.data && !showAllColumns) {
-			setColumns(initialColumns);
-		} else if (editorData?.data?.data && showAllColumns) {
-			setColumns([...initialColumns, ...additionalColumns]);
+		if (userType?.includes('admin') && editorData?.data?.data && !showAllColumns) {
+			setColumns([...commonColumn, ...adminColumn]);
+			setColumnOrder(initialAdminColumnOrder);
+		} else if (userType?.includes('admin') && editorData?.data?.data && showAllColumns) {
+			setColumns([...commonColumn, ...adminColumn, ...commonAdditionalColumns, ...userColumns]);
+		} else if (!userType?.includes('admin') && !showAllColumns) {
+			setColumns([...commonColumn, ...userColumns]);
+			setColumnOrder(initialUserColumnOrder);
+		} else if (!userType?.includes('admin') && showAllColumns) {
+			setColumns([...commonColumn, ...userColumns, ...commonAdditionalColumns]);
 		}
-	}, [editorData?.data?.data, showAllColumns]);
+	}, [editorData?.data?.data, showAllColumns, userType]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));
