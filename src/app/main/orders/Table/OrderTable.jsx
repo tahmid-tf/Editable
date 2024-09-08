@@ -163,7 +163,8 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			accessorKey: 'download',
 			header: 'Download Link',
 			Cell: ({ row }) =>
-				calculateRemainingDays(row?.original?.created_at) > 7 ? (
+				row?.original?.order_delivery_date?.length &&
+				calculateRemainingDays(row?.original?.order_delivery_date) < 1 ? (
 					<Typography sx={{ color: 'red' }}>Link Expired</Typography>
 				) : (
 					<div className="flex">
@@ -195,7 +196,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 							placement="right"
 							title={
 								<span className="text-[16px]">
-									{`Please download the images within 7 days of order completion. We delete everything after 7 days. Remaining Days: 0${calculateRemainingDays(row?.original?.created_at)}/07`}
+									{`Please download the images within 7 days of order completion. We delete everything after 7 days. Remaining Days: 0${calculateRemainingDays(row?.original?.order_delivery_date)}/07`}
 								</span>
 							}
 							componentsProps={{
