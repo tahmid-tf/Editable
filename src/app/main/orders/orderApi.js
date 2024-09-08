@@ -63,7 +63,7 @@ const orderApi = apiService
 				})
 			}),
 			getOrderDetails: builder.query({
-				query: (id) => `admin/order_info/${id}`
+				query: ({ id, userType }) => `${userType?.includes('admin') ? 'admin' : 'user'}/order_info/${id}`
 			}),
 			updateOrderStatus: builder.mutation({
 				query: (body) => ({
