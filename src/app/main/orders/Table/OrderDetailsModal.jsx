@@ -35,11 +35,14 @@ const style = {
 	overflow: 'scroll'
 };
 
-const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClose }) => {
+const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClose, userType }) => {
 	const [openCopyTooltip, setOpenCopyTooltip] = useState(false);
-	const { data: prevEditsData } = useGetAllPreviewEditsByIdQuery({ order_id: selectedId }, { skip: !selectedId });
+	const { data: prevEditsData } = useGetAllPreviewEditsByIdQuery(
+		{ order_id: selectedId },
+		{ skip: !selectedId || !userType?.includes('admin') }
+	);
 
-	const { data } = useGetOrderDetailsQuery(selectedId, { skip: !selectedId });
+	const { data } = useGetOrderDetailsQuery({ id: selectedId, userType }, { skip: !selectedId });
 
 	const handleTooltipClose = () => {
 		setOpenCopyTooltip(false);
@@ -313,62 +316,85 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 					>
 						{data?.data?.preview_edits}
 					</Grid>
-				</Grid>
-				<Box sx={{ borderTop: '2px dashed #EDEDED', borderBottom: '2px dashed #EDEDED', mt: 2 }}>
-					<Typography
+					<Grid
+						item
+						xs={6}
 						sx={{
-							fontSize: '24px',
-							fontWeight: 700,
-							lineHeight: '24px',
-							textAlign: 'center',
-							my: 5,
-							color: '#474747'
+							color: '#707070'
 						}}
 					>
-						Preview Edit
-					</Typography>
-					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-						<Typography
+						Total Price
+					</Grid>
+					<Grid
+						item
+						xs={6}
+						fontWeight={500}
+						textAlign={'end'}
+					>
+						$ {data?.data?.amount}
+					</Grid>
+				</Grid>
+				{userType?.includes('admin') ? (
+					<>
+						<Box sx={{ borderTop: '2px dashed #EDEDED', borderBottom: '2px dashed #EDEDED', mt: 2 }}>
+							<Typography
+								sx={{
+									fontSize: '24px',
+									fontWeight: 700,
+									lineHeight: '24px',
+									textAlign: 'center',
+									my: 5,
+									color: '#474747'
+								}}
+							>
+								Preview Edit
+							</Typography>
+							<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+								<Typography
+									sx={{
+										fontSize: '16px',
+										fontWeight: 400,
+										lineHeight: '20px',
+										color: '#707070'
+									}}
+								>
+									Status
+								</Typography>
+								<Typography
+									sx={{
+										fontSize: '16px',
+										fontWeight: 500,
+										lineHeight: '20px',
+										textTransform: 'capitalize',
+										color: data?.data?.preview_edit_status === 'rejected' ? '#CB1717' : 'black'
+									}}
+								>
+									{data?.data?.preview_edit_status === 'user_review_pending'
+										? 'User Review Pending'
+										: data?.data?.preview_edit_status}
+								</Typography>
+							</Box>
+						</Box>
+						<Box
 							sx={{
-								fontSize: '16px',
-								fontWeight: 400,
-								lineHeight: '20px',
-								color: '#707070'
+								display: 'flex',
+								flexDirection: 'column',
+								gap: 2,
+								mt: 2
 							}}
 						>
-							Status
-						</Typography>
-						<Typography
-							sx={{
-								fontSize: '16px',
-								fontWeight: 500,
-								lineHeight: '20px',
-								textTransform:'capitalize',
-								color: data?.data?.preview_edit_status === 'rejected' ? '#CB1717' : 'black'
-							}}
-						>
-							{data?.data?.preview_edit_status === 'user_review_pending'
-								? 'User Review Pending'
-								: data?.data?.preview_edit_status}
-						</Typography>
-					</Box>
-				</Box>
-				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 2,
-						mt: 2
-					}}
-				>
-					{prevEditsData?.data?.map((info, i) => (
-						<PreviewEditReviewMessageCard
-							messageInfo={info}
-							index={i}
-							userName={data?.data?.users_name}
-						/>
-					))}
-				</Box>
+							{prevEditsData?.data?.map((info, i) => (
+								<PreviewEditReviewMessageCard
+									messageInfo={info}
+									index={i}
+									userName={data?.data?.users_name}
+								/>
+							))}
+						</Box>
+					</>
+				) : (
+					<></>
+				)}
 			</Box>
 		</Modal>
 	);

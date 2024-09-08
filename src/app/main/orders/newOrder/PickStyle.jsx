@@ -23,6 +23,7 @@ import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 import PaymentModal from './PaymentModal';
 import PaymentSuccessModal from './PaymentSuccessModal';
+import YourTubeVideoModal from './YourTubeVideoModal';
 
 // Validation Schema
 const validationSchema = Yup.object({
@@ -72,6 +73,8 @@ const initialValues = {
 const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 	const orderState = useAppSelector(selectOrderState);
 	const dispatch = useAppDispatch();
+
+	const [openYouTubeVideo, setOpenYouTubeVideo] = useState(false);
 
 	const userRole = useAppSelector(selectUserRole);
 	const [showCullingInputs, setShowCullingInputs] = useState(false);
@@ -770,14 +773,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 
 										<p>
 											Find out how to create your own Smart Preview Enabled Lightroom Catalogs{' '}
-											<Link
-												to="#"
-												className=""
-												style={{ textDecoration: 'none' }}
-											>
-												here
-											</Link>
-											.
+											<span onClick={()=>setOpenYouTubeVideo(true)} style={{ textDecoration: 'none',color:'blue',cursor:'pointer' }}>here</span>.
 										</p>
 									</div>
 									<div className="pt-32 pb-24">
@@ -835,6 +831,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 								}}
 							/>
 						</div>
+						<YourTubeVideoModal handleClose={()=>setOpenYouTubeVideo(false)} openYouTubeVideo={openYouTubeVideo} />
 					</Form>
 				);
 			}}

@@ -253,7 +253,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 								style={{ fontSize: '16px' }}
 								className=""
 							>
-								price tooltip
+								Click to see the Details
 							</span>
 						}
 						componentsProps={{
@@ -271,7 +271,8 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					>
 						<button
 							onClick={() => {
-								console.log('info icon clicked');
+								setSelectedId(row?.original?.id);
+								setOrderDetailsOpen(true);
 							}}
 							type="button"
 						>
@@ -283,7 +284,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					</Tooltip>
 				</Box>
 			),
-			size:100
+			size: 100
 		}
 	];
 	const commonColumn = [
@@ -369,7 +370,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					row={row}
 				/>
 			),
-			size:100
+			size: 100
 		}
 	];
 	const commonAdditionalColumns = [
@@ -605,6 +606,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						orderDetailsOpen={orderDetailsOpen}
 						handleOrderDetailsClose={handleOrderDetailsClose}
 						selectedId={selectedId}
+						userType={userType}
 					/>
 					<OrderEditModal
 						setSelectedData={setSelectedData}

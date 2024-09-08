@@ -40,6 +40,8 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 	const [editOrder, { isLoading }] = useEditOrderMutation();
 	const dispatch = useAppDispatch();
 
+	console.log(selectedData);
+
 	return (
 		<Modal
 			open={selectedData !== null}
