@@ -206,7 +206,7 @@ class OrderAndEditorController extends Controller
 //        --------------------- checking validations ---------------------
 
         $order->order_status = $order_status;
-        $order->file_uploaded_by_user = $uploaded_drive_link;
+        $order->file_uploaded_by_admin_after_edit = $uploaded_drive_link;
         $order->order_delivery_date = now();
         $order->save();
 
