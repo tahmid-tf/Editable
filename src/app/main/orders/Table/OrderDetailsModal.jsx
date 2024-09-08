@@ -81,7 +81,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 							textAlign: 'center'
 						}}
 					>
-						Order ID: {data?.data?.id}
+						Order ID: {data?.data?.order_id}
 					</Typography>
 					<Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
 						<Tooltip

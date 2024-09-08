@@ -12,7 +12,7 @@ import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import DriveLinkProviderComponent from 'app/shared-components/DriveLinkProviderComponent';
 import ConfirmationModal from 'app/shared-components/ConfirmationModal';
-
+import warningIcon from 'src/assets/icons/warningIcon.png';
 const OrderStatusComponent = ({ row, userType }) => {
 	const [updateOrderStatus, { isLoading: updateOrderStatusLoading }] = useUpdateOrderStatusMutation();
 	const [completeOrder, { isLoading }] = useCompleteOrderMutation();
@@ -47,9 +47,7 @@ const OrderStatusComponent = ({ row, userType }) => {
 	const handleOrderStatusChanges = async (order_id, event) => {
 		const order_status = event.target.value;
 		setOrderStatusValues(order_status);
-		if (order_status === 'pending') {
-			orderStatusUpdate(order_status, order_id);
-		} else if (order_status === 'cancelled') {
+		if (order_status === 'pending' || order_status === 'cancelled') {
 			setOpenConfirmationModal(true);
 		} else if (order_status === 'completed') {
 			setOpenModal(true);
@@ -184,10 +182,10 @@ const OrderStatusComponent = ({ row, userType }) => {
 			<ConfirmationModal
 				openModal={openConfirmationModal}
 				handleClose={handleConfirmationModalClose}
-				bodyText={'Are you sure you want to cancel this order?'}
+				bodyText={'Are you sure you want to change this order status?'}
 				cancelBtnText={'Cancel'}
 				confirmBtnText={'Confirm'}
-				topIcon={''}
+				topIcon={warningIcon}
 				handleCancelClick={handleConfirmationModalClose}
 				handleConfirmClick={handleConfirmDeleteClick}
 				isLoading={updateOrderStatusLoading}

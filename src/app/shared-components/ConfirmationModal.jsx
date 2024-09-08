@@ -47,7 +47,7 @@ const ConfirmationModal = ({
 					}}
 				>
 					<img
-						src={deleteIcon}
+						src={topIcon ? topIcon : deleteIcon}
 						className="w-[30px] h-[30px]"
 						alt="icon"
 					/>
@@ -93,7 +93,7 @@ const ConfirmationModal = ({
 								}}
 							>
 								<CircularProgress
-									sx={{color:'white'}}
+									sx={{ color: 'white' }}
 									size={20}
 								/>
 							</Box>
