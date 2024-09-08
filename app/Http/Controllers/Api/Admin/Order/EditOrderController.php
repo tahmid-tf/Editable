@@ -101,7 +101,7 @@ class EditOrderController extends Controller
                 $order->save();
 
                 return response()->json([
-                    'message' => 'Order Status Updated Successfully, the editors info, order status and payment status are being updated.',
+                    'message' => 'Order Updated Successfully, the editors info, order status and payment status are being updated.',
                     'order_status' => $order->order_status,
                     'order_id' => $order->order_id,
                     'status' => 200,
@@ -117,13 +117,13 @@ class EditOrderController extends Controller
 
                 Order::where('id', $inputs['order_id'])->update([
                     'editors_id' => $inputs['editor_id'],
-                    'order_status' => $inputs['order_status'],
+//                    'order_status' => $inputs['order_status'],
                     'payment_status' => $inputs['payment_status'],
                     'file_uploaded_by_admin_after_edit' => $inputs['file_uploaded_by_admin_after_edit'],
                 ]);
 
                 return response()->json([
-                    'message' => 'Order Status Updated Successfully',
+                    'message' => 'Order Updated Successfully,since the order is completed, the editors info, order status and payment status are being updated.',
                     'order_status' => $order->order_status,
                     'order_id' => $order->order_id,
                     'status' => 200,
