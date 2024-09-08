@@ -11,9 +11,10 @@ import clsx from 'clsx';
 import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import DriveLinkProviderComponent from 'app/shared-components/DriveLinkProviderComponent';
+import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 
 const OrderStatusComponent = ({ row, userType }) => {
-	const [updateOrderStatus] = useUpdateOrderStatusMutation();
+	const [updateOrderStatus, { isLoading: updateOrderStatusLoading }] = useUpdateOrderStatusMutation();
 	const [completeOrder, { isLoading }] = useCompleteOrderMutation();
 	const [uploadPreviewImage, { isLoading: uploadPreviewImageLoading }] = useUploadPreviewImageMutation();
 	const [reUploadPreviewImage, { isLoading: reUploadPreviewImageLoading }] = useReUploadPreviewImageMutation();
@@ -23,31 +24,41 @@ const OrderStatusComponent = ({ row, userType }) => {
 	const [driveLinkError, setDriveLinkError] = useState('');
 	const [openModal, setOpenModal] = useState(false);
 	const [openPreviewEditModal, setOpenPreviewEditModal] = useState(false);
+	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 	const dispatch = useAppDispatch();
+
+	const orderStatusUpdate = async (order_status, order_id) => {
+		try {
+			const res = await updateOrderStatus({ order_status, order_id });
+
+			if (res.data) {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: res.data.data }));
+				setOpenConfirmationModal(false);
+			} else {
+				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: res.error.data.data }));
+				setOrderStatusValues(row?.original?.order_status);
+			}
+		} catch (error) {
+			dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: error.data.data }));
+			setOrderStatusValues(row?.original?.order_status);
+		}
+	};
 
 	const handleOrderStatusChanges = async (order_id, event) => {
 		const order_status = event.target.value;
 		setOrderStatusValues(order_status);
-		if (order_status === 'pending' || order_status === 'cancelled') {
-			try {
-				const res = await updateOrderStatus({ order_status, order_id });
-				console.log(res);
-				if (res.data) {
-					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: res.data.data }));
-				} else {
-					dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: res.error.data.data }));
-					setOrderStatusValues(row?.original?.order_status);
-				}
-			} catch (error) {
-				dispatch(openSnackbar({ type: SnackbarTypeEnum.ERROR, message: error.data.data }));
-				setOrderStatusValues(row?.original?.order_status);
-			}
+		if (order_status === 'pending') {
+			orderStatusUpdate(order_status, order_id);
+		} else if (order_status === 'cancelled') {
+			setOpenConfirmationModal(true);
 		} else if (order_status === 'completed') {
 			setOpenModal(true);
 			setOpenPreviewEditModal(false);
+			setOpenConfirmationModal(false);
 		} else if (order_status === 'preview') {
 			setOpenPreviewEditModal(true);
 			setOpenModal(false);
+			setOpenConfirmationModal(false);
 		}
 	};
 
@@ -75,7 +86,6 @@ const OrderStatusComponent = ({ row, userType }) => {
 									order_id: row?.original?.id,
 									preview_link: driveLink
 								});
-				console.log(res);
 				if (res.data) {
 					dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: res.data.data }));
 					setOpenModal(false);
@@ -91,6 +101,14 @@ const OrderStatusComponent = ({ row, userType }) => {
 		} else {
 			setDriveLinkError('Drive Link is Required');
 		}
+	};
+	const handleConfirmationModalClose = () => {
+		setOpenConfirmationModal(false);
+		setOrderStatusValues(row?.original?.order_status);
+	};
+
+	const handleConfirmDeleteClick = () => {
+		orderStatusUpdate(orderStatusValues, row?.original?.id);
 	};
 	useEffect(() => {
 		setDriveLinkError('');
@@ -126,19 +144,12 @@ const OrderStatusComponent = ({ row, userType }) => {
 					>
 						Order Status
 					</option>
-					{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status !== 'accepted' ? (
+					{row?.original?.preview_edits === 'yes' && row?.original?.preview_edit_status === 'pending' ? (
 						<option
 							className="bg-white text-black"
 							value="preview"
 						>
 							Preview Edit
-						</option>
-					) : row?.original?.preview_edit_status === 'accepted' ? (
-						<option
-							className="bg-white text-black"
-							value="editing"
-						>
-							Editing
 						</option>
 					) : (
 						<></>
@@ -169,6 +180,17 @@ const OrderStatusComponent = ({ row, userType }) => {
 						: 'Paste the link to the edited images for this order'
 				}
 				btnText={openPreviewEditModal ? 'Ask user to review' : 'Save Changes'}
+			/>
+			<ConfirmationModal
+				openModal={openConfirmationModal}
+				handleClose={handleConfirmationModalClose}
+				bodyText={'Are you sure you want to cancel this order?'}
+				cancelBtnText={'Cancel'}
+				confirmBtnText={'Confirm'}
+				topIcon={''}
+				handleCancelClick={handleConfirmationModalClose}
+				handleConfirmClick={handleConfirmDeleteClick}
+				isLoading={updateOrderStatusLoading}
 			/>
 		</Typography>
 	);
