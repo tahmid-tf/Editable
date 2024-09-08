@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\User\GeneralSettingsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,4 +44,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 
 //    ------------------------------------- editors style creation api -------------------------------------
+
+//    -------------------------------------- General Settings - Change Password --------------------------------------
+
+    Route::post('change_password', [GeneralSettingsController::class, 'changePassword']);
+
+//    -------------------------------------- General Settings - Change Password --------------------------------------
 });
