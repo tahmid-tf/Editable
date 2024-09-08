@@ -13,7 +13,6 @@ const style = {
 };
 const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModalClose, paymentModalInfo }) => {
 	const orderState = useAppSelector(selectOrderState);
-	console.log(orderState, paymentModalInfo);
 
 	return (
 		<Modal

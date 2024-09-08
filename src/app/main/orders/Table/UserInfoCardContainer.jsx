@@ -15,33 +15,35 @@ const UserInfoCardContainer = ({ name, phone, email, totalOrders, totalSpend }) 
 					<Card
 						sx={{
 							width: '100%',
-							minHeight: 200,
+							height: '100%',
 							backgroundColor: '#F6F6F6',
 							borderRadius: 5,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center'
+							p: '32px 0 32px 40px',
+							boxShadow: 'none',
+							bgcolor: '#F2F4F5'
 						}}
 					>
-						<CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+						<CardContent
+							sx={{ display: 'flex', flexDirection: 'column', gap: '4px', p: 0, pb: '0 !important' }}
+						>
 							<Typography
-								fontWeight={500}
-								fontSize={'14px'}
-								lineHeight={'20px'}
+								fontWeight={600}
+								fontSize={'21px'}
+								lineHeight={'25px'}
 							>
 								{name}
 							</Typography>
 							<Typography
-								fontWeight={500}
+								fontWeight={400}
 								fontSize={'14px'}
-								lineHeight={'20px'}
+								lineHeight={'16px'}
 							>
 								{phone}
 							</Typography>
 							<Typography
-								fontWeight={500}
+								fontWeight={400}
 								fontSize={'14px'}
-								lineHeight={'20px'}
+								lineHeight={'16px'}
 							>
 								{email}
 							</Typography>
@@ -55,26 +57,28 @@ const UserInfoCardContainer = ({ name, phone, email, totalOrders, totalSpend }) 
 					<Card
 						sx={{
 							width: '100%',
-							minHeight: 200,
+							height: '100%',
 							backgroundColor: '#F6F6F6',
 							borderRadius: 5,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center'
+							p: '32px 0 32px 40px',
+							boxShadow: 'none',
+							bgcolor: '#F2F4F5'
 						}}
 					>
-						<CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+						<CardContent
+							sx={{ display: 'flex', flexDirection: 'column', gap: '4px', p: 0, pb: '0 !important' }}
+						>
 							<Typography
-								fontWeight={500}
+								fontWeight={400}
 								fontSize={'14px'}
-								lineHeight={'20px'}
+								lineHeight={'16px'}
 							>
 								Total Orders
 							</Typography>
 							<Typography
-								fontWeight={700}
-								fontSize={'26px'}
-								lineHeight={'20px'}
+								fontWeight={600}
+								fontSize={'48px'}
+								lineHeight={'48px'}
 							>
 								{totalOrders}
 							</Typography>
@@ -88,26 +92,28 @@ const UserInfoCardContainer = ({ name, phone, email, totalOrders, totalSpend }) 
 					<Card
 						sx={{
 							width: '100%',
-							minHeight: 200,
+							height: '100%',
 							backgroundColor: '#F6F6F6',
 							borderRadius: 5,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center'
+							p: '32px 0 32px 40px',
+							boxShadow: 'none',
+							bgcolor: '#F2F4F5'
 						}}
 					>
-						<CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+						<CardContent
+							sx={{ display: 'flex', flexDirection: 'column', gap: '4px', p: 0, pb: '0 !important' }}
+						>
 							<Typography
-								fontWeight={500}
+								fontWeight={400}
 								fontSize={'14px'}
-								lineHeight={'20px'}
+								lineHeight={'16px'}
 							>
 								Total Spend
 							</Typography>
 							<Typography
-								fontWeight={700}
-								fontSize={'26px'}
-								lineHeight={'20px'}
+								fontWeight={600}
+								fontSize={'48px'}
+								lineHeight={'48px'}
 							>
 								{formatNumber(totalSpend)}
 							</Typography>

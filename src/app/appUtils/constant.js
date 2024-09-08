@@ -7,10 +7,6 @@ import earningIcon from '../../../public/assets/icons/EarningsIcon.svg';
 
 export const orderStatusOptions = [
 	{
-		name: 'Order Status',
-		value: ''
-	},
-	{
 		name: 'Pending',
 		value: 'pending'
 	},

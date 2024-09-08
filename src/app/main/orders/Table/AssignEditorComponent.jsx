@@ -32,13 +32,13 @@ const AssignEditorComponent = ({ row, editorData }) => {
 		<Typography
 			className={clsx(
 				'inline-flex items-center px-[8px] py-[2px] rounded-full ',
-				row?.original?.editors_id ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
+				!row?.original?.editors_id ? 'border-[1px] border-black' : ''
 			)}
 		>
 			<select
 				className={clsx(
-					'inline-flex items-center w-full text-[12px]',
-					row?.original?.editors_id ? 'bg-[#CBCBCB] text-Black' : 'bg-[#F29339] text-black'
+					'inline-flex items-center w-full text-[12px] text-black',
+					
 				)}
 				value={selectedEditor}
 				onChange={(e) => handleEditorChange(e.target.value, row.original.id)}

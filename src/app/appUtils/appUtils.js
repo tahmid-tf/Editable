@@ -29,7 +29,6 @@ export const calculateDeliveryDays = (orderDate, orderType, customDay) => {
 };
 
 export const getMaxThreshold = (thresholdsData, editsData) => {
-	console.log({ thresholdsData, editsData });
 	const relevantThresholds = {
 		style: thresholdsData?.category?.style_threshold || 0
 	};

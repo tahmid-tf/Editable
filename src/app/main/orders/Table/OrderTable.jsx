@@ -12,7 +12,7 @@ import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
 import DataTable from 'app/shared-components/data-table/DataTable';
 import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
-import { useGetOrdersDataQuery, useUpdateOrderStatusMutation } from '../orderApi';
+import { useGetOrdersDataQuery } from '../orderApi';
 import OrderTableHeader from './OrderTableHeader';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import OrderDetailsModal from './OrderDetailsModal';
@@ -27,6 +27,8 @@ import OrderStatusComponent from './OrderStatusComponent';
 import OrderEditModal from './OrderEditModal';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
 import AssignEditorComponent from './AssignEditorComponent';
+import CustomPagination from 'app/shared-components/data-table/CustomPagination';
+import PreviewEditStatusComponent from './PreviewEditStatusComponent';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -53,7 +55,10 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 
 	const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
 
-	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery({ page: 1, rowPerPage: 10000 });
+	const { data: editorData, isLoading: editorLoading } = useGetAllEditorsQuery(
+		{ page: 1, rowPerPage: 10000 },
+		{ skip: !userType?.includes('admin') }
+	);
 	// console.log(editorData.data.data);
 	// fetch table data
 	const { data, isLoading } = params?.email
@@ -106,33 +111,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const handleChangePage = (event, newPage) => {
 		setCurrentPage(newPage);
 	};
-
-	const initialColumns = [
-		{
-			id: 'order_date_formatted',
-			accessorKey: 'order_date',
-			header: 'Date',
-			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
-			sortingFn: (rowA, rowB, columnId) => {
-				const dateA = new Date(rowA.original.created_at).getTime();
-				const dateB = new Date(rowB.original.created_at).getTime();
-
-				if (dateA < dateB) {
-					return -1;
-				}
-				if (dateA > dateB) {
-					return 1;
-				}
-				return 0;
-			}
-		},
-		{
-			accessorKey: 'id',
-			header: 'ID',
-			Cell: ({ row }) => row.original.order_id,
-
-			size: showAllColumns ? null : 90
-		},
+	const adminColumn = [
 		{
 			id: 'remaining_days',
 			accessorKey: 'order_date',
@@ -145,33 +124,6 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				</Tooltip>
 			),
 			Cell: ({ row }) => <Box>{calculateRemainingDays(row?.original?.created_at)}/07 days</Box>
-		},
-		{
-			accessorKey: 'previewstatus',
-			header: 'Preview',
-			// eslint-disable-next-line react/no-unstable-nested-components
-			Cell: ({ row }) => {
-				// console.log({ row });
-
-				return (
-					<div
-						className={clsx(
-							'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
-							row?.original?.previewstatus === 'Approved'
-								? 'bg-[#039855] text-white'
-								: row?.original?.previewstatus === 'Rejected'
-									? 'bg-[#CB1717] text-white'
-									: row?.original?.previewstatus === 'Pending'
-										? 'bg-[#FFCC00] text-black'
-										: 'bg-[#CBCBCB] text-black'
-						)}
-					>
-						<div className="tracking-[0.2px] leading-[20px] text-[12px]">
-							{row?.original?.previewstatus ? row?.original?.previewstatus : 'N/A'}
-						</div>
-					</div>
-				);
-			}
 		},
 		{
 			accessorKey: 'editor',
@@ -203,27 +155,77 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				</div>
 			),
 			size: 170
-		},
-		{
-			accessorKey: 'files',
-			header: 'Files',
-			Cell: () => (
-				<Link
-					to={'#'}
-					className="!text-[#0066ff]"
-				>
-					Download
-				</Link>
-			),
-			size: 90
-		},
-		{
-			accessorKey: 'order_status',
-			header: 'Status',
-			Cell: ({ row }) => <OrderStatusComponent row={row} />
 		}
 	];
-	const additionalColumns = [
+	const userColumns = [
+		{
+			index: 14,
+			accessorKey: 'download',
+			header: 'Download Link',
+			Cell: ({ row }) =>
+				calculateRemainingDays(row?.original?.created_at) > 7 ? (
+					<Typography sx={{ color: 'red' }}>Link Expired</Typography>
+				) : (
+					<div className="flex">
+						<div
+							className={clsx(
+								'inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] text-white',
+								!row?.original?.file_uploaded_by_admin_after_edit?.length ? 'bg-[#CBCBCB]' : 'bg-black'
+							)}
+						>
+							<Link
+								to={row?.original?.file_uploaded_by_admin_after_edit}
+								type="button"
+								target="_blank"
+								className={clsx(
+									'tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none',
+									!row?.original?.file_uploaded_by_admin_after_edit?.length && 'cursor-not-allowed'
+								)}
+								onClick={(e) => {
+									if (!row?.original?.file_uploaded_by_admin_after_edit?.length) {
+										e.preventDefault();
+									}
+								}}
+							>
+								Download
+							</Link>
+						</div>
+						<Tooltip
+							color="red"
+							placement="right"
+							title={
+								<span className="text-[16px]">
+									{`Please download the images within 7 days of order completion. We delete everything after 7 days. Remaining Days: 0${calculateRemainingDays(row?.original?.created_at)}/07`}
+								</span>
+							}
+							componentsProps={{
+								tooltip: {
+									sx: {
+										fontSize: '16px',
+										backgroundColor: 'white', // Customize the background color
+										color: 'black', // Customize the text color
+										boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+										padding: '10px',
+										borderRadius: '10px'
+									}
+								}
+							}}
+						>
+							<button
+								onClick={() => {
+									console.log('info icon clicked');
+								}}
+								type="button"
+							>
+								<AiFillInfoCircle
+									className="ml-4 text-[#F29339]"
+									size={14}
+								/>
+							</button>
+						</Tooltip>
+					</div>
+				)
+		},
 		{
 			index: 2,
 			accessorKey: 'order_name',
@@ -231,47 +233,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 			Cell: ({ row }) => row?.original?.order_name
 		},
 		{
-			index: 3,
-			accessorKey: 'order_type',
-			header: 'Order Type',
-			Cell: ({ row }) => {
-				// console.log({ row });
-
-				return (
-					<div
-						className={
-							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black'
-						}
-					>
-						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
-							{row?.original?.order_type}
-						</div>
-					</div>
-				);
-			}
-		},
-		{
-			index: 4,
-			accessorKey: 'users_name',
-			header: 'User Name',
-			Cell: ({ row }) => row?.original?.users_name
-		},
-		{
-			index: 5,
-			accessorKey: 'users_email',
-			header: 'User Email',
-			Cell: ({ row }) => row?.original?.users_email
-		},
-		{
-			index: 6,
-			accessorKey: 'users_phone',
-			header: 'User Phone',
-			Cell: ({ row }) => row?.original?.users_phone
-		},
-		{
 			index: 7,
 			accessorKey: 'delivery_date',
-			header: 'Delivery Date',
+			header: 'Expected Delivery',
 			Cell: ({ row }) => `${calculateDeliveryDays(row?.original?.created_at, row?.original?.order_type)}`
 		},
 		{
@@ -312,81 +276,196 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 							type="button"
 						>
 							<AiFillInfoCircle
-								className="ml-8"
-								size={14}
+								className="ml-2"
+								size={10}
 							/>
 						</button>
 					</Tooltip>
 				</Box>
-			)
-		},
-		{
-			index: 14,
-			accessorKey: 'download',
-			header: 'Download Link',
-			Cell: ({ row }) => (
-				// <div
-				// 	className={clsx('inline-flex items-center px-[10px] py-[2px] tracking-wide', 'bg-black text-white')}
-				// >
-				<Link
-					to={'#'}
-					className="!text-[#0066ff]"
-					// type="button"
-					// // href={row?.original?.files}
-					// // target="_blank"
-					// // download
-					// className="tracking-[0.2px] leading-[20px] font-medium"
-					// style={{
-					// 	textDecoration: 'none',
-					// 	color: 'white'
-					// }}
-					// disabled
-				>
-					Download
-				</Link>
-				// </div>
-			)
+			),
+			size:100
 		}
 	];
+	const commonColumn = [
+		{
+			id: 'order_date_formatted',
+			accessorKey: 'order_date',
+			header: 'Date',
+			Cell: ({ row }) => format(new Date(row?.original?.created_at), 'MMM dd, y'),
+			sortingFn: (rowA, rowB, columnId) => {
+				const dateA = new Date(rowA.original.created_at).getTime();
+				const dateB = new Date(rowB.original.created_at).getTime();
 
-	const [columns, setColumns] = useState(initialColumns);
+				if (dateA < dateB) {
+					return -1;
+				}
+				if (dateA > dateB) {
+					return 1;
+				}
+				return 0;
+			}
+		},
+		{
+			accessorKey: 'id',
+			header: 'ID',
+			Cell: ({ row }) => row.original.order_id,
+
+			size: showAllColumns ? null : 90
+		},
+		{
+			accessorKey: 'previewstatus',
+			header: 'Preview',
+			// eslint-disable-next-line react/no-unstable-nested-components
+			Cell: ({ row }) => (
+				<PreviewEditStatusComponent
+					row={row}
+					userType={userType}
+					setSelectedId={setSelectedId}
+					setOrderDetailsOpen={setOrderDetailsOpen}
+				/>
+			),
+			size: 165
+		},
+
+		{
+			accessorKey: 'file_uploaded_by_user',
+			header: (
+				<Tooltip
+					title={`${userType?.includes('admin') ? 'Files' : 'My Drive Link'}`}
+					placement="top-start"
+				>
+					<span>{userType?.includes('admin') ? 'Files' : 'My Drive Link'}</span>
+				</Tooltip>
+			),
+			Cell: ({ row }) =>
+				userType?.includes('admin') ? (
+					<div className="inline-flex px-8 py-4 items-center tracking-wide rounded-[12px] bg-black text-white">
+						<Link
+							to={row?.original?.file_uploaded_by_user}
+							type="button"
+							target="_blank"
+							className="tracking-[0.2px] leading-[20px] font-medium !text-white !no-underline text-[14px] !bg-transparent !border-none"
+						>
+							Download
+						</Link>
+					</div>
+				) : (
+					<Link
+						to={row?.original?.file_uploaded_by_user}
+						className="!text-[#0066ff] !border-[#0066ff] !bg-transparent"
+						target="_blank"
+					>
+						My Drive
+					</Link>
+				)
+			// size: 90
+		},
+		{
+			accessorKey: 'order_status',
+			header: 'Status',
+			Cell: ({ row }) => (
+				<OrderStatusComponent
+					userType={userType}
+					row={row}
+				/>
+			),
+			size:100
+		}
+	];
+	const commonAdditionalColumns = [
+		{
+			index: 3,
+			accessorKey: 'order_type',
+			header: 'Order Type',
+			Cell: ({ row }) => {
+				return (
+					<div
+						className={
+							'inline-flex items-center px-[10px] py-[2px] rounded-full tracking-wide bg-[#CBCBCB] text-black'
+						}
+					>
+						<div className="tracking-[0.2px] leading-[20px] font-medium capitalize">
+							{row?.original?.order_type}
+						</div>
+					</div>
+				);
+			}
+		},
+		{
+			index: 4,
+			accessorKey: 'users_name',
+			header: 'User Name',
+			Cell: ({ row }) => row?.original?.users_name
+		},
+		{
+			index: 5,
+			accessorKey: 'users_email',
+			header: 'User Email',
+			Cell: ({ row }) => row?.original?.users_email
+		},
+		{
+			index: 6,
+			accessorKey: 'users_phone',
+			header: 'User Phone',
+			Cell: ({ row }) => row?.original?.users_phone
+		}
+	];
+	const [columns, setColumns] = useState([]);
 
 	const memoizedColumns = useMemo(() => columns, [columns, data, isLoading, editorLoading, editorData]);
-	const initialColumnOrder = [
+
+	const initialAdminColumnOrder = [
 		'order_date_formatted',
 		'id',
 		'remaining_days',
 		'previewstatus',
 		'editor',
-		'order_status',
 		'payment_status',
-		'files',
+		'file_uploaded_by_user',
+		'order_status',
+		'mrt-row-select'
+	];
+	const initialUserColumnOrder = [
+		'order_date_formatted',
+		'order_name',
+		'id',
+		'delivery_date',
+		'file_uploaded_by_user',
+		'previewstatus',
+		'order_status',
+		'amount',
+		'download',
 		'mrt-row-select'
 	];
 
-	const [columnOrder, setColumnOrder] = useState(initialColumnOrder);
+	const [columnOrder, setColumnOrder] = useState([]);
 	const handleAllColumns = (showAllColumns) => {
-		if (showAllColumns) {
-			const updatedColumns = [...initialColumns, ...additionalColumns];
-			const updatedColumnOrder = [...initialColumnOrder];
-			setColumns(updatedColumns);
-
-			additionalColumns.forEach((addColl) => {
-				updatedColumnOrder.splice(addColl.index, 0, addColl.accessorKey);
-			});
-			setColumnOrder(updatedColumnOrder);
-		} else {
-			setColumns(initialColumns);
-		}
+		// if (showAllColumns) {
+		// 	const updatedColumns = [...initialColumns, ...additionalColumns];
+		// 	const updatedColumnOrder = [...initialColumnOrder];
+		// 	setColumns(updatedColumns);
+		// 	additionalColumns.forEach((addColl) => {
+		// 		updatedColumnOrder.splice(addColl.index, 0, addColl.accessorKey);
+		// 	});
+		// 	setColumnOrder(updatedColumnOrder);
+		// } else {
+		// 	setColumns(initialColumns);
+		// }
 	};
 
 	useEffect(() => {
-		if (editorData?.data?.data && !showAllColumns) {
-			setColumns(initialColumns);
-		} else if (editorData?.data?.data && showAllColumns) {
-			setColumns([...initialColumns, ...additionalColumns]);
+		if (userType?.includes('admin') && editorData?.data?.data && !showAllColumns) {
+			setColumns([...commonColumn, ...adminColumn]);
+			setColumnOrder(initialAdminColumnOrder);
+		} else if (userType?.includes('admin') && editorData?.data?.data && showAllColumns) {
+			setColumns([...commonColumn, ...adminColumn, ...commonAdditionalColumns, ...userColumns]);
+		} else if (!userType?.includes('admin') && !showAllColumns) {
+			setColumns([...commonColumn, ...userColumns]);
+			setColumnOrder(initialUserColumnOrder);
+		} else if (!userType?.includes('admin') && showAllColumns) {
+			setColumns([...commonColumn, ...userColumns, ...commonAdditionalColumns]);
 		}
-	}, [editorData?.data?.data, showAllColumns]);
+	}, [editorData?.data?.data, showAllColumns, userType]);
 	useEffect(() => {
 		if (data?.data) {
 			setCurrentPage(Number(data?.data?.current_page));
@@ -397,7 +476,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 		// Function to calculate and set the column width
 		const updateColumnWidth = () => {
 			if (ref.current) {
-				setColumnWidth((ref.current.clientWidth - 78) / 8);
+				setColumnWidth((ref.current.clientWidth - 78) / 9);
 			}
 		};
 
@@ -515,50 +594,13 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 					) : (
 						<></>
 					)}
-
-					<div className="py-36">
-						<div className="flex justify-center items-center">
-							<Pagination
-								count={data?.data?.last_page}
-								page={currentPage}
-								onChange={handleChangePage}
-								variant="text"
-								shape="rounded"
-								sx={{
-									'& .MuiPaginationItem-root': {
-										// color: '#0066ff',
-										'&.Mui-selected': {
-											backgroundColor: '#0066ff',
-											color: 'white'
-										},
-										'&.Mui-selected:hover': {
-											bgcolor: '#0066ff'
-										},
-										'& button:hover': {
-											backgroundColor: 'rgba(0, 102, 255, 0.1)'
-										}
-									}
-								}}
-							/>
-							<Select
-								sx={{
-									width: 70,
-									height: 5,
-									pt: '5px'
-								}}
-								variant="outlined"
-								value={rowPerPage}
-								onChange={(e) => {
-									setRowPerPage(e.target.value);
-									setPage(1);
-								}}
-							>
-								<MenuItem value={10}>10</MenuItem>
-								<MenuItem value={20}>20</MenuItem>
-								<MenuItem value={30}>30</MenuItem>
-							</Select>
-						</div>
-					</div>
+					<CustomPagination
+						totalPage={data?.data?.last_page}
+						page={currentPage}
+						setPage={setCurrentPage}
+						rowPerPage={rowPerPage}
+						setRowPerPage={setRowPerPage}
+					/>
 					<OrderDetailsModal
 						orderDetailsOpen={orderDetailsOpen}
 						handleOrderDetailsClose={handleOrderDetailsClose}
