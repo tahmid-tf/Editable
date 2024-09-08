@@ -137,7 +137,7 @@ class AuthController extends Controller
 
             if (!Auth::attempt($request->only('email', 'password'))) {
                 return response([
-                    'message' => 'Inavalid Credentials'
+                    'message' => 'Invalid Credentials'
                 ], Response::HTTP_UNAUTHORIZED);
             };
             $user = Auth::user();
@@ -163,8 +163,34 @@ class AuthController extends Controller
     }
 
 
-    public function logout()
+    public function logout(Request $request)
     {
+
+        // ---------------------------------------- Revoke all the token that was used for authentication
+//        $user = Auth::user();
+//        $user->tokens()->delete(); // Delete all tokens for the user
+
+        // ----------------------------------------- logout specific user
+
+        $token = $request->bearerToken();
+
+        // Revoke the specific token
+        $user = Auth::user();
+        $user->tokens()->where('id', explode('|', $token)[0])->delete();
+
+
+        $cookie = Cookie::forget('jwt');
+
+        return response([
+            'message' => 'successfully logged out'
+        ])->withCookie($cookie);
+    }
+
+    public function logout_all_devices(){
+        // ---------------------------------------- Revoke all the token that was used for authentication
+        $user = Auth::user();
+        $user->tokens()->delete(); // Delete all tokens for the user
+
         $cookie = Cookie::forget('jwt');
 
         return response([
