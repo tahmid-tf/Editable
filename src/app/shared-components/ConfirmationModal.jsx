@@ -1,6 +1,7 @@
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material';
 import deleteIcon from 'src/assets/icons/deleteIcon.svg';
+import GlobalSnackbar from './GlobalSnackbar/GlobalSnackbar';
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -34,75 +35,78 @@ const ConfirmationModal = ({
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"
 		>
-			<Box sx={style}>
-				<Box
-					sx={{
-						borderRadius: '100px',
-						height: '5em',
-						width: '5em',
-						bgcolor: '#7D7D7D1F',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center'
-					}}
-				>
-					<img
-						src={topIcon ? topIcon : deleteIcon}
-						className="w-[30px] h-[30px]"
-						alt="icon"
-					/>
-				</Box>
-				<Box sx={{ my: 4, fontWeight: 400, fontSize: '24px', lineHeight: '30px' }}>
-					<Typography sx={{ textAlign: 'center' }}>{bodyText}</Typography>
-				</Box>
-				<Box sx={{ display: 'flex', gap: 4 }}>
-					<Button
-						variant="outlined"
+			<>
+				<Box sx={style}>
+					<Box
 						sx={{
-							borderRadius: 1,
-							width: '7em',
-							color: '#C9C9C9',
-							'&:hover': {
-								color: 'black'
-							}
-						}}
-						onClick={handleCancelClick}
-					>
-						{cancelBtnText}
-					</Button>
-					<Button
-						variant="contained"
-						color="error"
-						sx={{
-							borderRadius: 1,
-							width: '7em',
+							borderRadius: '100px',
+							height: '5em',
+							width: '5em',
+							bgcolor: '#7D7D7D1F',
 							display: 'flex',
 							alignItems: 'center',
-							justifyContent: 'center',
-							gap: 1
+							justifyContent: 'center'
 						}}
-						onClick={handleConfirmClick}
 					>
-						{confirmBtnText}
-						{isLoading ? (
-							<Box
-								sx={{
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center'
-								}}
-							>
-								<CircularProgress
-									sx={{ color: 'white' }}
-									size={20}
-								/>
-							</Box>
-						) : (
-							''
-						)}
-					</Button>
+						<img
+							src={topIcon ? topIcon : deleteIcon}
+							className="w-[30px] h-[30px]"
+							alt="icon"
+						/>
+					</Box>
+					<Box sx={{ my: 4, fontWeight: 400, fontSize: '24px', lineHeight: '30px' }}>
+						<Typography sx={{ textAlign: 'center' }}>{bodyText}</Typography>
+					</Box>
+					<Box sx={{ display: 'flex', gap: 4 }}>
+						<Button
+							variant="outlined"
+							sx={{
+								borderRadius: 1,
+								width: '7em',
+								color: '#C9C9C9',
+								'&:hover': {
+									color: 'black'
+								}
+							}}
+							onClick={handleCancelClick}
+						>
+							{cancelBtnText}
+						</Button>
+						<Button
+							variant="contained"
+							color="error"
+							sx={{
+								borderRadius: 1,
+								width: '7em',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								gap: 1
+							}}
+							onClick={handleConfirmClick}
+						>
+							{confirmBtnText}
+							{isLoading ? (
+								<Box
+									sx={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}
+								>
+									<CircularProgress
+										sx={{ color: 'white' }}
+										size={20}
+									/>
+								</Box>
+							) : (
+								''
+							)}
+						</Button>
+					</Box>
 				</Box>
-			</Box>
+				<GlobalSnackbar />
+			</>
 		</Modal>
 	);
 };
