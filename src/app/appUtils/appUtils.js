@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 
 export const calculateRemainingDays = (orderDate) => {
-	// console.log({});
+	if (!orderDate) return 0;
 	// Parse the order date using dayjs
+
 	const parsedOrderDate = dayjs(orderDate);
 
 	// Add 7 days to the parsed order date
