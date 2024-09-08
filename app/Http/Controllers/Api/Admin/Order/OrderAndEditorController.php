@@ -31,7 +31,9 @@ class OrderAndEditorController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        if (auth()->user()->role == "user"){
+        // ------------------- For user routes
+
+        if (auth()->user()->role == "user") {
             if (auth()->user()->email != $order->users_email) {
                 return response()->json([
                     'status' => Response::HTTP_FORBIDDEN,
@@ -144,26 +146,26 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Order data not found',
                 'status' => Response::HTTP_NOT_FOUND,
-            ],Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
 
-        $validated_list = ['pending','cancelled'];
+        $validated_list = ['pending', 'cancelled'];
 
         if (!in_array($order_status, $validated_list)) {
             return response()->json([
                 'data' => 'Invalid order status request',
                 'status' => Response::HTTP_NOT_FOUND,
-            ],Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
 
 //        --------------------- checking validated list ---------------------
 
         // --------------------------- if order status is pending or cancelled // new update 3/9/24
 
-            $order->file_uploaded_by_admin_after_edit = null;
-            $order->order_delivery_date = null;
-            $order->order_status = $order_status;
-            $order->save();
+        $order->file_uploaded_by_admin_after_edit = null;
+        $order->order_delivery_date = null;
+        $order->order_status = $order_status;
+        $order->save();
 
 //        $order->order_status = $order_status;
 //        $order->save();
@@ -171,7 +173,7 @@ class OrderAndEditorController extends Controller
         return response()->json([
             'data' => 'Order status successfully updated',
             'status' => Response::HTTP_OK,
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
 
     }
 
@@ -192,7 +194,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Order data not found',
                 'status' => Response::HTTP_NOT_FOUND,
-            ],Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         $validated_list = ['completed'];
@@ -201,7 +203,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Invalid order status request',
                 'status' => Response::HTTP_NOT_FOUND,
-            ],Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         if (!$uploaded_drive_link) {
@@ -209,7 +211,7 @@ class OrderAndEditorController extends Controller
             return response()->json([
                 'data' => 'Uploaded drive link value cannot be null',
                 'status' => Response::HTTP_NOT_FOUND,
-            ],Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_NOT_FOUND);
         }
 
 //        --------------------- checking validations ---------------------
@@ -220,16 +222,14 @@ class OrderAndEditorController extends Controller
         $order->save();
 
 
-
         return \response()->json([
             'data' => 'Order status successfully completed',
             'status' => Response::HTTP_OK,
             'order' => $order,
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
     }
 
     // --------------------------- Order complete by admin, drive link update ---------------------------
-
 
 
 }

@@ -93,19 +93,19 @@ class AdminOrderController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'users_email' => 'required|string|email|max:255',
-                'users_phone' => 'required|string|max:20', // Assuming a max length for phone number
+                'users_email' => 'required|string|email',
+                'users_phone' => 'required|string',
                 'order_type' => 'required|in:standard,express,custom',
                 'order_name' => 'required|string|max:255',
                 'category_id' => 'required|integer',
                 'payment_status' => 'nullable|in:pending,successful,failed',
-                'order_date' => 'nullable',
-                'order_id' => 'nullable|string|max:255',
-                'amount' => 'required|string|max:255', // Assuming amount is stored as a string
-                'editors_id' => 'nullable|string|max:255',
-                'order_status' => 'required|in:pending,completed,cancelled,preview',
-                'file_uploaded_by_user' => 'nullable|string|max:255',
-                'file_uploaded_by_admin_after_edit' => 'nullable|string|max:255',
+//                'order_date' => 'nullable',
+//                'order_id' => 'nullable|string',
+                'amount' => 'required|integer',
+//                'editors_id' => 'nullable|string|max:255',
+                'order_status' => 'required|in:pending,completed,cancelled',
+                'file_uploaded_by_user' => 'nullable|string',
+//                'file_uploaded_by_admin_after_edit' => 'nullable|string|max:255',
                 'styles_array' => 'required|json',
                 'number_of_images_provided' => 'required|integer',
                 'culling' => 'nullable|in:yes,no',
@@ -115,9 +115,9 @@ class AdminOrderController extends Controller
                 'skin_retouching_type' => 'nullable|string|max:255',
                 'additional_info' => 'nullable|in:yes,no',
                 'preview_edits' => 'nullable|in:yes,no',
-                'user_id' => 'nullable|string|max:255',
-                'order_delivery_date' => 'nullable',
-                'preview_edit_status' => 'nullable|in:no,user_review_pending,accepted,rejected,pending',
+                'user_id' => 'nullable|string',
+//                'order_delivery_date' => 'nullable',
+//                'preview_edit_status' => 'nullable|in:no,user_review_pending,accepted,rejected,pending',
                 'users_name' => 'nullable',
 
             ]);
