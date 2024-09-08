@@ -24,13 +24,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // ---------------------------- development based routes ----------------------------
 
-Route::get('dev/delete_data_test/{id}', function ($id) {
-    \App\Models\Api\Admin\Order::where('id', $id)->forceDelete();
-
-
-    if (\App\Models\PreviewEdit::where('order_id', $id)->exists()) {
-        \App\Models\PreviewEdit::where('order_id', $id)->forceDelete();
-    }
-
-    return "Dev mode delete executed";
-});
+//Route::get('dev/delete_data_test/{id}', function ($id) {
+//    \App\Models\Api\Admin\Order::where('id', $id)->forceDelete();
+//
+//
+//    if (\App\Models\PreviewEdit::where('order_id', $id)->exists()) {
+//        \App\Models\PreviewEdit::where('order_id', $id)->forceDelete();
+//    }
+//
+//    return "Dev mode delete executed";
+//});

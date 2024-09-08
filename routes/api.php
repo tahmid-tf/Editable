@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
+Route::post('/forgot-password', [ResetPasswordController::class, 'sendResetLinkEmail']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -28,6 +31,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('logout_all_devices', [AuthController::class, 'logout_all_devices']);
-
 
 });

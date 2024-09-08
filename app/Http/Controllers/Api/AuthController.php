@@ -166,12 +166,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
 
-        // ---------------------------------------- Revoke all the token that was used for authentication
-//        $user = Auth::user();
-//        $user->tokens()->delete(); // Delete all tokens for the user
-
-        // ----------------------------------------- logout specific user
-
         $token = $request->bearerToken();
 
         // Revoke the specific token
@@ -187,6 +181,7 @@ class AuthController extends Controller
     }
 
     public function logout_all_devices(){
+
         // ---------------------------------------- Revoke all the token that was used for authentication
         $user = Auth::user();
         $user->tokens()->delete(); // Delete all tokens for the user
