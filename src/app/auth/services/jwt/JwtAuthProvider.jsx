@@ -180,10 +180,19 @@ function JwtAuthProvider(props) {
 	/**
 	 * Sign out
 	 */
+	const logoutFunc = async () => {
+		try {
+			const response = await axios.post(config.logoutUrl);
+			console.log({ response });
+			resetSession();
+			setIsAuthenticated(false);
+			setUser(null);
+		} catch (error) {
+			console.log({ error });
+		}
+	};
 	const signOut = useCallback(() => {
-		resetSession();
-		setIsAuthenticated(false);
-		setUser(null);
+		logoutFunc();
 	}, []);
 	/**
 	 * Update user
