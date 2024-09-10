@@ -66,87 +66,33 @@ const TableFilterComponent = ({
 	return (
 		<>
 			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-				<TextField
-					label="Search"
-					name="search"
-					value={searchInputValue}
-					onChange={handleSearchChange}
-				/>
+				<Box>
+					<TextField
+						label="Search"
+						name="search"
+						value={searchInputValue}
+						onChange={handleSearchChange}
+					/>
+				</Box>
 				<Box
 					display={'flex'}
 					gap={1}
 					alignItems={'center'}
 					justifyContent={'center'}
 				>
-					<FormControl fullWidth>
-						<InputLabel id="order-status-label">Order Status</InputLabel>
-						<Select
-							labelId="order-status-label"
-							id="orderStatus"
-							name="orderStatus"
-							value={orderStatus}
-							label="Order Status"
-							onChange={(e) => {
-								setOrderStatus(e.target.value);
-								setPage(1);
-							}}
-							sx={{
-								'& .MuiSelect-select': {
-									backgroundColor: 'white',
-									borderRadius: '4px'
-								},
-								width: '12em'
-							}}
-						>
-							{orderStatusOptions.map((option, i) => (
-								<MenuItem
-									key={i}
-									value={option.value}
-								>
-									{option.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-					<FormControl fullWidth>
-						<InputLabel id="payment-status-label">Payment Status</InputLabel>
-						<Select
-							labelId="payment-status-label"
-							id="paymentStatus"
-							name="paymentStatus"
-							value={paymentStatus}
-							label="Payment Status"
-							onChange={(e) => {
-								setPaymentStatus(e.target.value);
-								setPage(1);
-							}}
-							sx={{
-								'& .MuiSelect-select': {
-									backgroundColor: 'white',
-									borderRadius: '4px'
-								},
-								width: '12em'
-							}}
-						>
-							{paymentStatusOptions.map((option, i) => (
-								<MenuItem
-									key={i}
-									value={option.value}
-								>
-									{option.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-					{editor !== undefined ? (
-						<FormControl fullWidth>
-							<InputLabel id="editor-label">Editor</InputLabel>
+					<Box>
+						<FormControl>
+							<InputLabel id="order-status-label">Order Status</InputLabel>
 							<Select
-								labelId="editor-label"
-								id="editor"
-								name="editor"
-								value={editor}
-								label="Editor"
+								labelId="order-status-label"
+								id="orderStatus"
+								name="orderStatus"
+								value={orderStatus}
+								label="Order Status"
+								onChange={(e) => {
+									setOrderStatus(e.target.value);
+									setPage(1);
+								}}
 								sx={{
 									'& .MuiSelect-select': {
 										backgroundColor: 'white',
@@ -154,12 +100,8 @@ const TableFilterComponent = ({
 									},
 									width: '12em'
 								}}
-								onChange={(e) => {
-									setEditor(e.target.value);
-									setPage(1);
-								}}
 							>
-								{editorOptions.map((option, i) => (
+								{orderStatusOptions.map((option, i) => (
 									<MenuItem
 										key={i}
 										value={option.value}
@@ -169,26 +111,94 @@ const TableFilterComponent = ({
 								))}
 							</Select>
 						</FormControl>
+					</Box>
+					<Box>
+						<FormControl>
+							<InputLabel id="payment-status-label">Payment Status</InputLabel>
+							<Select
+								labelId="payment-status-label"
+								id="paymentStatus"
+								name="paymentStatus"
+								value={paymentStatus}
+								label="Payment Status"
+								onChange={(e) => {
+									setPaymentStatus(e.target.value);
+									setPage(1);
+								}}
+								sx={{
+									'& .MuiSelect-select': {
+										backgroundColor: 'white',
+										borderRadius: '4px'
+									},
+									width: '12em'
+								}}
+							>
+								{paymentStatusOptions.map((option, i) => (
+									<MenuItem
+										key={i}
+										value={option.value}
+									>
+										{option.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Box>
+					{editor !== undefined ? (
+						<Box>
+							<FormControl>
+								<InputLabel id="editor-label">Editor</InputLabel>
+								<Select
+									labelId="editor-label"
+									id="editor"
+									name="editor"
+									value={editor}
+									label="Editor"
+									sx={{
+										'& .MuiSelect-select': {
+											backgroundColor: 'white',
+											borderRadius: '4px'
+										},
+										width: '12em'
+									}}
+									onChange={(e) => {
+										setEditor(e.target.value);
+										setPage(1);
+									}}
+								>
+									{editorOptions.map((option, i) => (
+										<MenuItem
+											key={i}
+											value={option.value}
+										>
+											{option.name}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Box>
 					) : (
 						<></>
 					)}
 					<Box
 						onClick={() => setOpenDate(true)}
-						width={'100%'}
+						
 					>
 						<TextField
 							label="Order Date"
 							placeholder="MM-DD-YYYY"
 							variant="outlined"
-							fullWidth
+							
 							sx={{
+
 								pl: 0,
 								'& > .MuiInputBase-root': {
 									paddingRight: 1
 								},
 								'& > .MuiInputBase-root > .MuiInputBase-input': {
 									paddingLeft: 1
-								}
+								},
+								maxWidth:168
 							}}
 							focused={false}
 							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : `${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')}` : ''}`}`}

@@ -10,12 +10,16 @@ import ConfirmationModal from 'app/shared-components/ConfirmationModal';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import { useAppDispatch } from 'app/store/hooks';
-import { Link } from 'react-router-dom';
+import { imageUrlCompleter } from 'src/app/appUtils/appUtils';
+import ShowImageModal from './ShowImageModal';
 
 const Styles = () => {
 	const [openModal, setOpenModal] = useState(false);
+	const [openImageModal, setOpenImageModal] = useState(false);
+
 	const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 	const [clickedRowData, setClickedRowData] = useState(null);
+	const [imageUrl, setImageUrl] = useState('');
 
 	const dispatch = useAppDispatch();
 
@@ -58,21 +62,23 @@ const Styles = () => {
 		setClickedRowData(null);
 	};
 
+	const handleClose = () => {
+		setImageUrl('');
+		setOpenImageModal(false);
+	};
 	const column = useMemo(
 		() => [
 			{
 				id: 'style_name',
 				accessorKey: 'style_name',
 				header: 'Name',
-				Cell: ({ row }) => `${row?.original?.style_name}`,
-				
+				Cell: ({ row }) => `${row?.original?.style_name}`
 			},
 			{
 				id: 'additional_style',
 				accessorKey: 'additional_style',
 				header: 'Additional Style',
-				Cell: ({ row }) => `${row?.original?.additional_style}`,
-				
+				Cell: ({ row }) => `${row?.original?.additional_style}`
 			},
 			{
 				id: 'category_details',
@@ -84,12 +90,6 @@ const Styles = () => {
 						.join(', ');
 					return `${allCategory}`;
 				}
-				// muiTableHeadCellProps: {
-				// 	align: 'le'
-				// },
-				// muiTableBodyCellProps: {
-				// 	align: 'center'
-				// }
 			},
 			{
 				id: 'additional_edits',
@@ -104,31 +104,23 @@ const Styles = () => {
 						.filter((value) => value?.length)
 						.join(', ');
 					return additionalEdits;
-				},
-				
+				}
 			},
 			{
 				id: 'upload_image',
 				accessorKey: 'upload_image',
 				header: 'Image',
 				Cell: ({ row }) => (
-					// <div className={'inline-flex items-center px-[10px] py-[2px] tracking-wide bg-black text-white'}>
-					<Link
-						to={row?.original?.upload_image}
-						className='text-primary'
-						// target="_blank"
-						// download
-						// className="tracking-[0.2px] leading-[20px] font-medium"
-						// style={{
-						// 	textDecoration: 'none',
-						// 	color: 'white'
-						// }}
+					<p
+						className="text-[#0066ff] underline cursor-pointer w-fit"
+						onClick={() => {
+							setImageUrl(imageUrlCompleter(row?.original?.upload_image));
+							setOpenImageModal(true);
+						}}
 					>
-						Download
-					</Link>
-					// </div>
-				),
-				
+						View
+					</p>
+				)
 			}
 		],
 		[data]
@@ -217,6 +209,11 @@ const Styles = () => {
 				handleCancelClick={handleConfirmationModalClose}
 				handleConfirmClick={handleConfirmDeleteClick}
 				isLoading={deleteLoading}
+			/>
+			<ShowImageModal
+				handleClose={handleClose}
+				imageUrl={imageUrl}
+				openModal={openImageModal}
 			/>
 		</div>
 	);

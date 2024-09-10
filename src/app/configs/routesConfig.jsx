@@ -11,6 +11,7 @@ import OrdersConfig from '../main/orders/OrdersConfig';
 import adminConfig from '../main/admin/adminConfig';
 import userConfig from '../main/user/userConfig';
 import GeneralSettingsConfig from '../main/GeneralSettings/GeneralSettingsConfig';
+import Error404PageConfig from '../main/404/Error404PageConfig';
 
 const routeConfigs = [
 	ExampleConfig,
@@ -18,6 +19,7 @@ const routeConfigs = [
 	SignInConfig,
 	SignUpConfig,
 	OrdersConfig,
+	Error404PageConfig,
 	GeneralSettingsConfig,
 	...adminConfig,
 	...userConfig
