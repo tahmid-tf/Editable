@@ -25,7 +25,8 @@ const OrderTableHeader = ({
 	setShowAllColumns,
 	onOrderSubmit,
 	setPage,
-	setAllStyleData
+	setAllStyleData,
+	editorData
 }) => {
 	const userRole = useSelector(selectUserRole);
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
@@ -47,6 +48,7 @@ const OrderTableHeader = ({
 	return (
 		<div className="">
 			<TableFilterComponent
+				editorData={editorData}
 				search={search}
 				setSearch={setSearch}
 				orderStatus={orderStatus}

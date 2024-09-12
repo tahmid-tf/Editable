@@ -38,7 +38,8 @@ const TableFilterComponent = ({
 	setEndDate,
 	setPage,
 	handleActionButtonClick,
-	actionBtnText
+	actionBtnText,
+	editorData
 }) => {
 	const [openDate, setOpenDate] = useState(false);
 	const [dateValue, setDateValue] = useState([]);
@@ -101,6 +102,7 @@ const TableFilterComponent = ({
 									width: '12em'
 								}}
 							>
+								<MenuItem value={''}>All</MenuItem>
 								{orderStatusOptions.map((option, i) => (
 									<MenuItem
 										key={i}
@@ -166,12 +168,13 @@ const TableFilterComponent = ({
 										setPage(1);
 									}}
 								>
-									{editorOptions.map((option, i) => (
+									<MenuItem value={''}>All</MenuItem>
+									{editorData.map((option, i) => (
 										<MenuItem
 											key={i}
-											value={option.value}
+											value={option?.id}
 										>
-											{option.name}
+											{option?.editor_name}
 										</MenuItem>
 									))}
 								</Select>
@@ -180,17 +183,12 @@ const TableFilterComponent = ({
 					) : (
 						<></>
 					)}
-					<Box
-						onClick={() => setOpenDate(true)}
-						
-					>
+					<Box onClick={() => setOpenDate(true)}>
 						<TextField
 							label="Order Date"
 							placeholder="MM-DD-YYYY"
 							variant="outlined"
-							
 							sx={{
-
 								pl: 0,
 								'& > .MuiInputBase-root': {
 									paddingRight: 1
@@ -198,7 +196,7 @@ const TableFilterComponent = ({
 								'& > .MuiInputBase-root > .MuiInputBase-input': {
 									paddingLeft: 1
 								},
-								maxWidth:168
+								maxWidth: 168
 							}}
 							focused={false}
 							value={`${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')} - ` : ''}${dateValue[1] ? `${dayjs(dateValue[1]).format('DD/MM/YY')}` : `${dateValue[0] ? `${dayjs(dateValue[0]).format('DD/MM/YY')}` : ''}`}`}

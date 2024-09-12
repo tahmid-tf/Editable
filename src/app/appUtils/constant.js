@@ -21,7 +21,7 @@ export const orderStatusOptions = [
 ];
 export const paymentStatusOptions = [
 	{
-		name: 'Payment Status',
+		name: 'All Payment',
 		value: ''
 	},
 	{

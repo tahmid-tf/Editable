@@ -73,7 +73,7 @@ export default function StyleCard({
 					) : (
 						<></>
 					)}
-					{warning_text && <p className="pt-16 text-[12px] text-[#CB1717] font-bold">{warning_text}</p>}
+					{warning_text && <p className="pt-16 text-[12px] text-[#D54848] font-bold">{warning_text}</p>}
 				</CardContent>
 			</CardActionArea>
 		</Card>

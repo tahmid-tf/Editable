@@ -10,7 +10,7 @@ const GlobalSnackbar = ({ snackbarStyle }) => {
 	
 	const dispatch = useAppDispatch();
 	const [snackbarBgColor, typeBgColor, typeColor, messageColor] = {
-		[SnackbarTypeEnum.SUCCESS]: ['#ECFDF3', '#039855', '#FFFFFF', '#027A48'],
+		[SnackbarTypeEnum.SUCCESS]: ['#ECFDF3', '#27A96E', '#FFFFFF', '#027A48'],
 		[SnackbarTypeEnum.ERROR]: ['#FEF3F2', '#D92D20', '#FFFFFF', '#B42318'],
 		[SnackbarTypeEnum.WARNING]: ['#FFFAEB', '#DC6803', '#FFFFFF', '#B54708'],
 		[SnackbarTypeEnum.DELETE]: ['#0469E3', '#FFFFFF', '#000000', '#FFFFFF']

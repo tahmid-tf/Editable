@@ -7,7 +7,8 @@ export const exportCSV = async (apiEndPoint, queryObj, fileName) => {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				authorization: `Bearer ${token}`
+				authorization: `Bearer ${token}`,
+				'access-control-allow-origin': '*'
 			}
 		});
 

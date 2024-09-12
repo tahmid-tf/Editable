@@ -25,13 +25,15 @@ const PreviewEditStatusComponent = ({ row, userType, setSelectedId, setOrderDeta
 			<div
 				className={clsx(
 					'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
-					row?.original?.preview_edit_status === 'accepted'
-						? 'bg-[#039855] text-white'
-						: row?.original?.preview_edit_status === 'rejected'
-							? 'bg-[#CB1717] text-white'
-							: row?.original?.preview_edit_status === 'pending'
-								? 'bg-[#FFCC00] text-black'
-								: 'bg-[#CBCBCB] text-black',
+					row?.original?.preview_edits === 'no'
+						? 'text-black'
+						: row?.original?.preview_edit_status === 'accepted'
+							? 'bg-[#27A96E] text-white'
+							: row?.original?.preview_edit_status === 'rejected'
+								? 'bg-[#D54848] text-white'
+								: row?.original?.preview_edit_status === 'pending'
+									? 'bg-[#F8DA61] text-black'
+									: 'bg-[#CBCBCB] text-black',
 					row?.original?.preview_edit_status === 'user_review_pending' && !userType?.includes('admin')
 						? 'cursor-pointer'
 						: ''

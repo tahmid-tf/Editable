@@ -115,9 +115,9 @@ const OrderStatusComponent = ({ row, userType }) => {
 		<Typography
 			className={clsx(
 				'inline-flex items-center px-[8px] py-[2px] rounded-full ',
-				(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#FFCC00] text-black',
-				(orderStatusValues || row?.original?.order_status) === 'completed' && 'bg-[#039855] text-white ',
-				(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#CB1717] text-white',
+				(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#F8DA61] text-black',
+				(orderStatusValues || row?.original?.order_status) === 'completed' && 'bg-[#27A96E] text-white ',
+				(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#D54848] text-white',
 				(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black',
 				userType?.includes('admin') ? 'w-full' : 'capitalize text-[12px] tracking-[0.2px] leading-[20px]'
 			)}
@@ -128,10 +128,10 @@ const OrderStatusComponent = ({ row, userType }) => {
 					onChange={(event) => handleOrderStatusChanges(row?.original?.id, event)}
 					className={clsx(
 						'inline-flex items-center !w-full text-[12px]',
-						(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#FFCC00] text-black',
+						(orderStatusValues || row?.original?.order_status) === 'pending' && 'bg-[#F8DA61] text-black',
 						(orderStatusValues || row?.original?.order_status) === 'completed' &&
-							'bg-[#039855] text-white ',
-						(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#CB1717] text-white',
+							'bg-[#27A96E] text-white ',
+						(orderStatusValues || row?.original?.order_status) === 'cancelled' && 'bg-[#D54848] text-white',
 						(orderStatusValues || row?.original?.order_status) === 'preview' && 'bg-[#CBCBCB] text-Black'
 					)}
 					defaultChecked={row?.original?.order_status}

@@ -150,9 +150,9 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 				<div
 					className={clsx(
 						'inline-flex items-center px-[8px] py-[2px] rounded-full tracking-wide',
-						row?.original?.payment_status === 'successful' && 'bg-[#039855] text-white',
-						row?.original?.payment_status === 'failed' && 'bg-[#CB1717] text-white',
-						row?.original?.payment_status === 'pending' && 'bg-[#FFCC00] text-black'
+						row?.original?.payment_status === 'successful' && 'bg-[#27A96E] text-white',
+						row?.original?.payment_status === 'failed' && 'bg-[#D54848] text-white',
+						row?.original?.payment_status === 'pending' && 'bg-[#F8DA61] text-black'
 					)}
 				>
 					<div className="tracking-[0.2px] leading-[20px] text-[12px] capitalize">
@@ -545,6 +545,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 						onOrderSubmit={onOrderSubmit}
 						setPage={setCurrentPage}
 						setAllStyleData={setAllStyleData}
+						editorData={editorData?.data?.data}
 					/>
 					{data?.data?.data?.length ? (
 						<div>

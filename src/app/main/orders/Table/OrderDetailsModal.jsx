@@ -366,7 +366,7 @@ const OrderDetailsModal = ({ selectedId, orderDetailsOpen, handleOrderDetailsClo
 										fontWeight: 500,
 										lineHeight: '20px',
 										textTransform: 'capitalize',
-										color: data?.data?.preview_edit_status === 'rejected' ? '#CB1717' : 'black'
+										color: data?.data?.preview_edit_status === 'rejected' ? '#D54848' : 'black'
 									}}
 								>
 									{data?.data?.preview_edit_status === 'user_review_pending'
