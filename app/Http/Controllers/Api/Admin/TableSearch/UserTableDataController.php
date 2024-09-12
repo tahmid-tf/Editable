@@ -22,10 +22,15 @@ class UserTableDataController extends Controller
     {
 
         $email = $request->input('email');
-        $query = Order::select('users_email')->distinct();
+
+        $query = Order::query();
+
+//        $query = Order::select('users_email')->distinct();
 
         if ($email) {
-            $query->where('users_email', 'like', '%' . $email . '%');
+            $query->where('users_email', 'like', '%' . $email . '%')->select('users_email')->distinct();
+        }else{
+            $query->select('users_email')->distinct();
         }
 
         $paginate = request('paginate', 10);
