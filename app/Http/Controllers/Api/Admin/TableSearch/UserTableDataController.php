@@ -21,7 +21,7 @@ class UserTableDataController extends Controller
 
     public function users_data(Request $request)
     {
-        $search = $request->input('search');  // Single search parameter
+        $search = $request->input('email');  // Single search parameter
         $paginate = $request->input('paginate', 10);  // Default pagination is 10
 
 // Base query to select distinct emails
