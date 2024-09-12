@@ -25,7 +25,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 //    ----------------------------------- Users list and total orders from admin side API -----------------------------------
 
-    Route::get('users_info', [UserTableDataController::class, 'users_data_modified']);
+    Route::get('users_info', [UserTableDataController::class, 'users_data']);
 
 //    ----------------------------------- Users list and total orders from admin side API -----------------------------------
 
