@@ -110,7 +110,7 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 									<Field
 										as="select" // Change Field to select for dropdown
 										name="editor_id"
-										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+										className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 									>
 										<option value="">Assign Editor</option>
 										{editorData?.data?.data?.map((editors, i) => (
@@ -140,7 +140,7 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 									<Field
 										as="select" // Change Field to select for dropdown
 										name="order_status"
-										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+										className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 									>
 										{orderStatusOptions?.map((orderData, i) => (
 											<option
@@ -169,7 +169,7 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 									<Field
 										as="select" // Change Field to select for dropdown
 										name="payment_status"
-										className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+										className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 									>
 										<option value="">Select Payment Status</option>
 										<option value="pending">Pending</option>

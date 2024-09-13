@@ -47,7 +47,7 @@ const UserOrderCard = ({ data, setOrderType }) => {
 					<Typography className="text-[14px] leading-[20px]">{data?.description}</Typography>
 				</CardContent>
 			</Box>
-			<CardActions>
+			<CardActions sx={{p:0}}>
 				<Button
 					className="mt-10 w-full bg-[#146ef5ef] flex justify-center items-center gap-5 "
 					color="primary"

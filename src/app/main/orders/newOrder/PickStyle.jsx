@@ -482,7 +482,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													<Field
 														as="select"
 														name="imageSelectionMethodCulling"
-														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														className="mt-10 px-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
 													>
 														<option
 															value=""
@@ -592,7 +592,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													<Field
 														as="select"
 														name="imageSelectionMethodSkinRetouching"
-														className="mt-10 p-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
+														className="mt-10 px-10 block w-[332px] h-[38px] border border-gray-300 rounded-md"
 													>
 														<option
 															value=""

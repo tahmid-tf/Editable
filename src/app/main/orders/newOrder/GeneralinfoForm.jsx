@@ -118,7 +118,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 							<Field
 								as="select" // Change Field to select for dropdown
 								name="orderType"
-								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+								className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 							>
 								<option value="">Select Order Type</option>
 								<option value="standard">Standard</option>
@@ -161,7 +161,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 							<Field
 								as="select" // Change Field to select for dropdown
 								name="category_id"
-								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+								className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 								onChange={(event) => {
 									const selectedIndex = event.target.options.selectedIndex;
 									const selectedCategoryId = event.target.value;
@@ -197,7 +197,7 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 							<Field
 								as="select" // Change Field to select for dropdown
 								name="paymentStatus"
-								className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+								className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 							>
 								<option value="">Select Payment Status</option>
 								<option value="pending">Pending</option>

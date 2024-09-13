@@ -119,7 +119,7 @@ const UserOrderModal = ({ newUserOrderOpen, handleNewOrderClose, setAllStyleData
 											<Field
 												as="select" // Change Field to select for dropdown
 												name="category_id"
-												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+												className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md"
 												onChange={(event) => {
 													const selectedIndex = event.target.options.selectedIndex;
 													const selectedCategoryId = event.target.value;
