@@ -126,22 +126,23 @@ export const formatDateAndId = (dateString, id) => {
 };
 export const getStartOfDayISO = (dateString) => {
 	// Parse the date using Day.js
-	const date = dayjs(dateString);
+	return dayjs(dateString).format('YYYY-MM-DD');
+	// const date = dayjs(dateString);
 
-	// Get the start of the day (12:00 AM) for the given date
-	const startOfDay = date.startOf('day');
+	// // Get the start of the day (12:00 AM) for the given date
+	// const startOfDay = date.startOf('day');
 
-	// Convert the start of the day to ISO format
-	return startOfDay.toISOString();
+	// // Convert the start of the day to ISO format
+	// return startOfDay.toISOString();
 };
 
 export const getEndOfDayISO = (dateString) => {
 	// Parse the date using Day.js
-	const date = dayjs(dateString);
+	// const date = dayjs(dateString);
+	return dayjs(dateString).format('YYYY-MM-DD');
+	// // Get the end of the day (11:59:59 PM) for the given date
+	// const endOfDay = date.endOf('day');
 
-	// Get the end of the day (11:59:59 PM) for the given date
-	const endOfDay = date.endOf('day');
-
-	// Convert the end of the day to ISO format
-	return endOfDay.toISOString();
+	// // Convert the end of the day to ISO format
+	// return endOfDay.toISOString();
 };

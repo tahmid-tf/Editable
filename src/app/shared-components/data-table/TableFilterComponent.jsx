@@ -269,7 +269,9 @@ const TableFilterComponent = ({
 								actionBar: CustomActionComponent
 							}}
 							calendars={2}
-							onChange={(value) => setDateValue(value)}
+							onChange={(value) => {
+								setDateValue(value);
+							}}
 							value={dateValue}
 							sx={{
 								borderRadius: 4,
