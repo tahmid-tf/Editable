@@ -272,6 +272,8 @@ class AdminOrderController extends Controller
         $cancelled_orders_count = Order::where('order_status', 'cancelled')->count() ?? 0;
         $preview_orders_count = Order::where('order_status', 'preview')->count() ?? 0;
 
+        $all_total_orders_count = Order::whereIn('order_status', ['completed', 'pending','cancelled'])->count();
+
 
         $orders->getCollection()->transform(function ($order) {
             $order->category = Category::withTrashed()->find($order->category_id);
@@ -283,7 +285,7 @@ class AdminOrderController extends Controller
 
         return response()->json([
             'entire_order_count' => $query->count(),
-            'total_orders_count' => $total_orders_count,
+            'total_orders_count' => $all_total_orders_count,
             'pending_orders_count' => $pending_orders_count,
             'cancelled_orders_count' => $cancelled_orders_count,
             'completed_orders_count' => $completed_orders_count,
