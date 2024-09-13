@@ -38,14 +38,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //});
 
 
-Route::get('transaction_data_update_dev', function (){
-    $orders = Order::all(); // Get all orders
-
-    foreach ($orders as $order) {
-        // Update transaction_id with a random string like 'ch_3PyWMWEUMAw37Lvk0aWa0bgO'
-        $order->transaction_id = 'ch_' . Str::random(24); // Adjust the length as needed
-        $order->save(); // Save the updated order
-    }
-
-    return 'Transaction IDs updated successfully!';
-});
+//Route::get('transaction_data_update_dev', function (){
+//    $orders = Order::all(); // Get all orders
+//
+//    foreach ($orders as $order) {
+//        // Update transaction_id with a random string like 'ch_3PyWMWEUMAw37Lvk0aWa0bgO'
+//        $order->transaction_id = 'ch_' . Str::random(24); // Adjust the length as needed
+//        $order->save(); // Save the updated order
+//    }
+//
+//    return 'Transaction IDs updated successfully!';
+//});
