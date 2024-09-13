@@ -126,6 +126,7 @@ class UserTableDataController extends Controller
         $searchParams = [
             'order_id' => request('order_id'),
             'order_status' => request('order_status'),
+            'editor' => request('editor'),
             'payment_status' => request('payment_status'),
             'start_date' => request('start_date'),
             'end_date' => request('end_date'),
@@ -143,6 +144,20 @@ class UserTableDataController extends Controller
 
         if ($searchParams['payment_status']) {
             $query->where('payment_status', $searchParams['payment_status']);
+        }
+
+        if ($searchParams['editor']) {
+
+            $query->where('editors_id', $searchParams['editor']);
+
+
+//            $editor = Editor::withTrashed()->where('editor_name', 'LIKE', '%' . $searchParams['editor'] . '%')->first();
+//            if ($editor) {
+//                $query->where('editors_id', $editor->id);
+//            } else {
+//                // If no editor is found, set the query to return no results
+//                $query->whereNull('editors_id');
+//            }
         }
 
 
