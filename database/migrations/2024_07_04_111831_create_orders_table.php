@@ -28,7 +28,7 @@ class CreateOrdersTable extends Migration
 
             //            sorting from orders table
 
-            $table->timestamp('order_date')->nullable();
+            $table->string('transaction_id')->nullable();
             $table->string('order_id')->nullable();
             $table->string('amount');
             $table->string('editors_id')->nullable();

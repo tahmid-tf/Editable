@@ -31,7 +31,8 @@ class TransactionSearchController extends Controller
 
         $query->where(function ($q) use ($searchParams) {
             $q->where('users_email', 'LIKE', '%' . $searchParams['email'] . '%')
-                ->orWhere('order_id', 'LIKE', '%' . $searchParams['email'] . '%');
+                ->orWhere('order_id', 'LIKE', '%' . $searchParams['email'] . '%')
+                ->orWhere('transaction_id', 'LIKE', '%' . $searchParams['email'] . '%');
         });
 
 //        -------------------------- dynamic column mapping --------------------------
@@ -62,13 +63,13 @@ class TransactionSearchController extends Controller
 //        ---------------------------- between start data and end date modification ----------------------------
 
         $paginate = request('paginate', 10);
-        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status', 'amount', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
+        $orders = $query->select('id', 'users_email', 'order_status', 'payment_status', 'amount','transaction_id', 'created_at')->orderBy('created_at', 'desc')->paginate($paginate);
 
 //        ----------------------- Transaction id and Order id -----------------------
 
         $data = $orders->toArray();
         foreach ($data['data'] as &$additional_data) {
-            $additional_data['transaction_id'] = $additional_data['id'];
+//            $additional_data['transaction_id'] = $additional_data['id'];
             $additional_data['order_id'] = $additional_data['id'];
         }
 

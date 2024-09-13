@@ -104,7 +104,6 @@ class OrderController extends Controller
 //            ------------- if the order has preview edits with it  ----------------
 
 
-
             // stripe payment gateway block
 
             try {
@@ -164,6 +163,7 @@ class OrderController extends Controller
 //            ------------- order id creation and initiating order_id ----------------
 
                     $order['order_id'] = Order::order_id_creation();
+                    $order['transaction_id'] = $resp1->id;
                     $order->save();
 
 //            ------------- order id creation and initiating order_id ----------------
