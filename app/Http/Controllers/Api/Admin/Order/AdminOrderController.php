@@ -262,10 +262,16 @@ class AdminOrderController extends Controller
 
         // -------------------- dynamic orders count from the table
 
-        $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
-        $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
-        $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
-        $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
+//        $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
+//        $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
+//        $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
+//        $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
+
+        $completed_orders_count = Order::where('order_status', 'completed')->count() ?? 0;
+        $pending_orders_count = Order::where('order_status', 'pending')->count() ?? 0;
+        $cancelled_orders_count = Order::where('order_status', 'cancelled')->count() ?? 0;
+        $preview_orders_count = Order::where('order_status', 'preview')->count() ?? 0;
+
 
         $orders->getCollection()->transform(function ($order) {
             $order->category = Category::withTrashed()->find($order->category_id);
