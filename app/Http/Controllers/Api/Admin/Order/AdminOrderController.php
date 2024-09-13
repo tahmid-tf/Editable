@@ -227,13 +227,17 @@ class AdminOrderController extends Controller
         }
 
         if ($searchParams['editor']) {
-            $editor = Editor::withTrashed()->where('editor_name', 'LIKE', '%' . $searchParams['editor'] . '%')->first();
-            if ($editor) {
-                $query->where('editors_id', $editor->id);
-            } else {
-                // If no editor is found, set the query to return no results
-                $query->whereNull('editors_id');
-            }
+
+            $query->where('editors_id', $searchParams['editor']);
+
+
+//            $editor = Editor::withTrashed()->where('editor_name', 'LIKE', '%' . $searchParams['editor'] . '%')->first();
+//            if ($editor) {
+//                $query->where('editors_id', $editor->id);
+//            } else {
+//                // If no editor is found, set the query to return no results
+//                $query->whereNull('editors_id');
+//            }
         }
 
 //        ---------------------------- between start data and end date modification ----------------------------
