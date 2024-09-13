@@ -258,6 +258,9 @@ class AdminOrderController extends Controller
 
         // Count values based on the paginated results
         $paginatedOrders = $orders->getCollection();
+
+        // ------------------ total order count based on pagination
+
         $total_orders_count = $paginatedOrders->count();
 
         // -------------------- dynamic orders count from the table
@@ -272,7 +275,7 @@ class AdminOrderController extends Controller
         $cancelled_orders_count = Order::where('order_status', 'cancelled')->count() ?? 0;
         $preview_orders_count = Order::where('order_status', 'preview')->count() ?? 0;
 
-        $all_total_orders_count = Order::whereIn('order_status', ['completed', 'pending','cancelled'])->count();
+        $all_total_orders_count = Order::count() ?? 0;
 
 
         $orders->getCollection()->transform(function ($order) {
