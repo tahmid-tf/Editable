@@ -1,5 +1,4 @@
 import apiService from 'app/store/apiService';
-import { assignIn } from 'lodash';
 
 const addTagTypes = ['allEditors'];
 const EditorsApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
@@ -41,7 +40,7 @@ const EditorsApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints(
 				method: 'POST',
 				body
 			}),
-			invalidatesTags: ['orders']
+			invalidatesTags: ['orders', 'allEditors']
 		})
 	})
 });
