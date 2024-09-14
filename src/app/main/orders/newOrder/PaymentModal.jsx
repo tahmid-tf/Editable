@@ -55,7 +55,13 @@ const PaymentModal = ({
 						initialValues={initialValues}
 						validationSchema={validationSchema}
 						onSubmit={async (values) => {
-							const orderInfo = { ...paymentModalInfo, ...values };
+							const orderInfo = {
+								...paymentModalInfo,
+								number: values.number,
+								exp_month: values.exp_month.toString(),
+								exp_year: values.exp_year.toString(),
+								cvc: values.cvc.toString()
+							};
 							delete orderInfo.editors_id;
 							const response = await placeOrderForUser(orderInfo);
 							if (response.data) {
@@ -154,7 +160,7 @@ const PaymentModal = ({
 										gap={2}
 										mt={2}
 									>
-										<div className='w-full'>
+										<div className="w-full">
 											<label
 												htmlFor="exp_month"
 												className="font-semibold"
@@ -180,7 +186,7 @@ const PaymentModal = ({
 												className="text-red-500 text-xs mt-1"
 											/>
 										</div>
-										<div className='w-full'>
+										<div className="w-full">
 											<label
 												htmlFor="exp_year"
 												className="font-semibold"
