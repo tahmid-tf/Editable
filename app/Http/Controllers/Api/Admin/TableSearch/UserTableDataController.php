@@ -19,6 +19,72 @@ class UserTableDataController extends Controller
 //    ----------------------------------- Users list and total orders from admin side API [v4] -----------------------------------
 
 
+    public function users_data_modified(Request $request)
+    {
+        $email = $request->input('email');
+        $paginate = $request->input('paginate', 10);  // Default pagination is 10
+
+// Base query to select distinct emails
+        $query = Order::select('users_email')->distinct();
+
+        if ($email) {
+            // Filter by email if provided
+            $query->where('users_email', 'like', '%' . $email . '%')
+                ->orWhere('users_name', 'like', '%' . $email . '%')
+                ->orWhere('users_phone', 'like', '%' . $email . '%');
+        }
+
+// Get all distinct emails
+        $distinctEmails = $query->get();
+
+// Manually paginate the distinct results
+        $page = $request->input('page', 1);
+        $total = $distinctEmails->count();
+        $users = $distinctEmails->forPage($page, $paginate);
+
+// Convert the paginated result to array
+        $data = $users->values()->toArray();
+
+// Add additional user details (users_name, users_phone, total_order_count)
+        foreach ($data as &$order) {
+            $users_email = $order['users_email'];
+
+            $order['users_name'] = Order::where('users_email', $users_email)->first()->users_name ?? null;
+            $order['users_phone'] = Order::where('users_email', $users_email)->first()->users_phone ?? null;
+            $order['total_order_count'] = Order::where('users_email', $users_email)->whereIn('payment_status', ['pending', 'successful', 'cancelled'])->count() ?? 0;
+        }
+
+// Manually construct the pagination data
+        $pagination = [
+            'current_page' => $page,
+            'data' => $data,  // Paginated distinct emails with additional fields
+            'first_page_url' => url()->current() . '?page=1',
+            'from' => $users->isEmpty() ? 0 : (($page - 1) * $paginate) + 1,
+            'last_page' => ceil($total / $paginate),
+            'last_page_url' => url()->current() . '?page=' . ceil($total / $paginate),
+            'next_page_url' => $page < ceil($total / $paginate) ? url()->current() . '?page=' . ($page + 1) : null,
+            'path' => url()->current(),
+            'per_page' => $paginate,
+            'prev_page_url' => $page > 1 ? url()->current() . '?page=' . ($page - 1) : null,
+            'to' => $users->isEmpty() ? 0 : (($page - 1) * $paginate) + $users->count(),
+            'total' => $total,
+        ];
+
+// Calculate total ordered users count, base style count, and additional style count
+        $total_ordered_user_count = Order::select('users_email')->distinct()->count() ?? 0;
+        $base_style_count = Style::where('additional_style', 'no')->count() ?? 0;
+        $additional_style_count = Style::where('additional_style', 'yes')->count() ?? 0;
+
+// Return the response with the additional data
+        return response()->json([
+            'total_ordered_user_count' => $total_ordered_user_count,
+            'base_style_count' => $base_style_count,
+            'additional_style_count' => $additional_style_count,
+            'data' => $pagination
+        ]);
+    }
+
+
     public function users_data(Request $request)
     {
         $search = $request->input('email');
@@ -50,7 +116,6 @@ class UserTableDataController extends Controller
             $order['users_phone'] = Order::where('users_email', $users_email)->first()->users_phone ?? null;
             $order['total_order_count'] = Order::where('users_email', $users_email)->whereIn('payment_status', ['pending', 'successful'])->count() ?? 0;
         }
-
 
 
 //  ------------------------------------------------------------- Total ordered users count -----------------------------------------------------------------------
