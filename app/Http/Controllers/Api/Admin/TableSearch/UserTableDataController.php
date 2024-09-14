@@ -21,85 +21,60 @@ class UserTableDataController extends Controller
 
     public function users_data(Request $request)
     {
-        $search = $request->input('email');  // Single search parameter
-        $paginate = $request->input('paginate', 10);  // Default pagination is 10
-
-// Base query to select distinct emails
+        $search = $request->input('email');
         $query = Order::select('users_email')->distinct();
 
         if ($search) {
-            // Filter by users_email, users_name, or users_phone based on the search term
-            $query->where(function ($query) use ($search) {
-                $query->where('users_email', 'like', '%' . $search . '%')
-                    ->orWhere('users_name', 'like', '%' . $search . '%')
-                    ->orWhere('users_phone', 'like', '%' . $search . '%');
-            });
+            $query->where('users_email', 'like', '%' . $search . '%')
+                ->orWhere('users_name', 'like', '%' . $search . '%')
+                ->orWhere('users_phone', 'like', '%' . $search . '%');
         }
 
-// Get all distinct emails
-        $distinctEmails = $query->get();
+        $paginate = request('paginate', 10);
+        $users = $query->paginate($paginate);
 
-// Manually paginate the distinct results
-        $page = $request->input('page', 1);
-        $total = $distinctEmails->count();
-        $users = $distinctEmails->forPage($page, $paginate);
+        $data = $users->toArray();
 
-// Convert the paginated result to array
-        $data = $users->values()->toArray();
 
-// Add additional user details
-        foreach ($data as &$order) {
+//  -------------------------------------------- users_name, users_phone, total_order_count additionally added --------------------------------------------------
+
+
+        foreach ($data['data'] as &$order) {
+
             $users_email = $order['users_email'];
 
-            // Initialize default values
-            $order['users_name'] = null;
-            $order['users_phone'] = null;
-            $order['total_order_count'] = 0;
+            $order['users_name'] = Order::where('users_email', $users_email)->first()->users_name ?? null;
 
-            // Check if the user is registered
-            if (User::where('email', $users_email)->exists()) {
-                $order['users_name'] = User::where('email', $users_email)->first()->name ?? null;
-            } else {
-                $order['users_name'] = Order::where('users_email', $users_email)->first()->users_name ?? null;
-            }
+//            ----------------- users name search and checking if registered by users -----------------
 
-            // Add user phone and total order count
             $order['users_phone'] = Order::where('users_email', $users_email)->first()->users_phone ?? null;
-            $order['total_order_count'] = Order::where('users_email', $users_email)
-                ->whereIn('payment_status', ['pending', 'successful'])
-                ->count() ?? 0;
+            $order['total_order_count'] = Order::where('users_email', $users_email)->whereIn('payment_status', ['pending', 'successful'])->count() ?? 0;
         }
 
-// Manually construct the pagination data based on the results
-        $pagination = [
-            'current_page' => $page,
-            'data' => $data,  // Paginated results
-            'first_page_url' => url()->current() . '?page=1',
-            'from' => $users->isEmpty() ? 0 : (($page - 1) * $paginate) + 1,
-            'last_page' => ceil($total / $paginate),
-            'last_page_url' => url()->current() . '?page=' . ceil($total / $paginate),
-            'next_page_url' => $page < ceil($total / $paginate) ? url()->current() . '?page=' . ($page + 1) : null,
-            'path' => url()->current(),
-            'per_page' => $paginate,
-            'prev_page_url' => $page > 1 ? url()->current() . '?page=' . ($page - 1) : null,
-            'to' => $users->isEmpty() ? 0 : (($page - 1) * $paginate) + $users->count(),
-            'total' => $total,
-        ];
 
-// Calculate total ordered users count, base style count, and additional style count
+
+//  ------------------------------------------------------------- Total ordered users count -----------------------------------------------------------------------
+
         $total_ordered_user_count = Order::select('users_email')->distinct()->count() ?? 0;
+
+//  ------------------------------------------------------------- Total ordered users count -----------------------------------------------------------------------
+
+//  ------------------------------------------------------------- Total numbers of base style and additional style count -----------------------------------------------------------------------
+
         $base_style_count = Style::where('additional_style', 'no')->count() ?? 0;
         $additional_style_count = Style::where('additional_style', 'yes')->count() ?? 0;
 
-// Return the response with the additional data
+//  ------------------------------------------------------------- Total numbers of base style and additional style count -----------------------------------------------------------------------
+
         return response()->json([
             'total_ordered_user_count' => $total_ordered_user_count,
             'base_style_count' => $base_style_count,
             'additional_style_count' => $additional_style_count,
-            'data' => $pagination
+            'data' => $data
         ]);
 
     }
+
 
 //    ----------------------------------- Users list and total orders from admin side API [v4] -----------------------------------
 

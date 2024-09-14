@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Models\Api\Admin\Order;
 
 class AuthController extends Controller
 {
@@ -34,7 +35,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-
 
 //        ------------------------------------------------- validation block -------------------------------------------------
 
@@ -86,11 +86,23 @@ class AuthController extends Controller
                 $token = $user->createToken('token')->plainTextToken;
                 $cookie = cookie('jwt', $token, 60 * 24 * 30); // 30 days
 
+
+                // ----------------------------- also changing users_name from orders table if he has any orders made by admin
+
+                if (Order::where('users_email', $inputs['email'])->exists()) {
+                    Order::where('users_email', $inputs['email'])->update([
+                        'users_name' => $inputs['name'],
+                    ]);
+                }
+
                 return response([
                     'token' => $token,
                     'user' => $user,
                     'status' => Response::HTTP_OK,
+                    'message' => 'Register successfully'
                 ])->withCookie($cookie);
+
+
             }
 
             return response([
@@ -180,7 +192,8 @@ class AuthController extends Controller
         ])->withCookie($cookie);
     }
 
-    public function logout_all_devices(){
+    public function logout_all_devices()
+    {
 
         // ---------------------------------------- Revoke all the token that was used for authentication
         $user = Auth::user();
