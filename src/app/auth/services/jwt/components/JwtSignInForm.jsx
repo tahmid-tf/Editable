@@ -36,13 +36,13 @@ function JwtSignInForm() {
 		resolver: zodResolver(schema)
 	});
 	const { isValid, dirtyFields, errors } = formState;
-	useEffect(() => {
-		setValue('email', 'admin@gmail.com', {
-			shouldDirty: true,
-			shouldValidate: true
-		});
-		setValue('password', '12345678', { shouldDirty: true, shouldValidate: true });
-	}, [setValue]);
+	// useEffect(() => {
+	// 	setValue('email', 'admin@gmail.com', {
+	// 		shouldDirty: true,
+	// 		shouldValidate: true
+	// 	});
+	// 	setValue('password', '12345678', { shouldDirty: true, shouldValidate: true });
+	// }, [setValue]);
 
 	async function onSubmit(formData) {
 		const { email, password } = formData;

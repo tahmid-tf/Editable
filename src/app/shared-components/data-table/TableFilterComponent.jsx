@@ -39,10 +39,11 @@ const TableFilterComponent = ({
 	setPage,
 	handleActionButtonClick,
 	actionBtnText,
-	editorData
+	editorData,
+	dateValue,
+	setDateValue
 }) => {
 	const [openDate, setOpenDate] = useState(false);
-	const [dateValue, setDateValue] = useState([]);
 
 	const [searchInputValue, setSearchInputValue] = useState(search);
 
@@ -64,6 +65,12 @@ const TableFilterComponent = ({
 			debouncedHandleSearchChange.cancel();
 		};
 	}, [debouncedHandleSearchChange]);
+
+	useEffect(() => {
+		if (!search?.length) {
+			setSearchInputValue('');
+		}
+	}, [search]);
 	return (
 		<>
 			<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

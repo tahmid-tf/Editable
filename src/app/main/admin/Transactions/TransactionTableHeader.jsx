@@ -1,5 +1,6 @@
 import { Typography, Box } from '@mui/material';
 import TableFilterComponent from 'app/shared-components/data-table/TableFilterComponent';
+import { useState } from 'react';
 import { exportCSV } from 'src/app/appUtils/apiUtils';
 import jwtAuthConfig from 'src/app/auth/services/jwt/jwtAuthConfig';
 
@@ -20,7 +21,16 @@ const TransactionTableHeader = ({
 	setPage
 }) => {
 	const token = localStorage.getItem(jwtAuthConfig.tokenStorageKey);
-
+	const [dateValue, setDateValue] = useState([]);
+	const handleResetFilter = () => {
+		setSearch('');
+		setOrderStatus('');
+		setPaymentStatus('');
+		setStartDate('');
+		setEndDate('');
+		setPage(1);
+		setDateValue([]);
+	};
 	return (
 		<Box py={2}>
 			<TableFilterComponent
@@ -33,6 +43,8 @@ const TransactionTableHeader = ({
 				setStartDate={setStartDate}
 				setEndDate={setEndDate}
 				setPage={setPage}
+				dateValue={dateValue}
+				setDateValue={setDateValue}
 				handleActionButtonClick={() =>
 					exportCSV(
 						'admin/transaction_export',
@@ -77,6 +89,12 @@ const TransactionTableHeader = ({
 						<b> ${totalAmount}</b>
 					</div>
 				</div>
+				<span
+					className="cursor-pointer underline text-[#0066ff]"
+					onClick={handleResetFilter}
+				>
+					Reset Filter
+				</span>
 			</div>
 		</Box>
 	);

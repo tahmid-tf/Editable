@@ -81,6 +81,7 @@ function JwtSignUpForm() {
 			noValidate
 			className="mt-32 flex w-full flex-col justify-center"
 			onSubmit={handleSubmit(onSubmit)}
+			autoComplete="off"
 		>
 			<Controller
 				name="displayName"
@@ -91,7 +92,8 @@ function JwtSignUpForm() {
 						className="mb-24"
 						label="Your Name"
 						autoFocus
-						type="name"
+						type="text"
+						autoComplete="off"
 						error={!!errors.displayName}
 						helperText={errors?.displayName?.message}
 						variant="outlined"
@@ -110,6 +112,7 @@ function JwtSignUpForm() {
 						className="mb-24"
 						label="Your Email"
 						type="email"
+						autoComplete="off"
 						error={!!errors.email}
 						helperText={errors?.email?.message}
 						variant="outlined"
@@ -128,6 +131,7 @@ function JwtSignUpForm() {
 						className="mb-24"
 						label="Your Whatsapp Number"
 						type="tel"
+						autoComplete="off"
 						error={!!errors.whatsappNumber}
 						helperText={errors?.whatsappNumber?.message}
 						variant="outlined"
@@ -146,6 +150,7 @@ function JwtSignUpForm() {
 						className="mb-24"
 						label="Password"
 						type="password"
+						autoComplete="off"
 						error={!!errors.password}
 						helperText={errors?.password?.message}
 						variant="outlined"
@@ -164,6 +169,7 @@ function JwtSignUpForm() {
 						className="mb-24"
 						label="Retype Password"
 						type="password"
+						autoComplete="off"
 						error={!!errors.passwordConfirm}
 						helperText={errors?.passwordConfirm?.message}
 						variant="outlined"

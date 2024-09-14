@@ -28,8 +28,8 @@ const GeneralinfoForm = ({ onClose, successAlert, onOrderSubmit, setAllStyleData
 		<div className="p-24 bg-white shadow-md w-[390px] max-h-[80vh] overflow-y-auto rounded-[4px]">
 			<Formik
 				initialValues={{
-					userEmail: 'john.doe@gmail.com',
-					userPhone: '+44 7848 107162',
+					userEmail: '',
+					userPhone: '',
 					orderType: '',
 					orderName: '',
 					category_id: '',

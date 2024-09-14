@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { usePlaceOrderForUserMutation } from '../orderApi';
 import { useAppDispatch } from 'app/store/hooks';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { monthArray, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const style = {
@@ -114,7 +114,7 @@ const PaymentModal = ({
 											<Field
 												type="number"
 												name="number"
-												placeholder=""
+												placeholder="4624*****"
 												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 												min="0"
 											/>
@@ -136,9 +136,9 @@ const PaymentModal = ({
 												CVC
 											</label>
 											<Field
-												type="string"
+												type="number"
 												name="cvc"
-												placeholder=""
+												placeholder="1234"
 												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
 												min="0"
 											/>
@@ -154,7 +154,7 @@ const PaymentModal = ({
 										gap={2}
 										mt={2}
 									>
-										<div>
+										<div className='w-full'>
 											<label
 												htmlFor="exp_month"
 												className="font-semibold"
@@ -166,19 +166,21 @@ const PaymentModal = ({
 												Exp Month
 											</label>
 											<Field
-												type="string"
+												as="select"
 												name="exp_month"
-												placeholder=""
-												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
-												min="0"
-											/>
+												className="mt-10 px-10 block w-full h-[38px] border border-gray-300 rounded-md flex-1"
+											>
+												{monthArray?.map((month, i) => (
+													<option value={month.value}>{month.name}</option>
+												))}
+											</Field>
 											<ErrorMessage
 												name="exp_month"
 												component="div"
 												className="text-red-500 text-xs mt-1"
 											/>
 										</div>
-										<div>
+										<div className='w-full'>
 											<label
 												htmlFor="exp_year"
 												className="font-semibold"
@@ -190,10 +192,10 @@ const PaymentModal = ({
 												Exp year
 											</label>
 											<Field
-												type="string"
+												type="number"
 												name="exp_year"
-												placeholder=""
-												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md"
+												placeholder="2054"
+												className="mt-10 p-10 block w-full h-[38px] border border-gray-300 rounded-md "
 												min="0"
 											/>
 											<ErrorMessage

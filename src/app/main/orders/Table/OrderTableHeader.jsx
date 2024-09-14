@@ -31,6 +31,7 @@ const OrderTableHeader = ({
 	const userRole = useSelector(selectUserRole);
 	const [newOrderOpen, setNewOrderOpen] = useState(false);
 	const [newUserOrderOpen, setNewUserOrderOpen] = useState(false);
+	const [dateValue, setDateValue] = useState([]);
 
 	const handleNewOrderOpen = () => {
 		userRole.includes('admin') ? setNewOrderOpen(true) : setNewUserOrderOpen(true);
@@ -44,6 +45,16 @@ const OrderTableHeader = ({
 			handleAllColumns(!prev);
 			return !prev;
 		});
+	};
+	const handleResetFilter = () => {
+		setSearch('');
+		setOrderStatus('');
+		setPaymentStatus('');
+		setEditor('');
+		setStartDate('');
+		setEndDate('');
+		setPage(1);
+		setDateValue([]);
 	};
 	return (
 		<div className="">
@@ -62,6 +73,8 @@ const OrderTableHeader = ({
 				setPage={setPage}
 				handleActionButtonClick={handleNewOrderOpen}
 				actionBtnText={'New Order'}
+				dateValue={dateValue}
+				setDateValue={setDateValue}
 			/>
 
 			<div className="flex justify-between py-20">
@@ -92,21 +105,35 @@ const OrderTableHeader = ({
 						<b> {pendingOrder}</b>
 					</div>
 				</div>
-				<div
-					className="flex items-center cursor-pointer"
-					onClick={handleClick}
-					aria-hidden="true"
-				>
-					<Checkbox
-						checked={showAllColumns}
-						size="small"
-					/>
+				<div className="flex items-center">
+					<div
+						className="flex items-center cursor-pointer"
+						onClick={handleClick}
+						aria-hidden="true"
+					>
+						<Checkbox
+							checked={showAllColumns}
+							size="small"
+						/>
+						<Typography
+							className="font-medium"
+							color="text.secondary"
+						>
+							Show all columns
+						</Typography>
+					</div>
 					<Typography
-						className="font-medium"
+						className="font-medium mx-20"
 						color="text.secondary"
 					>
-						Show all columns
+						|
 					</Typography>
+					<span
+						className="cursor-pointer underline text-[#0066ff]"
+						onClick={handleResetFilter}
+					>
+						Reset Filter
+					</span>
 				</div>
 			</div>
 			{userRole.includes('admin') ? (
