@@ -56,6 +56,7 @@ export const editorOptions = [
 	}
 ];
 export const monthArray = [
+	{ name: 'Select month', value: '' },
 	{ name: 'January', value: '1' },
 	{ name: 'February', value: '2' },
 	{ name: 'March', value: '3' },
