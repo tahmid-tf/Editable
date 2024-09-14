@@ -218,14 +218,15 @@ class UserTableDataController extends Controller
 
         // Count values based on the paginated results
         $paginatedOrders = $orders->getCollection();
-        $total_orders_count = $paginatedOrders->count();
-        $completed_orders_count = $paginatedOrders->where('order_status', 'completed')->count();
 
-        $total_spend = $paginatedOrders->whereIn('order_status', ['pending', 'successful'])->sum('amount') ?? 0;
+        $total_orders_count = Order::where('users_email',$email)->count();
+        $completed_orders_count = Order::where('users_email',$email)->where('order_status', 'completed')->count();
 
-        $pending_orders_count = $paginatedOrders->where('order_status', 'pending')->count();
-        $cancelled_orders_count = $paginatedOrders->where('order_status', 'cancelled')->count();
-        $preview_orders_count = $paginatedOrders->where('order_status', 'preview')->count();
+        $total_spend = Order::where('users_email',$email)->where('payment_status', 'successful')->sum('amount') ?? 0;
+
+        $pending_orders_count = Order::where('users_email',$email)->where('order_status', 'pending')->count();
+        $cancelled_orders_count = Order::where('users_email',$email)->where('order_status', 'cancelled')->count();
+        $preview_orders_count = Order::where('users_email',$email)->where('order_status', 'preview')->count();
 
         $users_phone_no = User::where('email', $email)->first()->phone ?? Order::where('users_email', $email)->first()->users_phone ?? null;
 
