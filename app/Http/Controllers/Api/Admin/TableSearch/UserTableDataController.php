@@ -51,7 +51,7 @@ class UserTableDataController extends Controller
 
             $order['users_name'] = Order::where('users_email', $users_email)->first()->users_name ?? null;
             $order['users_phone'] = Order::where('users_email', $users_email)->first()->users_phone ?? null;
-            $order['total_order_count'] = Order::where('users_email', $users_email)->whereIn('payment_status', ['pending', 'successful', 'cancelled'])->count() ?? 0;
+            $order['total_order_count'] = Order::where('users_email', $users_email)->count() ?? 0;
         }
 
 // Manually construct the pagination data
