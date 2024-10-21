@@ -1,10 +1,7 @@
-import * as React from 'react';
+import { Box, Checkbox, Radio } from '@mui/material';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, Radio, Checkbox } from '@mui/material';
-import cardImage from '../../../../../assets/images/pick-a-style/cardimage.png';
 import { imageUrlCompleter } from 'src/app/appUtils/appUtils';
 
 export default function StyleCard({
@@ -21,61 +18,44 @@ export default function StyleCard({
 
 	return (
 		<Card
-			className="bg-[#F8F8F8]"
+			className="bg-white cursor-pointer "
 			sx={{
-				maxWidth: 326,
 				width: '100%',
 				position: 'relative',
-				border:'1px solid #C9C9C9',
-				boxShadow:'none'
+				border: '1px solid #C9C9C9',
+				boxShadow: 'none',
+				borderRadius: '4px'
 			}}
 			onClick={() => handleChange({ target: { value } })}
 		>
-			<CardActionArea
-				sx={{
-					height: 472
-				}}
-				className=""
-			>
+			<Box className=" flex justify-between">
+				<Box sx={{ display: 'flex', padding: '24px', columnGap: '41px', alignItems: 'center' }}>
+					<CardMedia
+						className=" w-[262px] h-fit"
+						component="img"
+						image={imageUrlCompleter(image)}
+						alt="Style Image"
+					/>
+
+					<Box className=" h-full">
+						<Typography className="font-semibold text-[18px] leading-[28px] mb-5">{title}</Typography>
+						{description?.length ? (
+							<Typography className="font-[400] text-[14px] leading-[21px]">{description}</Typography>
+						) : (
+							<></>
+						)}
+						{warning_text && <p className="pt-16 text-[12px] text-[#CB1717] font-[600]">{warning_text}</p>}
+					</Box>
+				</Box>
+
 				<Control
 					checked={selectedValue}
 					onChange={(e) => e.stopPropagation()} // Prevent event bubbling
 					value={value}
 					name="style-selection"
-					sx={{ position: 'absolute', top: 8, left: 22 }}
+					className="h-fit !text-[#146ef5ef] mt-[10px] mr-[5px]"
 				/>
-				<CardMedia
-					className="px-32 pt-[53px]"
-					component="img"
-					image={imageUrlCompleter(image)}
-					alt="Style Image"
-				/>
-				<CardContent className="px-32 h-full">
-					<Typography
-						gutterBottom
-						variant="h5"
-						component="div"
-						className="font-600"
-						style={{ fontFamily: 'Roboto', fontSize: '24px' }}
-					>
-						{title}
-					</Typography>
-					{description?.length ? (
-						description?.split(',').map((item, i) => (
-							<Typography
-								key={i}
-								className="py-5 text-[15px]"
-								variant="body2"
-							>
-								<li>{item}</li>
-							</Typography>
-						))
-					) : (
-						<></>
-					)}
-					{warning_text && <p className="pt-16 text-[12px] text-[#D54848] font-bold">{warning_text}</p>}
-				</CardContent>
-			</CardActionArea>
+			</Box>
 		</Card>
 	);
 }

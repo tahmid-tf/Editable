@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { IoClose } from 'react-icons/io5';
 import { Box, CircularProgress, Modal } from '@mui/material';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import clsx from 'clsx';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { IoClose } from 'react-icons/io5';
+import { getExistingId, imageUrlCompleter } from 'src/app/appUtils/appUtils';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import * as Yup from 'yup';
 import { useGetAllCategoriesQuery } from '../../categories/CategoriesApi';
 import { useCreateStyleMutation, useUpdateStyleMutation, useUploadImageMutation } from '../AdminStylePageApi';
-import { getExistingId, imageUrlCompleter } from 'src/app/appUtils/appUtils';
-import clsx from 'clsx';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import { useAppDispatch } from 'app/store/hooks';
-import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const validationSchema = Yup.object().shape({
 	style_name: Yup.string().required('Required'),
@@ -27,10 +27,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateStylesForm = ({ openModal, handleCloseModal, editedRowData }) => {
-	
 	const [imagePreview, setImagePreview] = useState({ imageUrl: '', isImageKey: false });
 	const { data } = useGetAllCategoriesQuery({ page: 1, rowPerPage: 10000000 });
-
 
 	const [createStyle, { isLoading: createLoading }] = useCreateStyleMutation();
 	const [updateStyle, { isLoading: updateLoading }] = useUpdateStyleMutation();
@@ -40,7 +38,6 @@ const CreateStylesForm = ({ openModal, handleCloseModal, editedRowData }) => {
 
 	const handleImageChange = (event, setFieldValue) => {
 		const file = event.target.files[0];
-		console.log(event.target.files);
 		if (file) {
 			setImagePreview({ imageUrl: URL.createObjectURL(file), isImageKey: false });
 			setFieldValue('upload_image', file);
@@ -96,7 +93,6 @@ const CreateStylesForm = ({ openModal, handleCloseModal, editedRowData }) => {
 							}}
 							validationSchema={validationSchema}
 							onSubmit={async (values) => {
-								console.log(values);
 								const image = new FormData();
 								image.append('upload_image', values.upload_image);
 

@@ -1,34 +1,30 @@
-import * as React from 'react';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { Box, Pagination, Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 // table
-import Typography from '@mui/material/Typography';
-import { useState, useMemo, useEffect } from 'react';
-import format from 'date-fns/format';
-import clsx from 'clsx';
 import FuseLoading from '@fuse/core/FuseLoading';
+import Typography from '@mui/material/Typography';
+import CustomPagination from 'app/shared-components/data-table/CustomPagination';
+import DataTable from 'app/shared-components/data-table/DataTable';
+import { useAppSelector } from 'app/store/hooks';
+import clsx from 'clsx';
+import format from 'date-fns/format';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AiFillInfoCircle } from 'react-icons/ai';
 import { FiEdit } from 'react-icons/fi';
 import { LuEye } from 'react-icons/lu';
-import DataTable from 'app/shared-components/data-table/DataTable';
-import { calculateDeliveryDays, calculateRemainingDays, formatDateAndId } from 'src/app/appUtils/appUtils';
-import { useGetOrdersDataQuery } from '../orderApi';
-import OrderTableHeader from './OrderTableHeader';
-import { AiFillInfoCircle } from 'react-icons/ai';
-import OrderDetailsModal from './OrderDetailsModal';
 import { useParams } from 'react-router';
-import UserInfoCardContainer from './UserInfoCardContainer';
-import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
-import { useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
-import { useAppSelector } from 'app/store/hooks';
-import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import OrderStatusComponent from './OrderStatusComponent';
-import OrderEditModal from './OrderEditModal';
+import { calculateDeliveryDays, calculateRemainingDays } from 'src/app/appUtils/appUtils';
 import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import { useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
+import { useGetUserDetailsQuery } from '../../admin/UsersPage/UsersPageApi';
+import { useGetOrdersDataQuery } from '../orderApi';
 import AssignEditorComponent from './AssignEditorComponent';
-import CustomPagination from 'app/shared-components/data-table/CustomPagination';
+import OrderDetailsModal from './OrderDetailsModal';
+import OrderEditModal from './OrderEditModal';
+import OrderStatusComponent from './OrderStatusComponent';
+import OrderTableHeader from './OrderTableHeader';
 import PreviewEditStatusComponent from './PreviewEditStatusComponent';
+import UserInfoCardContainer from './UserInfoCardContainer';
 
 function OrderTable({ onOrderSubmit, setAllStyleData }) {
 	const params = useParams();
@@ -218,12 +214,7 @@ function OrderTable({ onOrderSubmit, setAllStyleData }) {
 								}
 							}}
 						>
-							<button
-								onClick={() => {
-									console.log('info icon clicked');
-								}}
-								type="button"
-							>
+							<button type="button">
 								<AiFillInfoCircle
 									className="ml-4 text-[#F29339]"
 									size={14}

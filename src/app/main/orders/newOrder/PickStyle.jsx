@@ -1,28 +1,26 @@
-import { useState } from 'react';
 import { Box, CircularProgress, Grid } from '@mui/material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { json, Link, useNavigate } from 'react-router-dom';
-import { AiFillInfoCircle } from 'react-icons/ai';
 import Tooltip from '@mui/material/Tooltip';
-import StyleCard from './StyleCards/StyleCard';
-import PriceCard from './StyleCards/PriceCard';
-import NewOrderNav from './NewOrderNav';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import clsx from 'clsx';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useState } from 'react';
+import { AiFillInfoCircle } from 'react-icons/ai';
+import { getMaxThreshold } from 'src/app/appUtils/appUtils';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import * as Yup from 'yup';
 import {
 	useGetValueForOrderCalculationForUserMutation,
 	useGetValueForOrderCalculationMutation,
 	usePlaceOrderMutation
 } from '../orderApi';
-import clsx from 'clsx';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { selectOrderState } from '../orderSlice';
-import { getMaxThreshold } from 'src/app/appUtils/appUtils';
-import dayjs from 'dayjs';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import { selectUserRole } from 'src/app/auth/user/store/userSlice';
+import NewOrderNav from './NewOrderNav';
 import PaymentModal from './PaymentModal';
 import PaymentSuccessModal from './PaymentSuccessModal';
+import PriceCard from './StyleCards/PriceCard';
+import StyleCard from './StyleCards/StyleCard';
 import YourTubeVideoModal from './YourTubeVideoModal';
 
 // Validation Schema
@@ -220,6 +218,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 		setOpenPaymentSuccessModal(false);
 		onPickStyleSubmit();
 	};
+
 	return (
 		<Formik
 			initialValues={initialValues}
@@ -300,13 +299,18 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 												key={i}
 												item
 												md={12}
-												lg={6}
-												xl={4}
+												lg={12}
+												xl={12}
 											>
 												<Field
 													name="selectedStyle"
 													type="radio"
 													value={styleInfo?.style_name}
+													warning_text={
+														styleInfo?.skin_retouch !== 'yes'
+															? 'Skin Retouching Not Available'
+															: ''
+													}
 													as={StyleCard}
 													title={styleInfo?.style_name}
 													description={styleInfo?.description}
@@ -336,8 +340,8 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														key={i}
 														item
 														md={12}
-														lg={6}
-														xl={4}
+														lg={12}
+														xl={12}
 													>
 														<Field
 															name="additionalStyle"
@@ -368,7 +372,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 									{/* ==================== Additional Edits ==================== */}
 									<div className="mt-60">
 										<div>
-											<p className="text-[32px] font-bold text-[#422323] py-36">
+											<p className="text-[32px] font-bold text-[#868686] py-36">
 												Additional Edits
 											</p>
 										</div>
@@ -404,10 +408,10 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 												/>
 												<span
 													className={clsx(
-														'pl-5 text-[20px] font-bold',
+														'pl-5 text-[18px]',
 														orderCalcValue?.culling === 'yes'
 															? 'text-black'
-															: 'text-[#868686]'
+															: 'text-[#cacaca]'
 													)}
 												>
 													Culling
@@ -422,7 +426,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														className="font-semibold"
 														style={{
 															lineHeight: '20px',
-															fontSize: '14px'
+															fontSize: '16px'
 														}}
 													>
 														How many images are you sending us?
@@ -450,7 +454,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														className="font-semibold"
 														style={{
 															lineHeight: '20px',
-															fontSize: '14px'
+															fontSize: '16px'
 														}}
 													>
 														How many images should we cull down to?
@@ -474,7 +478,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														className="font-semibold"
 														style={{
 															lineHeight: '20px',
-															fontSize: '14px'
+															fontSize: '16px'
 														}}
 													>
 														How would you like us to select your images?
@@ -538,10 +542,10 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													/>
 													<span
 														className={clsx(
-															'pl-5 text-[20px] font-bold',
+															'pl-5 text-[18px]',
 															orderCalcValue?.skin_retouch === 'yes'
 																? 'text-black'
-																: 'text-[#868686]'
+																: 'text-[#cacaca]'
 														)}
 													>
 														Skin Retouching
@@ -551,13 +555,13 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 										)}
 										{/* showSkinRetouchingInputs */}
 										{showInput.skinRetouching && (
-											<div className="">
+											<div className="mt-20">
 												<label
 													htmlFor="imageQuantity"
 													className="font-semibold"
 													style={{
 														lineHeight: '20px',
-														fontSize: '14px'
+														fontSize: '16px'
 													}}
 												>
 													How many images are you sending us?
@@ -584,7 +588,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 														className="font-semibold"
 														style={{
 															lineHeight: '20px',
-															fontSize: '14px'
+															fontSize: '16px'
 														}}
 													>
 														How would you like us to select the images for skin retouching?
@@ -647,10 +651,10 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 												/>
 												<span
 													className={clsx(
-														'pl-5 text-[20px] font-bold',
+														'pl-5 text-[18px]',
 														orderCalcValue?.preview_edits === 'yes'
 															? 'text-black'
-															: 'text-[#868686]'
+															: 'text-[#cacaca]'
 													)}
 												>
 													Preview Edits
@@ -682,12 +686,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													}
 												}}
 											>
-												<button
-													onClick={() => {
-														console.log('info icon clicked');
-													}}
-													type="button"
-												>
+												<button type="button">
 													<AiFillInfoCircle className="ml-8" />
 												</button>
 											</Tooltip>
@@ -709,7 +708,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 													className="font-semibold"
 													style={{
 														lineHeight: '20px',
-														fontSize: '14px'
+														fontSize: '16px'
 													}}
 												>
 													How many images are you sending us?
@@ -734,7 +733,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 												className="font-semibold"
 												style={{
 													lineHeight: '20px',
-													fontSize: '14px'
+													fontSize: '16px'
 												}}
 											>
 												Google Drive link with your images
@@ -752,7 +751,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 											/>
 										</div>
 									</div>
-									<div className="w-[400px] text-[12px] font-medium">
+									<div className=" text-[14px] font-medium">
 										<p>Please ensure that:</p>
 										<div className="pl-5">
 											<div className="flex">
@@ -773,7 +772,13 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 
 										<p>
 											Find out how to create your own Smart Preview Enabled Lightroom Catalogs{' '}
-											<span onClick={()=>setOpenYouTubeVideo(true)} style={{ textDecoration: 'none',color:'blue',cursor:'pointer' }}>here</span>.
+											<span
+												onClick={() => setOpenYouTubeVideo(true)}
+												style={{ textDecoration: 'none', color: 'blue', cursor: 'pointer' }}
+											>
+												here
+											</span>
+											.
 										</p>
 									</div>
 									<div className="pt-32 pb-24">
@@ -831,7 +836,10 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 								}}
 							/>
 						</div>
-						<YourTubeVideoModal handleClose={()=>setOpenYouTubeVideo(false)} openYouTubeVideo={openYouTubeVideo} />
+						<YourTubeVideoModal
+							handleClose={() => setOpenYouTubeVideo(false)}
+							openYouTubeVideo={openYouTubeVideo}
+						/>
 					</Form>
 				);
 			}}

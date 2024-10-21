@@ -1,14 +1,14 @@
-import { Box, CircularProgress, Modal, Typography } from '@mui/material';
+import { Box, CircularProgress, Modal } from '@mui/material';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import clsx from 'clsx';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { IoClose } from 'react-icons/io5';
 import { orderStatusOptions, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import * as Yup from 'yup';
 import { useGetAllEditorsQuery } from '../../admin/EditorsPage/EditorsApi';
-import { IoClose } from 'react-icons/io5';
 import { useEditOrderMutation } from '../orderApi';
-import { useAppDispatch } from 'app/store/hooks';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import clsx from 'clsx';
 
 const style = {
 	position: 'absolute',
@@ -40,8 +40,6 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 	const [editOrder, { isLoading }] = useEditOrderMutation();
 	const dispatch = useAppDispatch();
 
-	console.log(selectedData);
-
 	return (
 		<Modal
 			open={selectedData !== null}
@@ -66,7 +64,6 @@ const OrderEditModal = ({ selectedData, closedEditModal, setSelectedData }) => {
 						onSubmit={async (values) => {
 							const formValue = { ...values, order_id: selectedData.id };
 							const response = await editOrder(formValue);
-							console.log(response);
 
 							if (response.data) {
 								dispatch(

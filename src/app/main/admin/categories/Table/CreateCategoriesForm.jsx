@@ -1,13 +1,12 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { IoClose } from 'react-icons/io5';
 import { Box, CircularProgress, Modal } from '@mui/material';
-import { useCreateCategoryMutation, useUpdateCategoryMutation } from '../CategoriesApi';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import { useAppDispatch } from 'app/store/hooks';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { IoClose } from 'react-icons/io5';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import * as Yup from 'yup';
+import { useCreateCategoryMutation, useUpdateCategoryMutation } from '../CategoriesApi';
 
 const validationSchema = Yup.object().shape({
 	category_name: Yup.string().required('Required'),
@@ -49,7 +48,6 @@ const CreateCategoriesForm = ({ openModal, handleClose, editedRowData }) => {
 						}}
 						validationSchema={validationSchema}
 						onSubmit={async (values) => {
-							console.log(values);
 							const response =
 								editedRowData !== null
 									? await updateCategory({ body: values, id: editedRowData?.id })

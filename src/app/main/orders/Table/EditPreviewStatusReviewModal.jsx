@@ -10,13 +10,13 @@ import {
 	TextField,
 	Typography
 } from '@mui/material';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
 import { useFormik } from 'formik';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import * as Yup from 'yup';
 import { useGetPreviewLinkMutation, useUserPreviewEditDecisionMutation } from '../orderApi';
-import { useAppDispatch } from 'app/store/hooks';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -65,7 +65,6 @@ const EditPreviewStatusReviewModal = ({ openPreviewEditReviewModal, handleModalC
 	const handleDownloadImageClick = async () => {
 		try {
 			const res = await getPreviewLink({ order_id: row?.original?.id });
-			console.log(res);
 
 			if (res?.data) {
 				window.open(res.data?.data, '_blank');

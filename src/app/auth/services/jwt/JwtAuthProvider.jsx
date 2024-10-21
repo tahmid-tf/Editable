@@ -1,6 +1,6 @@
-import { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import config from './jwtAuthConfig';
 
 const defaultAuthContext = {
@@ -183,12 +183,12 @@ function JwtAuthProvider(props) {
 	const logoutFunc = async () => {
 		try {
 			const response = await axios.post(config.logoutUrl);
-			console.log({ response });
+
 			resetSession();
 			setIsAuthenticated(false);
 			setUser(null);
 		} catch (error) {
-			console.log({ error });
+			console.error({ error });
 		}
 	};
 	const signOut = useCallback(() => {

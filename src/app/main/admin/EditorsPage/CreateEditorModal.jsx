@@ -1,15 +1,15 @@
-import { Box, Button, CircularProgress, Modal, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useCreateNewEditorMutation, useUpdateEditorMutation } from './EditorsApi';
-import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import _ from 'lodash';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import { useAppDispatch } from 'app/store/hooks';
+import { Box, Button, CircularProgress, Modal, TextField, Typography } from '@mui/material';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import _ from 'lodash';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { IoClose } from 'react-icons/io5';
+import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { z } from 'zod';
+import { useCreateNewEditorMutation, useUpdateEditorMutation } from './EditorsApi';
 
 const style = {
 	position: 'absolute',
@@ -47,7 +47,6 @@ const CreateEditorModal = ({ openModal, handleCloseModal, editorInfo, setEditorI
 				? await updateEditor({ updatedValue: { editor_name: formData.name }, id: editorInfo?.id })
 				: await createNewEditor({ editor_name: formData.name });
 
-		console.log(response.error);
 		if (response.data) {
 			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
 			reset(defaultValues);

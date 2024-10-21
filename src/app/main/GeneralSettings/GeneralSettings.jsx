@@ -1,13 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import _ from 'lodash';
-import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { selectUser, selectUserRole } from 'src/app/auth/user/store/userSlice';
-import { useResetPasswordMutation } from './GeneralSettingsApi';
 import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { Controller, useForm } from 'react-hook-form';
 import { SnackbarTypeEnum } from 'src/app/appUtils/constant';
+import { selectUser, selectUserRole } from 'src/app/auth/user/store/userSlice';
+import { z } from 'zod';
+import { useResetPasswordMutation } from './GeneralSettingsApi';
 
 const schema = z
 	.object({
@@ -53,7 +52,6 @@ const GeneralSettings = () => {
 			body: { old_password: oldPassword, new_password: newPassword },
 			userType
 		});
-		console.log(response);
 
 		if (response.data) {
 			dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response?.data?.message }));
