@@ -1,11 +1,10 @@
-import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import _ from '../../../@lodash/@lodash';
-import signupImg from '../../../../src/assets/images/auth/auth.png';
+import { Link } from 'react-router-dom';
 import JwtSignUpForm from 'src/app/auth/services/jwt/components/JwtSignUpForm';
+import signupImg from '../../../../src/assets/images/auth/auth.png';
 
 const tabs = [
 	{
@@ -37,9 +36,7 @@ function SignUpPage() {
 					backgroundPosition: 'center' // Center the image
 				}}
 				// style={{object-fit: "cover"}}
-			>
-				
-			</Box>
+			></Box>
 
 			<Paper className="h-full w-full px-16 py-8 ltr:border-r-1 rtl:border-l-1 sm:h-auto sm:w-auto sm:rounded-2xl sm:p-48 sm:shadow md:flex md:h-full md:w-1/2 md:items-center md:justify-center md:rounded-none md:p-64 md:shadow-none">
 				<div className="mx-auto w-full max-w-320 sm:mx-0 sm:w-320">
@@ -59,6 +56,14 @@ function SignUpPage() {
 						>
 							Log in
 						</Link>
+					</div>
+					<div className="mt-20 text-grey-500">
+						<i>
+							<strong>*Note: </strong>
+							If you&apos;re using Safari and the password field is automatically filled by Safari&apos;s
+							password manager, select <strong>"Other Options"</strong> <strong>{'>'}</strong>{' '}
+							<strong>"Choose My Own Password"</strong> to enter your desired password manually.
+						</i>
 					</div>
 				</div>
 			</Paper>
