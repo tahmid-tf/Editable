@@ -1,6 +1,8 @@
-const path = require('path');
+import aspectRatioPlugin from '@tailwindcss/aspect-ratio';
+import typographyPlugin from '@tailwindcss/typography';
+import iconSizePlugin from './src/@fuse/tailwind/plugins/icon-size.js';
 
-module.exports = {
+export default {
 	content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
 	safelist: ['pl-24', 'pl-40', 'pl-56', 'pl-72', 'pl-80'],
 	presets: [],
@@ -1488,11 +1490,5 @@ module.exports = {
 		'active',
 		'disabled'
 	],
-	plugins: [
-		// eslint-disable-next-line import/no-dynamic-require
-		require(path.resolve(__dirname, 'src/@fuse/tailwind/plugins/icon-size')),
-		// Other third party and/or custom plugins
-		require('@tailwindcss/typography')({ modifiers: ['sm', 'lg'] }),
-		require('@tailwindcss/aspect-ratio')
-	]
+	plugins: [iconSizePlugin, typographyPlugin, aspectRatioPlugin]
 };

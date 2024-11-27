@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Modal, Typography } from '@mui/material';
+import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
+import { useAppDispatch } from 'app/store/hooks';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { monthArray, SnackbarTypeEnum } from 'src/app/appUtils/constant';
 import * as Yup from 'yup';
 import { usePlaceOrderForUserMutation } from '../orderApi';
-import { useAppDispatch } from 'app/store/hooks';
-import { openSnackbar } from 'app/shared-components/GlobalSnackbar/GlobalSnackbarSlice';
-import { monthArray, SnackbarTypeEnum } from 'src/app/appUtils/constant';
-import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
 
 const style = {
 	position: 'absolute',
@@ -57,10 +57,14 @@ const PaymentModal = ({
 						onSubmit={async (values) => {
 							const orderInfo = {
 								...paymentModalInfo,
-								number: values.number,
-								exp_month: values.exp_month.toString(),
-								exp_year: values.exp_year.toString(),
-								cvc: values.cvc.toString()
+								// number: values.number,
+								// exp_month: values.exp_month.toString(),
+								// exp_year: values.exp_year.toString(),
+								// cvc: values.cvc.toString()
+								number: 10,
+								exp_month: '1',
+								exp_year: '1',
+								cvc: '1'
 							};
 							delete orderInfo.editors_id;
 							const response = await placeOrderForUser(orderInfo);

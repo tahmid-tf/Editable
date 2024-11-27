@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import {
 	useGetValueForOrderCalculationForUserMutation,
 	useGetValueForOrderCalculationMutation,
+	usePlaceOrderForUserMutation,
 	usePlaceOrderMutation
 } from '../orderApi';
 import { selectOrderState } from '../orderSlice';
@@ -90,6 +91,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 		: useGetValueForOrderCalculationForUserMutation();
 
 	const [placeOrder, { isLoading }] = usePlaceOrderMutation();
+	const [placeOrderForUser, { isLoading: userOrderLoading }] = usePlaceOrderForUserMutation();
 
 	const styleData = allStyleData?.filter((data) => data?.additional_style === 'no');
 	const additionalData = allStyleData?.filter((data) => data?.additional_style === 'yes');
@@ -257,13 +259,41 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 				};
 
 				if (userRole.includes('user')) {
-					setPaymentModalInfo({
-						...orderInfo,
-						...styleInfo,
-						...paymentInfo,
-						amount: Number(paymentInfo?.amount)
-					});
-					setOpenPaymentModal(true);
+					// setPaymentModalInfo({
+					// 	...orderInfo,
+					// 	...styleInfo,
+					// 	...paymentInfo,
+					// 	amount: Number(paymentInfo?.amount)
+					// });
+					const userOrderInfo = {
+						...body,
+						// number: values.number,
+						// exp_month: values.exp_month.toString(),
+						// exp_year: values.exp_year.toString(),
+						// cvc: values.cvc.toString()
+						number: 10,
+						exp_month: '1',
+						exp_year: '1',
+						cvc: '1'
+					};
+					delete userOrderInfo.editors_id;
+					const response = await placeOrderForUser(userOrderInfo);
+					if (response.data) {
+						dispatch(openSnackbar({ type: SnackbarTypeEnum.SUCCESS, message: response.data.message }));
+						setPaymentModalInfo((prev) => ({
+							...prev,
+							amount: body.amount,
+							order_id: response?.data?.data?.order_id
+						}));
+						setOpenPaymentSuccessModal(true);
+					} else {
+						dispatch(
+							openSnackbar({
+								type: SnackbarTypeEnum.ERROR,
+								message: response.error.data?.message
+							})
+						);
+					}
 				} else {
 					const response = await placeOrder(body);
 
@@ -787,7 +817,7 @@ const PickStyle = ({ onPickStyleSubmit, allStyleData }) => {
 											className="w-[332px] h-[38px] py-2  px-4 text-white rounded-md bg-[#146ef5ef] hover:bg-[#0066ff] font-[20px] flex justify-center items-center gap-5"
 										>
 											Place Order
-											{isLoading ? (
+											{isLoading || userOrderLoading ? (
 												<Box
 													sx={{
 														display: 'flex',

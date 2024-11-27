@@ -1,8 +1,9 @@
 import { Box, Modal, Typography } from '@mui/material';
-import { useAppSelector } from 'app/store/hooks';
-import { FaCheckCircle } from 'react-icons/fa';
-import { selectOrderState } from '../orderSlice';
 import GlobalSnackbar from 'app/shared-components/GlobalSnackbar/GlobalSnackbar';
+import { useAppSelector } from 'app/store/hooks';
+import { FaCheckCircle, FaWhatsapp } from 'react-icons/fa';
+import { IoCloseOutline } from 'react-icons/io5';
+import { selectOrderState } from '../orderSlice';
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -17,7 +18,6 @@ const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModa
 	return (
 		<Modal
 			open={openPaymentSuccessModal}
-			onClose={handlePaymentSuccessModalClose}
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"
 		>
@@ -29,6 +29,13 @@ const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModa
 					borderRadius={4}
 					bgcolor={'white'}
 				>
+					<Box className="w-full flex items-center justify-end">
+						<IoCloseOutline
+							className="cursor-pointer"
+							onClick={handlePaymentSuccessModalClose}
+							size={30}
+						/>
+					</Box>
 					<Box className="flex items-center justify-center w-full">
 						<Box className="w-[75px] h-[75px] flex items-center justify-center bg-[#7D7D7D1F] rounded-full">
 							<FaCheckCircle size={30} />
@@ -38,7 +45,7 @@ const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModa
 						variant="h3"
 						className="text-[20px] text-center leading-[24px] mt-[1em]"
 					>
-						Payment Successful!
+						Order Successful!
 					</Typography>
 					<Typography
 						variant="h3"
@@ -49,7 +56,28 @@ const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModa
 					<Typography className="text-[12px] text-center leading-[12px">
 						Order ID: {paymentModalInfo?.order_id}
 					</Typography>
-					<div
+					<Typography
+						variant="h3"
+						className="text-[20px] text-center leading-[24px] mt-[1em]"
+					>
+						paypal your amount to{' '}
+						<a
+							// target="_blank"
+							href="mailto:elastic_trend@hotmail.com"
+						>
+							elastic_trend@hotmail.com
+						</a>{' '}
+						and then contact whatsapp with your Order ID.
+					</Typography>
+					<a
+						href="https://wa.me/8801302704887"
+						target="_blank"
+						className=" mt-10 w-[332px] h-[38px] py-2 !no-underline  px-4 !text-white rounded-md !bg-[#1baa50] hover:!bg-[#2c9f56] flex justify-center items-center gap-5 font-semibold"
+					>
+						<FaWhatsapp size={20} />
+						WHATSAPP
+					</a>
+					{/* <div
 						style={{
 							borderBottom: '2px solid #EDEDED',
 							paddingBottom: '8px',
@@ -124,7 +152,7 @@ const PaymentSuccessModal = ({ openPaymentSuccessModal, handlePaymentSuccessModa
 						) : (
 							<></>
 						)}
-					</div>
+					</div> */}
 				</Box>
 				<GlobalSnackbar />
 			</>
